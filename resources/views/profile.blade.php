@@ -59,26 +59,28 @@
                         </a>
                         <div class="col-12 d-flex justify-content-center" style="padding: 0px;">
                             <div class="col-12" style="padding: 0px;">
-                                <img style=" width: 100%;" src="{{ asset(isImageExist($user->cover_photo)) }}">
+                                <img style=" width: 100%;" src="{{ asset(isImageExist($profile->cover_photo)) }}">
                                 <div class="profile_img">
-                                    <img src="{{ asset(isImageExist($user->photo, 'profile')) }}" alt="Profile Photo">
+                                    <img src="{{ asset(isImageExist($profile->photo, 'profile')) }}"
+                                        alt="Profile Photo">
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 d-flex justify-content-center" style="padding: 0px;">
                             <div class="col-md-11" style="padding: 0px;">
                                 <h1 style=" margin-left:30px;" class="user-name">
-                                    {{ $user->name ? $user->name : $user->username }}
+                                    {{ $profile->name ? $profile->name : $profile->username }}
                                 </h1>
                                 <p style=" margin-left:30px; font-size:16px; color:#24171E;" class="user-name">
-                                    {{ $user->job_title }} at {{ $user->company }}
+                                    {{ $profile->job_title }} at {{ $profile->company }}
 
                                 </p><br>
 
 
                                 <h1 style="font-size:20px; width:auto; margin-left:auto; margin-right:auto"
-                                    class="user-bio"> {{ $user->bio }}</h1><br>
-                                <!-- <h1 class="user-tiks"><?= $user->tiks ?></h1>--><br><br><br>
+                                    class="user-bio"> {{ $profile->bio }}
+                                </h1>
+                                <br>
                             </div>
                         </div>
                         <div class="col-12 d-flex justify-content-center" style="padding: 0px;">
@@ -86,7 +88,7 @@
                                 <button id="connectBTN" class="btn btn-block AddBtn rounded-pill px-4 py-3 "
                                     style="background-color: #000000;">
                                     <a style="text-decoration: none;" target="_blank" class="text-white"
-                                        href="{{ route('save.contact', $user->id) }}"><b>Save to contact</b></a>
+                                        href="{{ route('save.contact', $profile->id) }}"><b>Save to contact</b></a>
                                 </button>
                             </div>
                         </div>
@@ -99,47 +101,46 @@
                                     @for ($i = 0; $i < count($userPlatforms); $i++)
                                         @for ($j = 0; $j < count($userPlatforms[$i]); $j++)
                                             @if ($itemCount % 3 === 0 && $itemCount > 0)
-                                                </div> <!-- Close the previous row -->
-                                                <div class="row my-3"> <!-- Start a new row -->
-                                            @endif
+                            </div> <!-- Close the previous row -->
+                            <div class="row my-3"> <!-- Start a new row -->
+                                @endif
 
-                                            <div class="col-4 d-flex justify-content-center">
-                                                @if ($userPlatforms[$i][$j]->check_user_privacy)
-                                                    <a href="javascript:void(0)" class="social"
-                                                        style="{{ $userPlatforms[$i][$j]->check_user_privacy ? 'filter: blur(5px);' : '' }}"
-                                                        target="{{ $userPlatforms[$i][$j]->check_user_privacy ? '' : '_blank' }}">
-                                                        <img src="{{ asset(isImageExist($userPlatforms[$i][$j]->icon, 'platform')) }}"
-                                                            class="gallery-image img-fluid"
-                                                            style="max-width: 100px; max-height: 100px; object-fit: cover;" />
-                                                    </a>
-                                                @else
-                                                    @if ($userPlatforms[$i][$j]->base_url)
-                                                        <a href="{{ $userPlatforms[$i][$j]->base_url . $userPlatforms[$i][$j]->path }}"
-                                                            class="social"
-                                                            onclick="platformIncrement({{ $userPlatforms[$i][$j]->platform_id }}, {{ $userPlatforms[$i][$j]->user_id }})"
-                                                            style="{{ $userPlatforms[$i][$j]->check_user_privacy ? 'filter: blur(5px);' : '' }}"
-                                                            target="{{ $userPlatforms[$i][$j]->check_user_privacy ? '' : '_blank' }}">
-                                                            <img src="{{ asset(isImageExist($userPlatforms[$i][$j]->icon, 'platform')) }}"
-                                                                class="gallery-image img-fluid"
-                                                                style="max-width: 100px; max-height: 100px; object-fit: cover;" />
-                                                        </a>
-                                                    @else
-                                                        <a href="{{ $userPlatforms[$i][$j]->path }}"
-                                                            class="social"
-                                                            onclick="platformIncrement({{ $userPlatforms[$i][$j]->platform_id }}, {{ $userPlatforms[$i][$j]->user_id }})"
-                                                            style="{{ $userPlatforms[$i][$j]->check_user_privacy ? 'filter: blur(5px);' : '' }}"
-                                                            target="{{ $userPlatforms[$i][$j]->check_user_privacy ? '' : '_blank' }}">
-                                                            <img src="{{ asset(isImageExist($userPlatforms[$i][$j]->icon, 'platform')) }}"
-                                                                class="gallery-image img-fluid"
-                                                                style="max-width: 100px; max-height: 100px; object-fit: cover;" />
-                                                        </a>
-                                                    @endif
-                                                @endif
-                                            </div>
+                                <div class="col-4 d-flex justify-content-center">
+                                    @if ($userPlatforms[$i][$j]->check_profile_privacy)
+                                        <a href="javascript:void(0)" class="social"
+                                            style="{{ $userPlatforms[$i][$j]->check_profile_privacy ? 'filter: blur(5px);' : '' }}"
+                                            target="{{ $userPlatforms[$i][$j]->check_profile_privacy ? '' : '_blank' }}">
+                                            <img src="{{ asset(isImageExist($userPlatforms[$i][$j]->icon, 'platform')) }}"
+                                                class="gallery-image img-fluid"
+                                                style="max-width: 100px; max-height: 100px; object-fit: cover;" />
+                                        </a>
+                                    @else
+                                        @if ($userPlatforms[$i][$j]->base_url)
+                                            <a href="{{ $userPlatforms[$i][$j]->base_url . $userPlatforms[$i][$j]->path }}"
+                                                class="social"
+                                                onclick="platformIncrement({{ $userPlatforms[$i][$j]->platform_id }}, {{ $userPlatforms[$i][$j]->user_id }})"
+                                                style="{{ $userPlatforms[$i][$j]->check_profile_privacy ? 'filter: blur(5px);' : '' }}"
+                                                target="{{ $userPlatforms[$i][$j]->check_profile_privacy ? '' : '_blank' }}">
+                                                <img src="{{ asset(isImageExist($userPlatforms[$i][$j]->icon, 'platform')) }}"
+                                                    class="gallery-image img-fluid"
+                                                    style="max-width: 100px; max-height: 100px; object-fit: cover;" />
+                                            </a>
+                                        @else
+                                            <a href="{{ $userPlatforms[$i][$j]->path }}" class="social"
+                                                onclick="platformIncrement({{ $userPlatforms[$i][$j]->platform_id }}, {{ $userPlatforms[$i][$j]->user_id }})"
+                                                style="{{ $userPlatforms[$i][$j]->check_profile_privacy ? 'filter: blur(5px);' : '' }}"
+                                                target="{{ $userPlatforms[$i][$j]->check_profile_privacy ? '' : '_blank' }}">
+                                                <img src="{{ asset(isImageExist($userPlatforms[$i][$j]->icon, 'platform')) }}"
+                                                    class="gallery-image img-fluid"
+                                                    style="max-width: 100px; max-height: 100px; object-fit: cover;" />
+                                            </a>
+                                        @endif
+                                    @endif
+                                </div>
 
-                                            @php $itemCount++; @endphp
-                                        @endfor
-                                    @endfor
+                                @php $itemCount++; @endphp
+                                @endfor
+                                @endfor
                                 @endif
                             </div> <!-- Close the last row -->
                         </div>

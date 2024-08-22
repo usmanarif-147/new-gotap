@@ -3,14 +3,99 @@
 namespace App\Http\Controllers;
 
 use App\Models\Card;
+use App\Models\Profile;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class UserProfileController extends Controller
 {
 
-    public function index() {}
+    public function index()
+    {
+        $identifier = request()->segment(1) == 'card_id' ? 'uuid' : request()->username;
+
+        if ($identifier == 'uuid') {
+            $profile = Card::join('user_cards', 'cards.id', 'user_cards.card_id')
+                ->join('profiles', 'profiles.id', 'user_cards.profile_id')
+                ->where('cards.uuid', request()->segment(2))
+                ->select('profiles.*', 'user_cards.status as card_status')
+                ->first();
+
+            if (!$profile || !$profile->card_status) {
+                return abort(404);
+            }
+        } else {
+            $profile = Profile::where('username', $identifier)->first();
+
+            if (!$profile) {
+                return abort(404);
+            }
+        }
+
+        $directPath = null;
+        $direct = null;
+        $userPlatforms = [];
+
+        // Fetch the user's platforms
+        $platforms = DB::table('user_platforms')
+            ->select(
+                'platforms.id as platform_id',
+                'platforms.title',
+                'platforms.icon',
+                'platforms.input',
+                'platforms.baseUrl as base_url',
+                'user_platforms.user_id as user_id',
+                'user_platforms.created_at',
+                'user_platforms.path',
+                'user_platforms.label',
+                'user_platforms.platform_order',
+                'user_platforms.direct',
+                'profiles.private as check_profile_privacy'
+            )
+            ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
+            ->join('profiles', 'user_platforms.profile_id', 'profiles.id')
+            ->where('profile_id', $profile->id)
+            ->orderBy('user_platforms.platform_order')
+            ->get();
+
+        // Handle direct path if user has a direct platform
+        if ($profile->user_direct) {
+            $direct = $platforms->first();
+        }
+
+        if ($direct) {
+            if (!$direct->base_url) {
+                if (!str_contains($direct->path, 'https') && !str_contains($direct->path, 'http')) {
+                    $directPath = 'https://' . $direct->path;
+                }
+            } else {
+                $directPath = $direct->base_url . '/' . $direct->path;
+            }
+        }
+
+        // Increment user tiks
+        User::find($profile->user_id)->increment('tiks');
+        Profile::find($profile->id)->increment('tiks');
+
+        // Check profile privacy
+        $is_private = Profile::where('id', $profile->id)->first()->private;
+
+        // Process user platforms
+        foreach ($platforms as $platform) {
+            if (!$platform->base_url) {
+                if (!str_contains($platform->path, 'https') && !str_contains($platform->path, 'http')) {
+                    $platform->base_url = 'https://';
+                }
+            }
+            array_push($userPlatforms, $platform);
+        }
+
+        // Chunk user platforms into groups of 4
+        $userPlatforms = array_chunk($userPlatforms, 4);
+
+
+        return view('profile', compact('profile', 'userPlatforms', 'is_private', 'directPath'));
+    }
 
 
     public function getProfileByUuid()

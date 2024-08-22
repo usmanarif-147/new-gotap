@@ -2,11 +2,10 @@
 
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\VCardController;
-use App\Models\done\Group;
-use App\Models\done\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
 
 Route::get('/privacy-and-policy', function () {
     return view('landingpage.privacy-policy');
@@ -51,61 +50,62 @@ Route::get('/card_id/{uuid}', [UserProfileController::class, 'index']);
 Route::get('/{username}', [UserProfileController::class, 'index']);
 
 
-Route::get('user/{id}/analytics', function ($id) {
+// Route::get('user/{id}/analytics', function ($id) {
 
 
-    $userId = $id;
-    $connections = DB::table('connects')->where('connecting_id', $userId)->get()->count();
-    $profileViews = User::where('id', $userId)->first()->tiks;
-
-    $platforms = DB::table('user_platforms')
-        ->select(
-            'platforms.id',
-            'platforms.title',
-            'platforms.icon',
-            'user_platforms.path',
-            'user_platforms.label',
-            'user_platforms.clicks',
-        )
-        ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
-        ->where('user_id', $userId)
-        ->orderBy(('user_platforms.platform_order'))
-        ->get();
+//     $userId = $id;
+//     $connections = DB::table('connects')->where('connecting_id', $userId)->get()->count();
+//     $profileViews = User::where('id', $userId)->first()->tiks;
 
 
-    return response()->json(
-        [
-            'user' => [
-                [
-                    'label' => trans('backend.connections'),
-                    'connections' => $connections,
-                    'icon' => 'uploads/photos/total_connections.png',
-                ],
-                [
-                    'label' => trans('backend.profile_views'),
-                    'profileViews' => $profileViews,
-                    'icon' => 'uploads/photos/profile_views.png',
-                ],
-                [
-                    'label' => trans('backend.platform_clicks'),
-                    'total_clicks' => $platforms->sum('clicks'),
-                    'icon' => 'uploads/photos/total_clicks.png',
-                ],
-                [
-                    'label' => trans('backend.platforms'),
-                    'total_platforms' => $platforms->count(),
-                    'icon' => 'uploads/photos/total_platforms.png',
-                ],
-                [
-                    'label' => trans('backend.groups'),
-                    'total_groups' => Group::where('user_id', $userId)->count(),
-                    'icon' => 'uploads/photos/total_groups.png',
-                ],
-            ],
-            'platforms' => $platforms
-        ]
-    );
-});
+//     $platforms = DB::table('user_platforms')
+//         ->select(
+//             'platforms.id',
+//             'platforms.title',
+//             'platforms.icon',
+//             'user_platforms.path',
+//             'user_platforms.label',
+//             'user_platforms.clicks',
+//         )
+//         ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
+//         ->where('user_id', $userId)
+//         ->orderBy(('user_platforms.platform_order'))
+//         ->get();
+
+
+//     return response()->json(
+//         [
+//             'user' => [
+//                 [
+//                     'label' => trans('backend.connections'),
+//                     'connections' => $connections,
+//                     'icon' => 'uploads/photos/total_connections.png',
+//                 ],
+//                 [
+//                     'label' => trans('backend.profile_views'),
+//                     'profileViews' => $profileViews,
+//                     'icon' => 'uploads/photos/profile_views.png',
+//                 ],
+//                 [
+//                     'label' => trans('backend.platform_clicks'),
+//                     'total_clicks' => $platforms->sum('clicks'),
+//                     'icon' => 'uploads/photos/total_clicks.png',
+//                 ],
+//                 [
+//                     'label' => trans('backend.platforms'),
+//                     'total_platforms' => $platforms->count(),
+//                     'icon' => 'uploads/photos/total_platforms.png',
+//                 ],
+//                 [
+//                     'label' => trans('backend.groups'),
+//                     'total_groups' => Group::where('user_id', $userId)->count(),
+//                     'icon' => 'uploads/photos/total_groups.png',
+//                 ],
+//             ],
+//             'platforms' => $platforms
+//         ]
+//     );
+// });
 
 Route::get('save_contact/{id}', [VCardController::class, 'saveContact'])->name('save.contact');
 
