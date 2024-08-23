@@ -162,9 +162,10 @@ class ProfileController extends Controller
 
     public function update(UpdateProfileRequest $request)
     {
+        $profile = getActiveProfile();
         try {
-            $cover_photo = auth()->user()->cover_photo;
-            $photo = auth()->user()->photo;
+            $cover_photo = $profile->cover_photo;
+            $photo = $profile->photo;
 
             if ($request->hasFile('cover_photo')) {
                 if ($cover_photo) {

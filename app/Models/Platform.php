@@ -10,7 +10,6 @@ class Platform extends Model
     use HasFactory;
 
     protected $fillable = [
-        'old_platform_id',
         'category_id',
         'title',
         'icon',
