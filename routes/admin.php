@@ -41,9 +41,6 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('admin/card/{id}/edit', CardEdit::class);
     Route::get('/downloadCardsCSV', [Cards::class, 'downloadCsv'])->name('export');
 
-    // logs
-    Route::get('admin/logs', Logs::class);
-
     // profile
     Route::post('/changePassword', [ProfileController::class, 'changePassword'])->name('profile.change.password');
 

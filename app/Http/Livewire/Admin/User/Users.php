@@ -23,7 +23,7 @@ class Users extends Component
     {
         $this->statuses = [
             '1' => 'Active',
-            '2' => 'Deactive',
+            '2' => 'Inactive',
         ];
     }
 
@@ -97,7 +97,6 @@ class Users extends Component
 
         $this->users = ['users' => $this->users];
 
-        return view('livewire.admin.user.users')
-            ->layout('layouts.app');
+        return view('livewire.admin.user.users');
     }
 }

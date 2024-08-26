@@ -52,15 +52,14 @@ class Cards extends Component
             'cards.uuid',
             'cards.description',
             'cards.status',
-            'users.username',
+            'profiles.username',
         )
             ->leftJoin('user_cards', 'user_cards.card_id', 'cards.id')
-            ->leftJoin('users', 'users.id', 'user_cards.user_id')
+            ->leftJoin('profiles', 'profiles.id', 'user_cards.profile_id')
             ->when($this->searchQuery, function ($query) {
                 $query->where(function ($query) {
                     $query->where('cards.uuid', 'like', "%$this->searchQuery%")
-                        ->orWhere( 'like', "%$this->searchQuery%")
-                        ->orWhere('users.username', 'like', "%$this->searchQuery%");
+                        ->orWhere('profiles.username', 'like', "%$this->searchQuery%");
                 });
             })
             ->when($this->filterByStatus, function ($query) {
