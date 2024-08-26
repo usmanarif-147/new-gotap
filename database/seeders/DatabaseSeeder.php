@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             CardSeeder::class,
             UserTableSeeder::class,
             ProfileSeeder::class,
+            ProfilePlatformSeeder::class,
             PhoneContactSeeder::class,
         ]);
     }

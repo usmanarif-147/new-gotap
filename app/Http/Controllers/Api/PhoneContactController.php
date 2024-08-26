@@ -70,10 +70,7 @@ class PhoneContactController extends Controller
 
         if ($request->hasFile('photo')) {
             $image = $request->photo;
-            // $imageName = time() . '.' . $image->extension();
-            // $image->storeAs('public/uploads/photos', $imageName);
             $photo = Storage::disk('public')->put('uploads/photos', $image);
-            // $photo = '/storage/uploads/photos/' . $imageName;
         }
 
         DB::table('phone_contacts')->insert([
@@ -126,15 +123,6 @@ class PhoneContactController extends Controller
                     Storage::disk('public')->delete($photo);
                 }
                 $photo = Storage::disk('public')->put('uploads/photos', $request->photo);
-                // $image = $request->photo;
-                // $imageName = time() . '.' . $image->extension();
-                // $image->storeAs('public/uploads/photos', $imageName);
-                // $photo = '/storage/uploads/photos/' . $imageName;
-                // if ($oldPhoto) {
-                //     if (Storage::exists('public/' . $oldPhoto)) {
-                //         Storage::delete('public/' . $oldPhoto);
-                //     }
-                // }
             }
 
             DB::table('phone_contacts')->where('id', $request->contact_id)->update([

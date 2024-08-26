@@ -117,9 +117,6 @@ Route::middleware('localization')->group(function () {
 
             // Change Password
             Route::post('/change-password', [AuthController::class, 'changePassword']);
-
-            // Random
-            Route::get('/groupDetail/{num}', [GroupController::class, 'groupDetail']);
         });
         Route::get('logout', [AuthController::class, 'logout']);
     });

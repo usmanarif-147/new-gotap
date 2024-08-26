@@ -181,14 +181,6 @@ class ProfileController extends Controller
                 $photo = Storage::disk('public')->put('uploads/photos', $request->photo);
             }
 
-            // $user = User::where('id', auth()->id())
-            //     ->first();
-
-            // $isUpdated = User::where('id', auth()->id())
-            //     ->update([
-            //         'name' => $request->name,
-            //     ]);
-
             $profile = getActiveProfile();
 
             $isUpdated = Profile::where('id', $profile->id)

@@ -143,7 +143,10 @@ class UserController extends Controller
      */
     public function analytics()
     {
-        $connections = DB::table('connects')->where('connecting_id', auth()->id())->get()->count();
+        $connections = DB::table('connects')
+            ->where('connecting_id', auth()->id())
+            ->get()
+            ->count();
         $profileViews = User::where('id', auth()->id())->first()->tiks;
 
         $platforms = DB::table('user_platforms')

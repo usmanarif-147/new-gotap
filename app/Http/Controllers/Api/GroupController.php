@@ -87,12 +87,11 @@ class GroupController extends Controller
             ->first();
         if ($isExist) {
             return response()->json([
-
                 'message' => trans('backend.group_already_exist')
             ]);
         }
 
-        $group = Group::create([
+        Group::create([
             'user_id' => auth()->id(),
             'title' => $request->title,
             'icon' => $request->icon,

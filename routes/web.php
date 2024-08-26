@@ -3,7 +3,6 @@
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\VCardController;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 
@@ -44,10 +43,10 @@ Route::get('/set-private-val', function () {
 
 
 // Profile using card_id
-Route::get('/card_id/{uuid}', [UserProfileController::class, 'index']);
+Route::view('/card_id/{uuid}', 'profile');
 
 // Profile using username
-Route::get('/{username}', [UserProfileController::class, 'index']);
+Route::view('/{username}', 'profile');
 
 
 // Route::get('user/{id}/analytics', function ($id) {

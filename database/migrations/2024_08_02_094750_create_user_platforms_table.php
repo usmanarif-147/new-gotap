@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('profile_id')->constrained('profiles')->onDelete('cascade');
             $table->foreignId('platform_id')->constrained('platforms')->onDelete('cascade');
             $table->string('path', 255);
+            $table->unsignedInteger('clicks')->default(0);
             $table->boolean('direct')->default(0);
             $table->tinyInteger('platform_order')->default(1);
             $table->string('label', 255)->nullable();
