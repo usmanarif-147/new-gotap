@@ -3,7 +3,6 @@
 namespace App\Http\Livewire\Admin\User;
 
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -15,9 +14,9 @@ class Users extends Component
     protected $paginationTheme = 'bootstrap';
 
     // filter valriables
-    public $searchQuery = '', $filterByStatus, $sortBy = '';
+    public $search = '', $filterByStatus = '', $filterByRole = '',  $sortBy = '';
 
-    public $users, $total, $heading, $statuses = [];
+    public $total, $heading, $statuses = [];
 
     public function mount()
     {
@@ -31,7 +30,11 @@ class Users extends Component
     {
         $this->resetPage();
     }
-    public function updatedSearchQuery()
+    public function updatedFilterByRole()
+    {
+        $this->resetPage();
+    }
+    public function updatedSearch()
     {
         $this->resetPage();
     }
@@ -46,11 +49,10 @@ class Users extends Component
             'users.id',
             'users.name',
             'users.email',
-            'users.username',
+            'users.role',
             'users.status',
-            'users.tiks',
             'users.created_at',
-            DB::raw('(SELECT COUNT(*) FROM user_cards WHERE user_cards.user_id = users.id) AS total_products')
+            // DB::raw('(SELECT COUNT(*) FROM user_cards WHERE user_cards.user_id = users.id) AS total_products')
         )
             ->when($this->filterByStatus, function ($query) {
                 if ($this->filterByStatus == 2) {
@@ -59,6 +61,9 @@ class Users extends Component
                 if ($this->filterByStatus == 1) {
                     $query->where('users.status', 1);
                 }
+            })
+            ->when($this->filterByRole, function ($query) {
+                $query->where('users.role', $this->filterByRole);
             })
             ->when($this->sortBy, function ($query) {
                 if ($this->sortBy == 'created_asc') {
@@ -74,13 +79,14 @@ class Users extends Component
                     $query->orderBy('total_products', 'desc');
                 }
             })
-            ->when($this->searchQuery, function ($query) {
+            ->when($this->search, function ($query) {
                 $query->where(function ($query) {
-                    $query->where('users.name', 'like', "%$this->searchQuery%")
-                        ->orWhere('users.username', 'like', "%$this->searchQuery%")
-                        ->orWhere('users.email', 'like', "%$this->searchQuery%");
+                    $query->where('users.name', 'like', "%$this->search%")
+                        ->orWhere('users.username', 'like', "%$this->search%")
+                        ->orWhere('users.email', 'like', "%$this->search%");
                 });
             })
+            ->where('role', '!=', 'admin')
             ->orderBy('users.created_at', 'desc');
 
         return $filteredData;
@@ -91,12 +97,12 @@ class Users extends Component
         $data = $this->getFilteredData();
 
         $this->heading = "Users";
-        $this->users = $data->paginate(10);
+        $users = $data->paginate(10);
 
-        $this->total = $this->users->total();
+        $this->total = $users->total();
 
-        $this->users = ['users' => $this->users];
-
-        return view('livewire.admin.user.users');
+        return view('livewire.admin.user.users', [
+            'users' => $users
+        ]);
     }
 }

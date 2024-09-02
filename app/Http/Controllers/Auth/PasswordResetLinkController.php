@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\AdminForgotPasswordMail;
 use App\Models\Admin;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -14,28 +15,48 @@ use Illuminate\View\View;
 class PasswordResetLinkController extends Controller
 {
     /**
-     * Display the password reset link request view.
+     * Admin
      */
-    public function create(): View
+    public function createAdmin(): View
     {
         return view('auth.forgot-password');
     }
-
-    /**
-     * Handle an incoming password reset link request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(Request $request): RedirectResponse
+    public function storeAdmin(Request $request): RedirectResponse
     {
         $request->validate([
             'email' => ['required', 'email'],
         ]);
 
-        $admin = Admin::where('email', $request->email)->first();
+        $admin = User::where('email', $request->email)->first();
 
-        if(!$admin) {
-            return back()->with('message' , 'Email is not valid');
+        if (!$admin) {
+            return back()->with('message', 'Email is not valid');
+        }
+
+        $admin->remember_token = str()->random(50);
+        $admin->save();
+
+        Mail::to($admin->email)->send(new AdminForgotPasswordMail($admin));
+    }
+
+
+    /**
+     * Enterprise
+     */
+    public function createEnterprise(): View
+    {
+        return view('auth.forgot-password');
+    }
+    public function storeEnterprise(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $admin = User::where('email', $request->email)->first();
+
+        if (!$admin) {
+            return back()->with('message', 'Email is not valid');
         }
 
         $admin->remember_token = str()->random(50);
@@ -44,19 +65,5 @@ class PasswordResetLinkController extends Controller
         Mail::to($admin->email)->send(new AdminForgotPasswordMail($admin));
 
         return back()->with('message', 'Email Send To Admin');
-
-
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
-        $status = Password::broker('admins')->sendResetLink(
-            $request->only('email')
-        );
-
-
-        return $status == Password::RESET_LINK_SENT
-            ? back()->with('status', __($status))
-            : back()->withInput($request->only('email'))
-            ->withErrors(['email' => __($status)]);
     }
 }

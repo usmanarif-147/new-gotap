@@ -17,7 +17,7 @@ class Edit extends Component
         return [
             'name'    => ['required'],
             'name_sv' => ['required'],
-            'status'  => ['required','not_in:'],
+            'status'  => ['required', 'not_in:'],
         ];
     }
 
@@ -62,7 +62,6 @@ class Edit extends Component
     public function render()
     {
         $this->heading = "Edit";
-        return view('livewire.admin.category.edit')
-            ->layout('layouts.app');
+        return view('livewire.admin.category.edit');
     }
 }

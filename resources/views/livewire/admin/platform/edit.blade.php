@@ -21,15 +21,8 @@
                                             <img src="{{ $icon->temporaryUrl() }}" alt="user-avatar"
                                                 class="d-block rounded" height="200" width="200">
                                         @else
-                                            <img src="{{ asset(isImageExist($icon_preview, 'platform')) }}" alt="user-avatar"
-                                                class="d-block rounded" height="200" width="200">
-                                            {{-- @if ($icon_preview)
-                                                <img src="{{ asset(isImageExist($icon_preview, 'platform')) }}" alt="user-avatar"
-                                                    class="d-block rounded" height="200" width="200">
-                                            @else
-                                                <img src="{{ asset('frame_2.webp') }}" alt="user-avatar"
-                                                    class="d-block rounded" height="200" width="200">
-                                            @endif --}}
+                                            <img src="{{ asset(isImageExist($icon_preview, 'platform')) }}"
+                                                alt="user-avatar" class="d-block rounded" height="200" width="200">
                                         @endif
 
                                         <div wire:loading wire:target="icon" wire:key="icon">
@@ -183,7 +176,8 @@
                     </div>
 
                     <div class="card-footer">
-                        <button type="submit" class="btn" style="background: #0EA7C1; color:white">Update</button>
+                        <button type="submit" class="btn"
+                            style="background: #0EA7C1; color:white">Update</button>
                     </div>
                 </form>
             </div>

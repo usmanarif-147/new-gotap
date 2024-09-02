@@ -65,7 +65,6 @@ class Create extends Component
 
         $this->heading = "Create";
 
-        return view('livewire.admin.card.create')
-            ->layout('layouts.app');
+        return view('livewire.admin.card.create');
     }
 }

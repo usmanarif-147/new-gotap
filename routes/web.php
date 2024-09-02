@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\VCardController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+
+Route::view('/', 'welcome');
 
 Route::get('/privacy-and-policy', function () {
     return view('landingpage.privacy-policy');
@@ -57,18 +58,18 @@ Route::view('/{username}', 'profile');
 //     $profileViews = User::where('id', $userId)->first()->tiks;
 
 
-//     $platforms = DB::table('user_platforms')
+//     $platforms = DB::table('profile_platforms')
 //         ->select(
 //             'platforms.id',
 //             'platforms.title',
 //             'platforms.icon',
-//             'user_platforms.path',
-//             'user_platforms.label',
-//             'user_platforms.clicks',
+//             'profile_platforms.path',
+//             'profile_platforms.label',
+//             'profile_platforms.clicks',
 //         )
-//         ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
+//         ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
 //         ->where('user_id', $userId)
-//         ->orderBy(('user_platforms.platform_order'))
+//         ->orderBy(('profile_platforms.platform_order'))
 //         ->get();
 
 

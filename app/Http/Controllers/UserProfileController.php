@@ -37,25 +37,25 @@ class UserProfileController extends Controller
         $userPlatforms = [];
 
         // Fetch the user's platforms
-        $platforms = DB::table('user_platforms')
+        $platforms = DB::table('profile_platforms')
             ->select(
                 'platforms.id as platform_id',
                 'platforms.title',
                 'platforms.icon',
                 'platforms.input',
                 'platforms.baseUrl as base_url',
-                'user_platforms.user_id as user_id',
-                'user_platforms.created_at',
-                'user_platforms.path',
-                'user_platforms.label',
-                'user_platforms.platform_order',
-                'user_platforms.direct',
+                'profile_platforms.user_id as user_id',
+                'profile_platforms.created_at',
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.platform_order',
+                'profile_platforms.direct',
                 'profiles.private as check_profile_privacy'
             )
-            ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
-            ->join('profiles', 'user_platforms.profile_id', 'profiles.id')
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
+            ->join('profiles', 'profile_platforms.profile_id', 'profiles.id')
             ->where('profile_id', $profile->id)
-            ->orderBy('user_platforms.platform_order')
+            ->orderBy('profile_platforms.platform_order')
             ->get();
 
         // Handle direct path if user has a direct platform
@@ -119,25 +119,25 @@ class UserProfileController extends Controller
         $direct = null;
 
         $userPlatforms = [];
-        $platforms = DB::table('user_platforms')
+        $platforms = DB::table('profile_platforms')
             ->select(
                 'platforms.id as platform_id',
                 'platforms.title',
                 'platforms.icon',
                 'platforms.input',
                 'platforms.baseUrl as base_url',
-                'user_platforms.user_id as user_id',
-                'user_platforms.created_at',
-                'user_platforms.path',
-                'user_platforms.label',
-                'user_platforms.platform_order',
-                'user_platforms.direct',
+                'profile_platforms.user_id as user_id',
+                'profile_platforms.created_at',
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.platform_order',
+                'profile_platforms.direct',
                 'users.private as check_user_privacy'
             )
-            ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
-            ->join('users', 'user_platforms.user_id', 'users.id')
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
+            ->join('users', 'profile_platforms.user_id', 'users.id')
             ->where('user_id', $user->id)
-            ->orderBy(('user_platforms.platform_order'))
+            ->orderBy(('profile_platforms.platform_order'))
             ->get();
 
         if ($user->user_direct) {
@@ -184,25 +184,25 @@ class UserProfileController extends Controller
         $direct = null;
 
         $userPlatforms = [];
-        $platforms = DB::table('user_platforms')
+        $platforms = DB::table('profile_platforms')
             ->select(
                 'platforms.id as platform_id',
                 'platforms.title',
                 'platforms.icon',
                 'platforms.input',
                 'platforms.baseUrl as base_url',
-                'user_platforms.user_id as user_id',
-                'user_platforms.created_at',
-                'user_platforms.path',
-                'user_platforms.label',
-                'user_platforms.platform_order',
-                'user_platforms.direct',
+                'profile_platforms.user_id as user_id',
+                'profile_platforms.created_at',
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.platform_order',
+                'profile_platforms.direct',
                 'users.private as check_user_privacy'
             )
-            ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
-            ->join('users', 'user_platforms.user_id', 'users.id')
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
+            ->join('users', 'profile_platforms.user_id', 'users.id')
             ->where('user_id', $user->id)
-            ->orderBy(('user_platforms.platform_order'))
+            ->orderBy(('profile_platforms.platform_order'))
             ->get();
 
         if ($user->user_direct) {

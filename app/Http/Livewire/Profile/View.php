@@ -61,24 +61,24 @@ class View extends Component
             $this->isProfileDirect();
         }
 
-        $platforms = DB::table('user_platforms')
+        $platforms = DB::table('profile_platforms')
             ->select(
                 'platforms.id as platform_id',
                 'platforms.title',
                 'platforms.icon',
                 'platforms.input',
                 'platforms.baseUrl as base_url',
-                'user_platforms.user_id as user_id',
-                'user_platforms.created_at',
-                'user_platforms.path',
-                'user_platforms.label',
-                'user_platforms.platform_order',
-                'user_platforms.direct',
+                'profile_platforms.user_id as user_id',
+                'profile_platforms.created_at',
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.platform_order',
+                'profile_platforms.direct',
             )
-            ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
-            ->join('profiles', 'user_platforms.profile_id', 'profiles.id')
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
+            ->join('profiles', 'profile_platforms.profile_id', 'profiles.id')
             ->where('profile_id', $this->profile->id)
-            ->orderBy(('user_platforms.platform_order'))
+            ->orderBy(('profile_platforms.platform_order'))
             ->get();
 
         $this->platforms = $platforms->chunk(4);
@@ -86,7 +86,7 @@ class View extends Component
 
     public function isProfileDirect()
     {
-        $userPlatform = DB::table('user_platforms')
+        $userPlatform = DB::table('profile_platforms')
             ->where('profile_id', $this->profile->id)
             ->where('platform_order', 1)
             ->first();
@@ -105,7 +105,7 @@ class View extends Component
     {
         if (!$this->profile->private) {
 
-            DB::table('user_platforms')
+            DB::table('profile_platforms')
                 ->where('profile_id', $this->profile->id)
                 ->where('platform_id', $platformId)
                 ->increment('clicks');

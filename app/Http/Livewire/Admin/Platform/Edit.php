@@ -73,10 +73,10 @@ class Edit extends Component
         $this->validateOnly($fields);
     }
 
-    public function mount($id)
+    public function mount()
     {
-        $this->platform_id = $id;
-        $platform = Platform::where('id', $id)->first();
+        $this->platform_id = request()->id;
+        $platform = Platform::where('id', $this->platform_id)->first();
 
         $this->title = $platform->title;
         $this->icon_preview = $platform->icon;
@@ -111,18 +111,13 @@ class Edit extends Component
     {
         $data = $this->validate();
 
-        if (!$data['icon']) {
-            $data['icon'] = $this->icon_preview;
-        } else {
-            $image = $data['icon'];
-            $imageName = time() . '.' . $image->extension();
-            $image->storeAs('public/uploads/platforms', $imageName);
-            $data['icon'] = 'uploads/platforms/' . $imageName;
+        if ($this->icon) {
             if ($this->icon_preview) {
-                if (Storage::exists('public/' . $this->icon_preview)) {
-                    Storage::delete('public/' . $this->icon_preview);
-                }
+                Storage::disk('public')->delete($this->icon_preview);
             }
+            $data['icon'] = Storage::disk('public')->put('/uploads/platforms', $this->icon);
+        } else {
+            $data['icon'] = $this->icon_preview;
         }
 
         Platform::where('id', $this->platform_id)->update($data);

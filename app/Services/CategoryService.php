@@ -20,11 +20,11 @@ class CategoryService
         })
             ->get();
 
-        $userPlatforms = DB::table('user_platforms')
+        $userPlatforms = DB::table('profile_platforms')
             ->select(
                 'platforms.id as platform_id'
             )
-            ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
             ->where('user_id', $id)
             ->where('profile_id', $profile->id)
             ->get()
@@ -58,7 +58,7 @@ class CategoryService
                 // Create a new array to hold the transformed platform data
                 $transformedPlatform = [];
 
-                //Get extra details from user_platforms table
+                //Get extra details from profile_platforms table
                 $userPlatform = $this->getUserPlatformDetails($platform->id, $profile->id);
 
                 // Add the desired properties to the transformed platform
@@ -111,7 +111,7 @@ class CategoryService
 
     private function getUserPlatformDetails($id, $profileId)
     {
-        $userPlatform = DB::table('user_platforms')
+        $userPlatform = DB::table('profile_platforms')
             ->where('platform_id', $id)
             ->where('user_id', auth()->id())
             ->where('profile_id', $profileId)

@@ -181,9 +181,9 @@ class CardController extends Controller
             return response()->json(['error' => 'User not found'], 404);
         }
 
-        $platforms = DB::table('user_platforms')
-            ->join('platforms', 'user_platforms.platform_id', '=', 'platforms.id')
-            ->where('user_platforms.user_id', $user->id)
+        $platforms = DB::table('profile_platforms')
+            ->join('platforms', 'profile_platforms.platform_id', '=', 'platforms.id')
+            ->where('profile_platforms.user_id', $user->id)
             ->select(
                 'platforms.id',
                 'platforms.title',
@@ -194,10 +194,10 @@ class CardController extends Controller
                 'platforms.placeholder_sv',
                 'platforms.description_en',
                 'platforms.description_sv',
-                'user_platforms.path',
-                'user_platforms.label',
-                'user_platforms.direct',
-                'user_platforms.platform_order'
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.direct',
+                'profile_platforms.platform_order'
             )
             ->get();
 

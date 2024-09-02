@@ -31,23 +31,23 @@ if (!function_exists('model_delete_status')) {
     }
 }
 
-if (!function_exists('model_status')) {
-    function model_status($model)
-    {
-        if ($model->status == 0) {
-            return [
-                'status' => 'Inactive',
-                'background' => 'bg-label-danger'
-            ];
-        }
-        if ($model->status == 1) {
-            return [
-                'status' => 'Active',
-                'background' => 'bg-label-success'
-            ];
-        }
-    }
-}
+// if (!function_exists('model_status')) {
+//     function model_status($model)
+//     {
+//         if ($model->status == 0) {
+//             return [
+//                 'status' => 'Inactive',
+//                 'background' => 'bg-label-danger'
+//             ];
+//         }
+//         if ($model->status == 1) {
+//             return [
+//                 'status' => 'Active',
+//                 'background' => 'bg-label-success'
+//             ];
+//         }
+//     }
+// }
 
 if (!function_exists('defaultDateFormat')) {
     function defaultDateFormat($date)

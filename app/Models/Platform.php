@@ -25,7 +25,7 @@ class Platform extends Model
 
     public function profiles()
     {
-        return $this->belongsToMany(Profile::class, 'user_platforms', 'platform_id', 'profile_id')
+        return $this->belongsToMany(Profile::class, 'profile_platforms', 'platform_id', 'profile_id')
             ->withPivot('path', 'direct', 'platform_order', 'label')
             ->orderBy('platform_order');
     }

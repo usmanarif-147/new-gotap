@@ -17,7 +17,7 @@ class Dashboard extends Component
 
     public function mount()
     {
-        $this->users = User::all()->count();
+        $this->users = User::where('role', 'user')->count();
         $this->categories = Category::all()->count();
         $this->platforms = Platform::all()->count();
         $this->cards = Card::all()->count();
@@ -111,7 +111,6 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.admin.dashboard')
-            ->layout('layouts.app');
+        return view('livewire.admin.dashboard');
     }
 }

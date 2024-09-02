@@ -149,7 +149,6 @@ class Platforms extends Component
 
         $this->platforms = ['platforms' => $this->platforms];
 
-        return view('livewire.admin.platform.platforms')
-            ->layout('layouts.app');
+        return view('livewire.admin.platform.platforms');
     }
 }

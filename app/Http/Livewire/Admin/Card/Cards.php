@@ -85,7 +85,6 @@ class Cards extends Component
 
         $this->cards = ['cards' => $this->cards];
 
-        return view('livewire.admin.card.cards', $this->cards)
-            ->layout('layouts.app');
+        return view('livewire.admin.card.cards', $this->cards);
     }
 }

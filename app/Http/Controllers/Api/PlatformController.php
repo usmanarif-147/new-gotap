@@ -72,7 +72,7 @@ class PlatformController extends Controller
 
         $profile = getActiveProfile();
 
-        $user_platform = DB::table('user_platforms')
+        $user_platform = DB::table('profile_platforms')
             ->where('platform_id', $request->platform_id)
             ->where('user_id', auth()->id())
             ->where('profile_id', $profile->id)
@@ -83,7 +83,7 @@ class PlatformController extends Controller
                 // Update existing platform
                 $path = $request->path;
 
-                DB::table('user_platforms')
+                DB::table('profile_platforms')
                     ->where('platform_id', $request->platform_id)
                     ->where('user_id', auth()->id())
                     ->where('profile_id', $profile->id)
@@ -103,14 +103,14 @@ class PlatformController extends Controller
             } else {
                 // Add new platform
                 $path = $request->path;
-                $latestPlatform = DB::table('user_platforms')
+                $latestPlatform = DB::table('profile_platforms')
                     ->where('user_id', auth()->id())
                     ->where('profile_id', $profile->id)
                     ->orderBy('platform_order', 'desc')
                     ->get()
                     ->first();
 
-                DB::table('user_platforms')->insert([
+                DB::table('profile_platforms')->insert([
                     'user_id' => auth()->id(),
                     'profile_id' => $profile->id,
                     'platform_id' => $request->platform_id,
@@ -140,7 +140,7 @@ class PlatformController extends Controller
     public function remove(PlatformRequest $request)
     {
         $profile = getActiveProfile();
-        $platform = DB::table('user_platforms')
+        $platform = DB::table('profile_platforms')
             ->where('user_id', auth()->id())
             ->where('profile_id', $profile->id)
             ->where('platform_id', $request->platform_id)
@@ -152,7 +152,7 @@ class PlatformController extends Controller
             ]);
         }
 
-        $platform = DB::table('user_platforms')
+        $platform = DB::table('profile_platforms')
             ->where('user_id', auth()->id())
             ->where('profile_id', $profile->id)
             ->where('platform_id', $request->platform_id)
@@ -180,7 +180,7 @@ class PlatformController extends Controller
         $profile = getActiveProfile();
         foreach ($orderList as $platform) {
 
-            DB::table('user_platforms')
+            DB::table('profile_platforms')
                 ->where('user_id', auth()->id())
                 ->where('profile_id', $profile->id)
                 ->where('platform_id', $platform->id)
@@ -202,7 +202,7 @@ class PlatformController extends Controller
     // public function direct(PlatformRequest $request)
     // {
 
-    //     $userPlatform = DB::table('user_platforms')
+    //     $userPlatform = DB::table('profile_platforms')
     //         ->where('user_id', auth()->id())
     //         ->where('platform_id', $request->platform_id)
     //         ->first();
@@ -212,7 +212,7 @@ class PlatformController extends Controller
 
     //     try {
     //         $profile = getActiveProfile();
-    //         DB::table('user_platforms')
+    //         DB::table('profile_platforms')
     //             ->where('user_id', auth()->id())
     //             ->where('profile_id', $profile->id)
     //             ->where('platform_id', '!=', $request->platform_id)
@@ -221,7 +221,7 @@ class PlatformController extends Controller
     //                 'direct' => 0
     //             ]);
 
-    //         DB::table('user_platforms')
+    //         DB::table('profile_platforms')
     //             ->where('user_id', auth()->id())
     //             ->where('platform_id', $request->platform_id)
     //             ->where('profile_id', $profile->id)
@@ -247,7 +247,7 @@ class PlatformController extends Controller
             return response()->json(['message' => trans('backend.own_platform_click')]);
         }
 
-        DB::table('user_platforms')
+        DB::table('profile_platforms')
             ->where('platform_id', $request->platform_id)
             ->where('user_id', $request->user_id)
             ->increment('clicks');
@@ -260,15 +260,15 @@ class PlatformController extends Controller
      */
     private function userPlatform($id, $profileId)
     {
-        $userPlatform = DB::table('user_platforms')
+        $userPlatform = DB::table('profile_platforms')
             ->select(
                 'platforms.id',
-                'user_platforms.user_id',
-                'user_platforms.path',
-                'user_platforms.label',
-                'user_platforms.direct',
+                'profile_platforms.user_id',
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.direct',
             )
-            ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
             ->where('platform_id', $id)
             ->where('user_id', auth()->id())
             ->where('profile_id', $profileId)

@@ -11,6 +11,7 @@ class Profile extends Model
 
     protected $fillable = [
         'user_id',
+        'enterprise_id',
         'name',
         'email',
         'username',
@@ -35,7 +36,7 @@ class Profile extends Model
 
     public function platforms()
     {
-        return $this->belongsToMany(Platform::class, 'user_platforms', 'profile_id', 'platform_id')
+        return $this->belongsToMany(Platform::class, 'profile_platforms', 'profile_id', 'platform_id')
             ->withPivot('path', 'direct', 'platform_order', 'label')
             ->orderBy('platform_order');
     }

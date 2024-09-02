@@ -2,7 +2,9 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Admin;
 use App\Http\Middleware\DeviceIdHeader;
+use App\Http\Middleware\Enterprise;
 use App\Http\Middleware\Localization;
 use App\Http\Middleware\UserStatus;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -69,5 +71,7 @@ class Kernel extends HttpKernel
         'deviceId.headers' => DeviceIdHeader::class,
         'user.status' => UserStatus::class,
         'localization' => Localization::class,
+        'admin' => Admin::class,
+        'enterprise' => Enterprise::class,
     ];
 }

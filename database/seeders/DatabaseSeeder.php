@@ -15,14 +15,16 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            AdminTableSeeder::class,
-            CategorySeeder::class,
-            PlatformSeeder::class,
-            CardSeeder::class,
-            UserTableSeeder::class,
-            ProfileSeeder::class,
-            ProfilePlatformSeeder::class,
-            PhoneContactSeeder::class,
+            AdminSeeder::class,
+            ApplicationSeeder::class,
+            // CategorySeeder::class,
+            // PlatformSeeder::class,
+            // CardSeeder::class,
+            // UserSeeder::class,
+            // ProfileSeeder::class,
+
+            // ProfilePlatformSeeder::class,
+            // PhoneContactSeeder::class,
         ]);
     }
 }

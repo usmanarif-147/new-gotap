@@ -149,18 +149,18 @@ class UserController extends Controller
             ->count();
         $profileViews = User::where('id', auth()->id())->first()->tiks;
 
-        $platforms = DB::table('user_platforms')
+        $platforms = DB::table('profile_platforms')
             ->select(
                 'platforms.id',
                 'platforms.title',
                 'platforms.icon',
-                'user_platforms.path',
-                'user_platforms.label',
-                'user_platforms.clicks',
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.clicks',
             )
-            ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
             ->where('user_id', auth()->id())
-            ->orderBy(('user_platforms.platform_order'))
+            ->orderBy(('profile_platforms.platform_order'))
             ->get();
 
 

@@ -18,6 +18,10 @@ return new class extends Migration
             $table->string('name', 255)->nullable();
             $table->string('username', 255)->nullable();
             $table->string('email', 255)->unique()->nullable();
+            $table->string('phone', 255)->unique()->nullable();
+            $table->string('enterpirse_type', 255)->nullable();
+            $table->string('photo', 255)->nullable();
+            $table->string('role')->default('user')->comment('admin,user,enterpriser');
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('is_suspended')->default(0);
             $table->string('password', 255)->nullable();
@@ -26,6 +30,7 @@ return new class extends Migration
             $table->string('dob', 255)->nullable();
             $table->tinyInteger('verified')->default(0);
             $table->tinyInteger('featured')->default(0);
+            $table->string('token', 255)->nullable();
             $table->string('fcm_token', 255)->nullable();
             $table->timestamp('deactivated_at')->nullable();
             $table->tinyInteger('is_email_sent')->default(0);

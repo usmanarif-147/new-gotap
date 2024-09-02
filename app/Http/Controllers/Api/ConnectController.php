@@ -189,22 +189,22 @@ class ConnectController extends Controller
 
         $res['user'] = $user;
 
-        $platforms = DB::table('user_platforms')
+        $platforms = DB::table('profile_platforms')
             ->select(
                 'platforms.id',
                 'platforms.title',
                 'platforms.icon',
                 'platforms.input',
                 'platforms.baseUrl',
-                'user_platforms.created_at',
-                'user_platforms.path',
-                'user_platforms.label',
-                'user_platforms.platform_order',
-                'user_platforms.direct',
+                'profile_platforms.created_at',
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.platform_order',
+                'profile_platforms.direct',
             )
-            ->join('platforms', 'platforms.id', 'user_platforms.platform_id')
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
             ->where('user_id', $user->id)
-            ->orderBy('user_platforms.platform_order')
+            ->orderBy('profile_platforms.platform_order')
             ->get();
 
         // Check if the current user is connected to the target user

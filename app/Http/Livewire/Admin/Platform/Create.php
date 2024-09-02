@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Admin\Platform;
 
 use App\Models\Category;
 use App\Models\Platform;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -83,12 +84,8 @@ class Create extends Component
         $data = $this->validate();
 
         if ($this->icon) {
-            $image = $this->icon;
-            $imageName = time() . '.' . $image->extension();
-            $image->storeAs('public/uploads/platforms', $imageName);
-            $data['icon'] = 'uploads/platforms/' . $imageName;
+            $data['icon'] = Storage::disk('public')->put('/uploads/platforms', $this->icon);
         }
-
 
         Platform::create($data);
 

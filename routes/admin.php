@@ -1,49 +1,56 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotifychangepasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Livewire\Admin\Card\Cards;
-use App\Http\Livewire\Admin\Card\Create as CardCreate;
-use App\Http\Livewire\Admin\Card\Edit as CardEdit;
-use App\Http\Livewire\Admin\Category\Categoies;
-use App\Http\Livewire\Admin\Category\Create as CategoryCreate;
-use App\Http\Livewire\Admin\Category\Edit as CategoryEdit;
-use App\Http\Livewire\Admin\Dashboard;
-use App\Http\Livewire\Admin\Logs;
-use App\Http\Livewire\Admin\Platform\Create as PlatformCreate;
-use App\Http\Livewire\Admin\Platform\Edit as PlatformEdit;
-use App\Http\Livewire\Admin\Platform\Platforms;
-use App\Http\Livewire\Admin\User\Edit as UserEdit;
-use App\Http\Livewire\Admin\User\Users;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\PasswordController;
 
-Route::middleware('auth:admin')->group(function () {
 
-    Route::get('admin/dashboard', Dashboard::class);
+Route::middleware('admin')->group(function () {
+
+    Route::view('admin/dashboard', 'admin.dashboard')->name('admin.dashboard');
 
     // users
-    Route::get('admin/users', Users::class);
-    Route::get('admin/user/{id}/edit', UserEdit::class);
+    Route::view('admin/users', 'admin.user.users')->name('admin.users');
+    Route::view('admin/user/{id}/view', 'admin.user.view')->name('admin.user.view');
+
+    // applications
+    Route::view('admin/applications', 'admin.application.applications')->name('admin.applications');
 
     // categories
-    Route::get('admin/categories', Categoies::class);
-    Route::get('admin/category/create', CategoryCreate::class);
-    Route::get('admin/category/{id}/edit', CategoryEdit::class);
+    Route::view('admin/categories', 'admin.category.categories')->name('admin.categories');
+    Route::view('admin/category/create', 'admin.category.create')->name('admin.category.create');
+    Route::view('admin/category/{id}/edit', 'admin.category.edit')->name('admin.category.edit');
 
     // platforms
-    Route::get('admin/platforms', Platforms::class);
-    Route::get('admin/platform/create', PlatformCreate::class);
-    Route::get('admin/platform/{id}/edit', PlatformEdit::class);
+    Route::view('admin/platforms', 'admin.platform.platforms')->name('admin.platforms');
+    Route::view('admin/platform/create', 'admin.platform.create')->name('admin.platform.create');
+    Route::view('admin/platform/{id}/edit', 'admin.platform.edit')->name('admin.platform.edit');
 
-    // categories
-    Route::get('admin/cards', Cards::class);
-    Route::get('admin/card/create', CardCreate::class);
-    Route::get('admin/card/{id}/edit', CardEdit::class);
-    Route::get('/downloadCardsCSV', [Cards::class, 'downloadCsv'])->name('export');
+    // cards
+    Route::view('admin/cards', 'admin.card.cards')->name('admin.cards');
+    Route::view('admin/card/create', 'admin.card.create')->name('admin.card.create');
+    // Route::view('admin/card/{id}/edit', 'admin.card.edit')->name('admin.card.edit');
+
+
+    Route::view('/downloadCardsCSV', [Cards::class, 'downloadCsv'])->name('export');
 
     // profile
     Route::post('/changePassword', [ProfileController::class, 'changePassword'])->name('profile.change.password');
 
     //change password
     Route::get('/change-passwords', [NotifychangepasswordController::class, 'resetAllPasswords']);
+
+
+    Route::get('admin/confirm-password', [ConfirmablePasswordController::class, 'showAdmin'])
+        ->name('admin.password.confirm');
+    Route::post('admin/confirm-password', [ConfirmablePasswordController::class, 'storeAdmin'])
+        ->name('admin.password.confirm.store');
+    Route::put('admin/password', [PasswordController::class, 'updateAdmin'])
+        ->name('admin.password.update');
+    Route::post('admin/logout', [AuthenticatedSessionController::class, 'destroyAdmin'])
+        ->name('admin.logout');
 });

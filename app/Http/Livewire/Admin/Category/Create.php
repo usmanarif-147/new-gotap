@@ -51,7 +51,6 @@ class Create extends Component
     public function render()
     {
         $this->heading = "Create";
-        return view('livewire.admin.category.create')
-            ->layout('layouts.app');
+        return view('livewire.admin.category.create');
     }
 }

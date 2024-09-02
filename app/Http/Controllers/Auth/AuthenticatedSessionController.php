@@ -13,37 +13,44 @@ use Illuminate\View\View;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Admin
      */
-    public function create(): View
+    public function createAdmin(): View
     {
-        return view('auth.login');
+        return view('admin.auth.login');
     }
-
-    /**
-     * Handle an incoming authentication request.
-     */
-    public function store(LoginRequest $request): RedirectResponse
+    public function storeAdmin(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
-
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(route('admin.dashboard', absolute: false));
+    }
+    public function destroyAdmin(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/admin/login');
     }
 
     /**
-     * Destroy an authenticated session.
+     * Enterprise
      */
-    public function destroy(Request $request): RedirectResponse
+    public function createEnterprise(): View
     {
-
-        Auth::guard('admin')->logout();
-
+        return view('enterprise.auth.login');
+    }
+    public function storeEnterprise(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();
+        $request->session()->regenerate();
+        return redirect()->intended(route('enterprise.dashboard', absolute: false));
+    }
+    public function destroyEnterprise(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
-
-        return redirect('/admin/login');
+        return redirect('/enterprise/login');
     }
 }

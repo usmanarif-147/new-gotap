@@ -17,7 +17,7 @@ class ProfileSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-        $users = User::pluck('id')->toArray();
+        $users = User::where('role', 'user')->pluck('id')->toArray();
 
         for ($i = 0; $i < 20; $i++) {
             Profile::create([

@@ -76,8 +76,9 @@
                                         {{ $card->description ?? 'N/A' }}
                                     </td>
                                     <td>
-                                        <span class="badge {{ model_status($card)['background'] }} me-1">
-                                            {{ model_status($card)['status'] }}
+                                        <span
+                                            class="badge {{ $card->status ? 'bg-label-success' : 'bg-label-danger' }} me-1">
+                                            {{ $card->status ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
                                     <td class="action-td">

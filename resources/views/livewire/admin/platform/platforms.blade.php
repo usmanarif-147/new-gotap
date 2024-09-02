@@ -8,7 +8,8 @@
                 </span>
             </h2>
             <h5 class="card-header">
-                <a class="btn" style="background: #0EA7C1; color:white" href="{{ url('admin/platform/create') }}"> Create
+                <a class="btn" style="background: #0EA7C1; color:white" href="{{ url('admin/platform/create') }}">
+                    Create
                 </a>
             </h5>
         </div>
@@ -70,7 +71,8 @@
                                 <tr>
                                     <td>
                                         <div class="img-holder">
-                                            <img src="{{ asset(isImageExist($platform->icon, 'platform')) }}">
+                                            <img
+                                                src="{{ asset($platform->icon ? Storage::url($platform->icon) : 'pbg.png') }}">
                                         </div>
                                     </td>
                                     <td> {{ $platform->title }}</td>
@@ -88,8 +90,9 @@
                                         {{ $platform->baseURL ? $platform->baseURL : '--' }}
                                     </td>
                                     <td>
-                                        <span class="badge {{ model_status($platform)['background'] }} me-1">
-                                            {{ model_status($platform)['status'] }}
+                                        <span
+                                            class="badge {{ $platform->status ? 'bg-label-success' : 'bg-label-danger' }} me-1">
+                                            {{ $platform->status ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
                                     <td class="action-td">
@@ -106,14 +109,6 @@
                                                     href="{{ url('admin/platform/' . $platform->id . '/edit') }}">
                                                     <i class="bx bx-edit-alt"></i>
                                                 </a>
-                                                <!--<a class="btn btn-icon btn-outline-secondary" data-bs-toggle="tooltip"-->
-                                                <!--    data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"-->
-                                                <!--    title=""-->
-                                                <!--    data-bs-original-title="<i class='bx bx-trash bx-xs' ></i> <span>Delete</span>"-->
-                                                <!--    href="javascript:void(0)"-->
-                                                <!--    wire:click="confirmModal('{{ $platform->id }}')">-->
-                                                <!--    <i class="bx bx-trash"></i>-->
-                                                <!--</a>-->
                                             </div>
                                         </div>
                                     </td>
@@ -138,7 +133,7 @@
 
     </div>
     <!-- Modal -->
-    @include('partials.confirm_modal')
+    @include('layouts.admin.partials.confirm_modal')
 
 </div>
 
