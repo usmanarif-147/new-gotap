@@ -143,7 +143,7 @@ class ConnectController extends Controller
      */
     public function getConnections(SearchRequest $request)
     {
-        $searchQuery = $request->input('query', '');
+        $searchQuery = $request->input('q', '');
 
         $connections = User::select(
             'profiles.id as connection_id',
@@ -158,7 +158,7 @@ class ConnectController extends Controller
             ->join('profiles', 'profiles.id', 'connects.connected_id')
             ->where('users.id', auth()->id())
             ->when(!empty($searchQuery), function ($query) use ($searchQuery) {
-                $query->where('connection.name', 'like', '%' . $searchQuery . '%');
+                $query->where('profiles.username', 'like', '%' . $searchQuery . '%');
             })
             ->get();
 
