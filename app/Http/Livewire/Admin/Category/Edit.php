@@ -37,9 +37,9 @@ class Edit extends Component
         $this->validateOnly($fields);
     }
 
-    public function mount($id)
+    public function mount()
     {
-        $this->category_id = $id;
+        $this->category_id = request()->id;
         $category = Category::where('id', $this->category_id)->first();
 
         $this->name = $category->name;

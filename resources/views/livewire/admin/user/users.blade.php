@@ -118,50 +118,5 @@
         </div>
 
     </div>
-    <!-- Modal -->
-    {{-- @include('livewire.admin.merchant.create_modal')
-    @include('livewire.admin.merchant.edit_modal')
-    @include('livewire.admin.merchant.edit_password')
-    @include('livewire.admin.merchant.edit_balance')
-    @include('admin.partials.confirm_modal') --}}
 
 </div>
-
-@section('script')
-    {{-- <script>
-        window.addEventListener('swal:modal', event => {
-            swal({
-                title: event.detail.message,
-                icon: event.detail.type,
-            });
-        });
-
-        window.addEventListener('show-create-modal', event => {
-            $('#createMerchantModal').modal('show')
-        });
-
-        window.addEventListener('show-edit-modal', event => {
-            $('#editMerchantModal').modal('show')
-        });
-
-        window.addEventListener('edit-password-modal', event => {
-            $('#editPasswordModal').modal('show')
-        });
-
-        window.addEventListener('edit-balance-modal', event => {
-            $('#editBalanceModal').modal('show')
-        });
-
-        window.addEventListener('close-modal', event => {
-            $('#createMerchantModal').modal('hide');
-            $('#editMerchantModal').modal('hide')
-            $('#confirmModal').modal('hide');
-            $('#editPasswordModal').modal('hide')
-            $('#editBalanceModal').modal('hide')
-        });
-
-        window.addEventListener('open-confirm-modal', event => {
-            $('#confirmModal').modal('show');
-        });
-    </script> --}}
-@endsection

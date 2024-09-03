@@ -8,7 +8,7 @@
                 </span>
             </h2>
             <h5 class="card-header">
-                <a class="btn" style="background: #0EA7C1; color:white" href="{{ url('admin/card/create') }}"> Create
+                <a class="btn" style="background: #0EA7C1; color:white" href="{{ route('admin.card.create') }}"> Create
                 </a>
                 <button class="btn btn-info text-center" {{ $total == 0 ? 'disabled' : '' }} wire:click="exportCsv">
                     <i class="mdi mdi-download me-2 "></i>
@@ -47,11 +47,11 @@
                                 <th>Assigned To</th>
                                 <th>Description</th>
                                 <th>Status</th>
-                                <th>Actions</th>
+                                {{-- <th>Actions</th> --}}
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
-                            @foreach ($cards['cards'] as $card)
+                            @foreach ($cards as $card)
                                 <tr>
                                     <td>
                                         <div class="row">
@@ -81,7 +81,7 @@
                                             {{ $card->status ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
-                                    <td class="action-td">
+                                    {{-- <td class="action-td">
                                         <div class="dropdown">
                                             <button class="btn p-0" type="button" id="cardOpt3"
                                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -97,7 +97,7 @@
                                                 </a>
                                             </div>
                                         </div>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
@@ -107,8 +107,8 @@
             <div class="row">
                 <div class="col">
                     <div class="demo-inline-spacing">
-                        @if ($cards['cards']->count() > 0)
-                            {{ $cards['cards']->links() }}
+                        @if ($cards->count() > 0)
+                            {{ $cards->links() }}
                         @else
                             <p class="text-center"> No Record Found </p>
                         @endif
@@ -116,11 +116,8 @@
                 </div>
             </div>
         </div>
-
     </div>
-</div>
 
-@section('script')
     <script>
         window.addEventListener('swal:modal', event => {
             swal({
@@ -146,4 +143,5 @@
             alert("copied");
         }
     </script>
-@endsection
+
+</div>

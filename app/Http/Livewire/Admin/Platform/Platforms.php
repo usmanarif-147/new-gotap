@@ -21,7 +21,7 @@ class Platforms extends Component
     // filter valriables
     public $searchQuery = '', $filterByStatus, $filterByCategory, $sortBy;
 
-    public $platforms, $total, $heading, $statuses = [], $categories;
+    public $total, $heading, $statuses = [], $categories;
 
     public function mount()
     {
@@ -50,7 +50,7 @@ class Platforms extends Component
         $this->resetPage();
     }
 
-    public function getFilteredData()
+    public function getData()
     {
 
         // dd(Platform::all()->toArray());
@@ -139,16 +139,15 @@ class Platforms extends Component
 
     public function render()
     {
-
-        $data = $this->getFilteredData();
+        $data = $this->getData();
 
         $this->heading = "Platforms";
-        $this->platforms = $data->paginate(10);
+        $platforms = $data->paginate(10);
 
-        $this->total = $this->platforms->total();
+        $this->total = $platforms->total();
 
-        $this->platforms = ['platforms' => $this->platforms];
-
-        return view('livewire.admin.platform.platforms');
+        return view('livewire.admin.platform.platforms', [
+            'platforms' => $platforms
+        ]);
     }
 }

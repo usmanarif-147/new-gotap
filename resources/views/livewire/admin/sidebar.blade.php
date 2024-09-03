@@ -66,12 +66,6 @@
                 <div>Change Password</div>
             </a>
         </li>
-        {{-- <li class="menu-item {{ request()->routeIs('admin/logs') ? 'active' : '' }}">
-            <a href="{{ route('admin/logs') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-plus-medical"></i>
-                <div>Logs</div>
-            </a>
-        </li> --}}
     </ul>
 
 </div>

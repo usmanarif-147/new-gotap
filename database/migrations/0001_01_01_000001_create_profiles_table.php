@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('enterprise_id')
                 ->nullable()->constrained('users')
                 ->onDelete('cascade');
+            $table->string('type')->default('social');
             $table->string('name', 255)->nullable();
             $table->string('email', 255)->nullable();
             $table->string('username', 255)->nullable();

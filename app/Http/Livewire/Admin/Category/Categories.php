@@ -19,7 +19,7 @@ class Categories extends Component
     // filter valriables
     public $searchQuery = '', $filterByStatus, $sortBy;
 
-    public $categories, $total, $heading, $statuses = [];
+    public $total, $heading, $statuses = [];
 
     public function mount()
     {
@@ -44,7 +44,7 @@ class Categories extends Component
         $this->resetPage();
     }
 
-    public function getFilteredData()
+    public function getData()
     {
         $filteredData = Category::select(
             'categories.id',
@@ -90,15 +90,15 @@ class Categories extends Component
     public function render()
     {
 
-        $data = $this->getFilteredData();
+        $data = $this->getData();
 
         $this->heading = "Categories";
-        $this->categories = $data->paginate(10);
+        $categories = $data->paginate(10);
 
-        $this->total = $this->categories->total();
+        $this->total = $categories->total();
 
-        $this->categories = ['categories' => $this->categories];
-
-        return view('livewire.admin.category.categories');
+        return view('livewire.admin.category.categories', [
+            'categories' => $categories
+        ]);
     }
 }

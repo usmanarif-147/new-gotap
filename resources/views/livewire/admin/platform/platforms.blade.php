@@ -8,7 +8,7 @@
                 </span>
             </h2>
             <h5 class="card-header">
-                <a class="btn" style="background: #0EA7C1; color:white" href="{{ url('admin/platform/create') }}">
+                <a class="btn" style="background: #0EA7C1; color:white" href="{{ route('admin.platform.create') }}">
                     Create
                 </a>
             </h5>
@@ -67,7 +67,7 @@
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
-                            @foreach ($platforms['platforms'] as $platform)
+                            @foreach ($platforms as $platform)
                                 <tr>
                                     <td>
                                         <div class="img-holder">
@@ -95,22 +95,12 @@
                                             {{ $platform->status ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
-                                    <td class="action-td">
-                                        <div class="dropdown">
-                                            <button class="btn p-0" type="button" id="cardOpt3"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-                                                <a class="btn btn-icon btn-outline-secondary" data-bs-toggle="tooltip"
-                                                    data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
-                                                    title=""
-                                                    data-bs-original-title="<i class='bx bx-edit-alt bx-xs' ></i> <span>Edit</span>"
-                                                    href="{{ url('admin/platform/' . $platform->id . '/edit') }}">
-                                                    <i class="bx bx-edit-alt"></i>
-                                                </a>
-                                            </div>
-                                        </div>
+                                    <td>
+                                        <a href="{{ route('admin.platform.edit', [$platform->id]) }}"
+                                            class="btn btn-warning" data-bs-toggle="tooltip" data-bs-offset="0,4"
+                                            data-bs-placement="top" data-bs-html="true" title="Edit">
+                                            <i class="bx bx-edit-alt"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -121,8 +111,8 @@
             <div class="row">
                 <div class="col">
                     <div class="demo-inline-spacing">
-                        @if ($platforms['platforms']->count() > 0)
-                            {{ $platforms['platforms']->links() }}
+                        @if ($platforms->count() > 0)
+                            {{ $platforms->links() }}
                         @else
                             <p class="text-center"> No Record Found </p>
                         @endif
@@ -135,9 +125,6 @@
     <!-- Modal -->
     @include('layouts.admin.partials.confirm_modal')
 
-</div>
-
-@section('script')
     <script>
         window.addEventListener('swal:modal', event => {
             $('#confirmModal').modal('hide');
@@ -151,4 +138,5 @@
             $('#confirmModal').modal('show');
         });
     </script>
-@endsection
+
+</div>

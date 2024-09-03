@@ -2,7 +2,7 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
-                <a href="{{ url('admin/categories') }}"> Categories </a> / {{ $heading }}
+                <a href="{{ route('admin.categories') }}"> Categories </a> / {{ $heading }}
             </h2>
         </div>
     </div>
@@ -57,9 +57,7 @@
             </div>
         </div>
     </div>
-</div>
 
-@section('script')
     <script>
         window.addEventListener('swal:modal', event => {
             swal({
@@ -67,33 +65,5 @@
                 icon: event.detail.type,
             });
         });
-
-        // window.addEventListener('show-create-modal', event => {
-        //     $('#createMerchantModal').modal('show')
-        // });
-
-        // window.addEventListener('show-edit-modal', event => {
-        //     $('#editMerchantModal').modal('show')
-        // });
-
-        // window.addEventListener('edit-password-modal', event => {
-        //     $('#editPasswordModal').modal('show')
-        // });
-
-        // window.addEventListener('edit-balance-modal', event => {
-        //     $('#editBalanceModal').modal('show')
-        // });
-
-        // window.addEventListener('close-modal', event => {
-        //     $('#createMerchantModal').modal('hide');
-        //     $('#editMerchantModal').modal('hide')
-        //     $('#confirmModal').modal('hide');
-        //     $('#editPasswordModal').modal('hide')
-        //     $('#editBalanceModal').modal('hide')
-        // });
-
-        // window.addEventListener('open-confirm-modal', event => {
-        //     $('#confirmModal').modal('show');
-        // });
     </script>
-@endsection
+</div>

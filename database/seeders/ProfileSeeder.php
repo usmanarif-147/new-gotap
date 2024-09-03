@@ -22,6 +22,7 @@ class ProfileSeeder extends Seeder
         for ($i = 0; $i < 20; $i++) {
             Profile::create([
                 'user_id' => $users[array_rand($users)],
+                'type' => 'social',
                 'name' => $faker->name,
                 'email' => $faker->email,
                 'username' => $faker->username,

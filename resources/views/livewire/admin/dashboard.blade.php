@@ -1,69 +1,13 @@
 <div>
     <div class="row mb-5">
 
-        <div class="col-lg-4 col-md-12 col-6 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="card-title d-flex align-items-start justify-content-between">
-                        <div class="avatar flex-shrink-0">
-                            <span class="badge bg-label-info me-1">
-                                <i class="bx bx-user-pin"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <span class="fw-semibold d-block mb-1">Total Users</span>
-                    <h3 class="card-title mb-2"> {{ $users }} </h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4 col-md-12 col-6 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="card-title d-flex align-items-start justify-content-between">
-                        <div class="avatar flex-shrink-0">
-                            <span class="badge bg-label-danger me-1">
-                                <i class="bx bx-category"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <span>Total Categories</span>
-                    <h3 class="card-title text-nowrap mb-1">{{ $categories }}</h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4 col-md-12 col-6 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="card-title d-flex align-items-start justify-content-between">
-                        <div class="avatar flex-shrink-0">
-                            <span class="badge bg-label-success me-1">
-                                <i class="bx bx-shape-square" aria-hidden="true"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <span>Total Platforms</span>
-                    <h3 class="card-title text-nowrap mb-1">{{ $platforms }}</h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4 col-md-12 col-6 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="card-title d-flex align-items-start justify-content-between">
-                        <div class="avatar flex-shrink-0">
-                            <span class="badge bg-label-warning me-1">
-                                <i class="bx bx-credit-card-alt" aria-hidden="true"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <span>Total Cards</span>
-                    <h3 class="card-title text-nowrap mb-1">{{ $cards }}</h3>
-                </div>
-            </div>
-        </div>
+        <x-custom.dashboard-card background="bg-label-info" icon="bx bx-user-pin" title="Users" :total="$users" />
+        <x-custom.dashboard-card background="bg-label-warning" icon="bx bx-news" title="Applications" :total="$applications" />
+        <x-custom.dashboard-card background="bg-label-danger" icon="bx bx-category" title="Categories" :total="$categories" />
+        <x-custom.dashboard-card background="bg-label-success" icon="bx bx-shape-square" title="Platforms"
+            :total="$platforms" />
+        <x-custom.dashboard-card background="bg-label-secondary" icon="bx bx-credit-card-alt" title="Cards"
+            :total="$cards" />
 
         <div class="col-lg-12 col-md-12 col-12 mb-4">
             <div class="card h-100">

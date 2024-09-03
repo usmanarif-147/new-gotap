@@ -2,7 +2,7 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
-                <a href="{{ url('admin/cards') }}"> Cards </a> / {{ $heading }}
+                <a href="{{ route('admin.cards') }}"> Cards </a> / {{ $heading }}
             </h2>
         </div>
     </div>
@@ -43,9 +43,7 @@
             </div>
         </div>
     </div>
-</div>
 
-@section('script')
     <script>
         window.addEventListener('swal:modal', event => {
             swal({
@@ -54,4 +52,5 @@
             });
         });
     </script>
-@endsection
+
+</div>

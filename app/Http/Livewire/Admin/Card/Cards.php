@@ -16,7 +16,7 @@ class Cards extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $cards, $total, $heading;
+    public $total, $heading;
 
     public $searchQuery = '', $filterByType, $filterByStatus;
 
@@ -35,7 +35,7 @@ class Cards extends Component
         return redirect()->route('export')->with(
             [
                 'file_name' => 'cards.csv',
-                'data' => $this->getFilteredData()->get()
+                'data' => $this->getData()->get()
             ]
         );
     }
@@ -45,7 +45,7 @@ class Cards extends Component
         $this->resetPage();
     }
 
-    public function getFilteredData()
+    public function getData()
     {
         $filteredData = Card::select(
             'cards.id',
@@ -69,22 +69,20 @@ class Cards extends Component
                 if ($this->filterByStatus == 2) {
                     $query->where('cards.status', 0);
                 }
-            });
+            })
+            ->orderBy('cards.created_at', 'desc');
         return $filteredData;
     }
 
     public function render()
     {
-        $data = $this->getFilteredData();
-
-        $this->total = $data->get()->count();
-
+        $data = $this->getData();
         $this->heading = "Cards";
+        $cards = $data->paginate(10);
+        $this->total = $cards->total();
 
-        $this->cards = $data->paginate(10);
-
-        $this->cards = ['cards' => $this->cards];
-
-        return view('livewire.admin.card.cards', $this->cards);
+        return view('livewire.admin.card.cards', [
+            'cards' => $cards
+        ]);
     }
 }

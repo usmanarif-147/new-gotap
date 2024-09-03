@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\Application;
 use App\Models\Card;
 use App\Models\Category;
 use App\Models\Platform;
@@ -13,14 +14,15 @@ use Livewire\Component;
 class Dashboard extends Component
 {
 
-    public $users = 0, $categories = 0, $platforms = 0, $cards = 0, $registrations, $days = 7;
+    public $users = 0, $applications = 0, $categories = 0, $platforms = 0, $cards = 0, $registrations, $days = 7;
 
     public function mount()
     {
         $this->users = User::where('role', 'user')->count();
-        $this->categories = Category::all()->count();
-        $this->platforms = Platform::all()->count();
-        $this->cards = Card::all()->count();
+        $this->applications = Application::count();
+        $this->categories = Category::count();
+        $this->platforms = Platform::count();
+        $this->cards = Card::count();
 
         $this->registrations = $this->usersChartData($this->days);
     }

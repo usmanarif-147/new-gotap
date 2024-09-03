@@ -2,7 +2,7 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
-                <a href="{{ url('admin/platforms') }}"> Platforms </a> / {{ $heading }}
+                <a href="{{ route('admin.platforms') }}"> Platforms </a> / {{ $heading }}
             </h2>
         </div>
     </div>
@@ -20,8 +20,8 @@
                                             <img src="{{ $icon->temporaryUrl() }}" alt="user-avatar"
                                                 class="d-block rounded" height="200" width="170">
                                         @else
-                                            <img src="{{ asset(isImageExist('frame_2.webp', 'platform')) }}" alt="user-avatar"
-                                                class="d-block rounded" height="200" width="170">
+                                            <img src="{{ asset(isImageExist('frame_2.webp', 'platform')) }}"
+                                                alt="user-avatar" class="d-block rounded" height="200" width="170">
                                         @endif
                                         <div wire:loading wire:target="icon" wire:key="icon">
                                             <i class="fa fa-spinner fa-spin mt-2 ml-2"></i>
@@ -179,9 +179,7 @@
             </div>
         </div>
     </div>
-</div>
 
-@section('script')
     <script>
         window.addEventListener('swal:modal', event => {
             swal({
@@ -189,33 +187,6 @@
                 icon: event.detail.type,
             });
         });
-
-        // window.addEventListener('show-create-modal', event => {
-        //     $('#createMerchantModal').modal('show')
-        // });
-
-        // window.addEventListener('show-edit-modal', event => {
-        //     $('#editMerchantModal').modal('show')
-        // });
-
-        // window.addEventListener('edit-password-modal', event => {
-        //     $('#editPasswordModal').modal('show')
-        // });
-
-        // window.addEventListener('edit-balance-modal', event => {
-        //     $('#editBalanceModal').modal('show')
-        // });
-
-        // window.addEventListener('close-modal', event => {
-        //     $('#createMerchantModal').modal('hide');
-        //     $('#editMerchantModal').modal('hide')
-        //     $('#confirmModal').modal('hide');
-        //     $('#editPasswordModal').modal('hide')
-        //     $('#editBalanceModal').modal('hide')
-        // });
-
-        // window.addEventListener('open-confirm-modal', event => {
-        //     $('#confirmModal').modal('show');
-        // });
     </script>
-@endsection
+
+</div>
