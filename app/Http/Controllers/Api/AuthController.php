@@ -289,12 +289,6 @@ class AuthController extends Controller
             ]);
         }
 
-        if ($request->new_password !== $request->new_password_confirmation) {
-            return response()->json([
-                'message' => 'The new password and confirmation password do not match.'
-            ]);
-        }
-
         $user->password = Hash::make($request->new_password);
         $user->save();
 

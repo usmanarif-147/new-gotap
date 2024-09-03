@@ -116,7 +116,7 @@ Route::middleware('localization')->group(function () {
             Route::get('/connections', [ConnectController::class, 'getConnections']);
 
             // Change Password
-            Route::post('/change-password', [AuthController::class, 'changePassword']);
+            Route::post('/changePassword', [AuthController::class, 'changePassword']);
         });
         Route::get('logout', [AuthController::class, 'logout']);
     });

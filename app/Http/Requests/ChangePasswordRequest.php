@@ -27,14 +27,15 @@ class ChangePasswordRequest extends FormRequest
     {
         return [
             'old_password' => 'required|string',
-            'new_password' => 'required|string|min:8|confirmed',
+            'new_password' => 'required|string|min:8',
         ];
     }
 
     public function messages()
     {
         return [
-            'new_password.confirmed' => 'The new password and confirmation password do not match.',
+            'old_password.required' => 'Old Password is required',
+            'new_password.required' => 'New Password is required',
         ];
     }
 }
