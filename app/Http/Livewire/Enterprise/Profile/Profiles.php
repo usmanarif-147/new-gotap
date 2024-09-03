@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Livewire\Enterprise\Team;
+namespace App\Http\Livewire\Enterprise\Profile;
 
 use App\Models\Profile;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
-class Teams extends Component
+class Profiles extends Component
 {
 
     use WithFileUploads, WithPagination;
@@ -71,7 +71,7 @@ class Teams extends Component
                         ->orWhere('profiles.email', 'like', "%$this->search%");
                 });
             })
-            ->where('profiles.user_id', auth()->id())
+            ->where('profiles.enterprise_id', auth()->id())
             ->orderBy('profiles.created_at', 'desc');
 
         return $filteredData;
@@ -112,7 +112,7 @@ class Teams extends Component
 
         $this->total = $profiles->total();
 
-        return view('livewire.enterprise.team.teams', [
+        return view('livewire.enterprise.profile.profiles', [
             'profiles' => $profiles
         ]);
     }

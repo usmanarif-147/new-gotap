@@ -27,7 +27,7 @@ class AccountOpeningForm extends Component
         return [
             'name.required'              =>  'Name is required',
             'email.required'             =>  'Email is required',
-            'email.unique'               =>  'Email already Exists',
+            'email.unique'               =>  'Your account Already Exists',
             'phone.required'             =>  'Phone number is required',
             'enterprise_type.required'   =>  'Enterprise Type is required',
         ];

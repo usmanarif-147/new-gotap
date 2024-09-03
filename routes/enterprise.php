@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Livewire\Admin\Dashboard;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\PasswordController;
@@ -10,7 +9,11 @@ use App\Http\Controllers\Auth\PasswordController;
 Route::middleware('enterprise')->group(function () {
 
     Route::view('enterprise/dashboard', 'enterprise.dashboard')->name('enterprise.dashboard');
-    Route::view('enterprise/teams', 'enterprise.team.teams')->name('enterprise.teams');
+
+    // teams
+    Route::view('enterprise/profiles', 'enterprise.profile.profiles')->name('enterprise.profiles');
+    Route::view('enterprise/profile/create', 'enterprise.profile.create')->name('enterprise.profile.create');
+    Route::view('enterprise/profile/{id}/edit', 'enterprise.profile.edit')->name('enterprise.profile.edit');
 
     Route::get('enterprise/confirm-password', [ConfirmablePasswordController::class, 'showEnterprise'])
         ->name('enterprise.password.confirm');

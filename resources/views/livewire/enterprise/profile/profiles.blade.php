@@ -8,7 +8,7 @@
                 </span>
             </h2>
             <h5 class="card-header">
-                <a class="btn" style="background: #0EA7C1; color:white" href="#">
+                <a class="btn" style="background: #0EA7C1; color:white" href="{{ route('enterprise.profile.create') }}">
                     Create Profile
                 </a>
             </h5>
@@ -77,22 +77,12 @@
                                     <td>
                                         {{ $profile->status }}
                                     </td>
-                                    <td class="action-td">
-                                        <div class="dropdown">
-                                            <button class="btn p-0" type="button" id="cardOpt3"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-                                                <a class="btn btn-icon btn-outline-secondary" data-bs-toggle="tooltip"
-                                                    data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
-                                                    title=""
-                                                    data-bs-original-title="<i class='bx bx-edit-alt bx-xs' ></i> <span>Edit</span>"
-                                                    href="#">
-                                                    <i class="bx bx-edit-alt"></i>
-                                                </a>
-                                            </div>
-                                        </div>
+                                    <td>
+                                        <a href="{{ route('enterprise.profile.edit', [$profile->id]) }}"
+                                            class="btn btn-warning" data-bs-toggle="tooltip" data-bs-offset="0,4"
+                                            data-bs-placement="top" data-bs-html="true" title="Edit">
+                                            <i class="bx bx-edit-alt"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
