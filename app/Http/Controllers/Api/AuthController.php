@@ -281,13 +281,13 @@ class AuthController extends Controller
         if (!$user) {
             return response()->json([
                 'message' => 'User is not authenticated.'
-            ]);
+            ], 404);
         }
 
         if (!Hash::check($request->old_password, $user->password)) {
             return response()->json([
                 'message' => 'The old password is incorrect.'
-            ]);
+            ], 404);
         }
 
         $user->password = Hash::make($request->new_password);
