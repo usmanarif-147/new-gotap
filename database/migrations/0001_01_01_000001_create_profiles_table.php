@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('phone', 255)->nullable();
             $table->string('photo', 255)->nullable();
             $table->string('cover_photo', 255)->nullable();
+            $table->tinyInteger('is_default')->default(0);
             $table->tinyInteger('active')->default(0);
             $table->tinyInteger('user_direct')->default(0);
             $table->integer('tiks')->default(0);

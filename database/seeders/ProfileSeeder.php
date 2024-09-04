@@ -19,7 +19,7 @@ class ProfileSeeder extends Seeder
     {
         $users = User::where('role', 'user')->pluck('id')->toArray();
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 200; $i++) {
             Profile::create([
                 'user_id' => $users[array_rand($users)],
                 'type' => 'social',

@@ -33,10 +33,10 @@ class ViewProfileController extends Controller
                 return response()->json(['message' => trans('backend.card_inactive')]);
             }
 
-            $checkCard = DB::table('user_cards')
+            $checkCard = DB::table('profile_cards')
                 ->select(
-                    'user_cards.user_id',
-                    'user_cards.profile_id'
+                    'profile_cards.user_id',
+                    'profile_cards.profile_id'
                 )
                 ->where('card_id', $card->id)
                 ->where('status', 1)

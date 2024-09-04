@@ -17,14 +17,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             ApplicationSeeder::class,
-            // CategorySeeder::class,
-            // PlatformSeeder::class,
-            // CardSeeder::class,
-            // UserSeeder::class,
-            // ProfileSeeder::class,
-
-            // ProfilePlatformSeeder::class,
-            // PhoneContactSeeder::class,
+            CategorySeeder::class,
+            PlatformSeeder::class,
+            CardSeeder::class,
+            UserSeeder::class,
+            ProfileSeeder::class,
+            ProfilePlatformSeeder::class,
+            PhoneContactSeeder::class,
         ]);
     }
 }

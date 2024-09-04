@@ -15,7 +15,7 @@ class CardSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 0; $i < 15; $i++) {
+        for ($i = 0; $i < 1000; $i++) {
             $card = [
                 'uuid' => Str::uuid(),
                 'description' => "this is card",

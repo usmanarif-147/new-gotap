@@ -16,7 +16,7 @@ class PhoneContactSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-        $users = User::pluck('id')->toArray();
+        $users = User::where('role', 'user')->pluck('id')->toArray();
         for ($i = 0; $i < 50; $i++) {
             DB::table('phone_contacts')->insert([
                 'user_id' => $users[array_rand($users)],

@@ -13,15 +13,15 @@ class CardController extends Controller
 {
     public function index()
     {
-        $cards = DB::table('user_cards')
+        $cards = DB::table('profile_cards')
             ->select(
                 'cards.id',
                 'cards.uuid',
                 'cards.description',
-                'user_cards.status',
-                'user_cards.created_at'
+                'profile_cards.status',
+                'profile_cards.created_at'
             )
-            ->join('cards', 'cards.id', 'user_cards.card_id')
+            ->join('cards', 'cards.id', 'profile_cards.card_id')
             ->where('user_id', auth()->id())
             ->get();
 
@@ -58,7 +58,7 @@ class CardController extends Controller
 
         try {
             // insert card in user cards table
-            DB::table('user_cards')->insert([
+            DB::table('profile_cards')->insert([
                 'card_id' => $card->id,
                 'user_id' => auth()->id(),
                 'profile_id' => $profile->id,
@@ -101,7 +101,7 @@ class CardController extends Controller
         $profile = getActiveProfile();
 
         // check is card belongs to the user
-        $checkCard = DB::table('user_cards')
+        $checkCard = DB::table('profile_cards')
             ->where('user_id', auth()->id())
             ->where('profile_id', $profile->id)
             ->where('card_id', $card->id)
@@ -113,9 +113,9 @@ class CardController extends Controller
             ]);
         }
 
-        // update user_card status
+        // update profile card status
         try {
-            DB::table('user_cards')
+            DB::table('profile_cards')
                 ->where('user_id', auth()->id())
                 ->where('card_id', $card->id)
                 ->update(['status' => $checkCard->status ? 0 : 1]);
@@ -140,7 +140,7 @@ class CardController extends Controller
      */
     public function userTags()
     {
-        $tags = DB::table('user_cards')
+        $tags = DB::table('profile_cards')
             ->select(
                 'cards.id',
                 'cards.uuid',
@@ -148,7 +148,7 @@ class CardController extends Controller
                 'cards.status',
                 'cards.description'
             )
-            ->join('cards', 'cards.id', 'user_cards.card_id')
+            ->join('cards', 'cards.id', 'profile_cards.card_id')
             ->where('user_id', auth()->id())
             ->get();
 
@@ -170,12 +170,12 @@ class CardController extends Controller
             return response()->json(['error' => 'Card not found'], 404);
         }
 
-        $userCard = DB::table('user_cards')->where('card_id', $card->id)->first();
+        $profileCard = DB::table('profile_cards')->where('card_id', $card->id)->first();
 
-        if (!$userCard) {
+        if (!$profileCard) {
             return response()->json(['error' => 'User not found for this card'], 404);
         }
-        $user = DB::table('users')->where('id', $userCard->user_id)->first();
+        $user = DB::table('users')->where('id', $profileCard->user_id)->first();
 
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);

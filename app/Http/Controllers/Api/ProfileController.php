@@ -58,7 +58,6 @@ class ProfileController extends Controller
         return response()->json(
             [
                 'profile' => new UserProfileResource($profile),
-                // 'platforms' => PlatformResource::collection($platforms)
             ]
         );
     }
@@ -283,4 +282,55 @@ class ProfileController extends Controller
             'data' => $users
         ]);
     }
+
+
+    /**
+     * Delete Profile
+     */
+    public function deleteProfile(Request $request)
+    {
+        $request->validate([
+            'profile_id' => ['required']
+        ], [
+            'profile_id.required' => 'Please enter valid Profile Id'
+        ]);
+
+        $profile = Profile::where('user_id', auth()->id())
+            ->where('id', $request->profile_id)
+            ->first();
+        if (!$profile) {
+            return response()->json([
+                'message' => 'Profile Does not exist'
+            ]);
+        }
+
+        if ($profile->is_default) {
+            return response()->json([
+                'message' => 'You can not delete Default Profile.'
+            ]);
+        }
+
+        if ($profile->enterprise_id) {
+            return response()->json([
+                'message' => 'You can not delete enterprise Profile.'
+            ]);
+        }
+
+        $this->deleteProfilePlatforms($profile->id);
+        // delete profile platforms from profile_platforms table
+        // remove profile from all groups where it exists
+        // decrement total_profiles from all groups
+        // delete all cards liked with profile
+        // card status active
+        // delete profile cover photo
+        // delete profile photo
+        // delete profile
+
+    }
+
+    private function deleteProfilePlatforms($profileId) {}
+
+    private function removeProfileFromGroups() {}
+
+    private function deleteProfileCards() {}
 }

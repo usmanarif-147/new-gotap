@@ -52,7 +52,7 @@ class Users extends Component
             'users.role',
             'users.status',
             'users.created_at',
-            // DB::raw('(SELECT COUNT(*) FROM user_cards WHERE user_cards.user_id = users.id) AS total_products')
+            // DB::raw('(SELECT COUNT(*) FROM profile_cards WHERE profile_cards.user_id = users.id) AS total_products')
         )
             ->when($this->filterByStatus, function ($query) {
                 if ($this->filterByStatus == 2) {

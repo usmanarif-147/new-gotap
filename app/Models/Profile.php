@@ -24,6 +24,7 @@ class Profile extends Model
         'phone',
         'photo',
         'cover_photo',
+        'is_default',
         'active',
         'user_direct',
         'tiks',

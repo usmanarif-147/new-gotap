@@ -11,6 +11,7 @@ class UserProfileResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'type' => $this->type,
             'name' => $this->name ?? null,
             'email' => $this->email ?? null,
             'username'  => $this->username ?? null,
@@ -23,6 +24,7 @@ class UserProfileResource extends JsonResource
             'active' => $this->active,
             'photo' => $this->photo ?? null,
             'cover_photo' => $this->cover_photo ?? null,
+            'is_default' => $this->is_default,
             'user_direct' =>  $this->user_direct ?? null,
             'tiks' => $this->tiks ?? null,
             'private' => $this->private ?? null,

@@ -25,10 +25,10 @@ class View extends Component
     {
 
         if ($this->identifier == 'uuid') {
-            $this->profile = Card::join('user_cards', 'cards.id', 'user_cards.card_id')
-                ->join('profiles', 'profiles.id', 'user_cards.profile_id')
+            $this->profile = Card::join('profile_cards', 'cards.id', 'profile_cards.card_id')
+                ->join('profiles', 'profiles.id', 'profile_cards.profile_id')
                 ->where('cards.uuid', request()->segment(2))
-                ->select('profiles.*', 'user_cards.status as card_status')
+                ->select('profiles.*', 'profile_cards.status as card_status')
                 ->first();
 
             if (!$this->profile || !$this->profile->card_status) {

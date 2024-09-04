@@ -41,6 +41,7 @@ Route::get('/getAllAccounts', function () {
         'username',
         'email'
     )
+        ->where('role', 'user')
         ->get()->toArray();
 });
 
@@ -63,6 +64,7 @@ Route::middleware('localization')->group(function () {
             Route::get('/getProfiles', [ProfileController::class, 'index']);
             Route::get('/profile', [ProfileController::class, 'profile']);
             Route::post('/addProfile', [ProfileController::class, 'addProfile']);
+            Route::post('/deleteProfile', [ProfileController::class, 'deleteProfile']);
             Route::post('/switchProfile', [ProfileController::class, 'switchProfile']);
             Route::post('/updateProfile', [ProfileController::class, 'update']);
             Route::get('/userDirect', [ProfileController::class, 'userDirect']);

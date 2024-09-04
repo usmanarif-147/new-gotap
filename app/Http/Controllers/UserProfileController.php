@@ -15,10 +15,10 @@ class UserProfileController extends Controller
         $identifier = request()->segment(1) == 'card_id' ? 'uuid' : request()->username;
 
         if ($identifier == 'uuid') {
-            $profile = Card::join('user_cards', 'cards.id', 'user_cards.card_id')
-                ->join('profiles', 'profiles.id', 'user_cards.profile_id')
+            $profile = Card::join('profile_cards', 'cards.id', 'profile_cards.card_id')
+                ->join('profiles', 'profiles.id', 'profile_cards.profile_id')
                 ->where('cards.uuid', request()->segment(2))
-                ->select('profiles.*', 'user_cards.status as card_status')
+                ->select('profiles.*', 'profile_cards.status as card_status')
                 ->first();
 
             if (!$profile || !$profile->card_status) {
@@ -101,10 +101,10 @@ class UserProfileController extends Controller
     public function getProfileByUuid()
     {
         $uuid = request()->uuid;
-        $user = Card::join('user_cards', 'cards.id', 'user_cards.card_id')
-            ->join('users', 'users.id', 'user_cards.user_id')
+        $user = Card::join('profile_cards', 'cards.id', 'profile_cards.card_id')
+            ->join('users', 'users.id', 'profile_cards.user_id')
             ->where('cards.uuid', $uuid)
-            ->select('users.*', 'user_cards.status as card_status')
+            ->select('users.*', 'profile_cards.status as card_status')
             ->first();
 
         if (!$user) {

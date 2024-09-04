@@ -46,6 +46,7 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'username' => $request->username,
                 'phone' => $request->phone,
+                'is_default' => 1,
                 'active' => 1,
                 'private' => 0
             ]);
