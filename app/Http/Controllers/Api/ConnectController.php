@@ -58,45 +58,6 @@ class ConnectController extends Controller
         } catch (Exception $ex) {
             return response()->json(['message' => $ex->getMessage()]);
         }
-
-        // if ($request->connect_id == auth()->id()) {
-        //     return response()->json([
-        //         'message' => 'Please enter valid connect Id'
-        //     ]);
-        // }
-
-        // check connection is valid
-        // $connection = User::where('id', $request->connect_id)
-        //     ->first();
-
-        // if (!$connection) {
-        //     return response()->json([
-        //         'message' => trans('backend.connection_not_found')
-        //     ]);
-        // }
-
-        // check
-        // $connected = DB::table('connects')
-        //     ->where('connected_id', $request->connect_id)
-        //     ->where('connecting_id', auth()->id())
-        //     ->first();
-        // if ($connected) {
-        //     return response()->json([
-        //         'message' => trans('backend.already_connected')
-        //     ]);
-        // }
-
-        // try {
-        //     DB::table('connects')->insert([
-        //         'connected_id' => $request->connect_id,
-        //         'connecting_id' => auth()->id()
-        //     ]);
-        //     return response()->json([
-        //         'message' => trans('backend.connected_success')
-        //     ]);
-        // } catch (Exception $ex) {
-        //     return response()->json(['message' => $ex->getMessage()]);
-        // }
     }
 
     public function disconnect(ConnectRequest $request)

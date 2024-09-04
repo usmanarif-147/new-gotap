@@ -12,6 +12,7 @@ use App\Http\Requests\SearchRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\Api\UserProfileResource;
 use App\Http\Resources\Api\UserResource;
+use App\Models\Card;
 use App\Models\Group;
 use App\Models\Profile;
 use Illuminate\Http\Request;
@@ -283,54 +284,216 @@ class ProfileController extends Controller
         ]);
     }
 
-
     /**
-     * Delete Profile
+     * Delete profile chat gpt code
      */
     public function deleteProfile(Request $request)
     {
         $request->validate([
-            'profile_id' => ['required']
+            'profile_id' => ['required'],
         ], [
-            'profile_id.required' => 'Please enter valid Profile Id'
+            'profile_id.required' => 'Please enter valid Profile Id',
         ]);
 
         $profile = Profile::where('user_id', auth()->id())
             ->where('id', $request->profile_id)
             ->first();
+
         if (!$profile) {
             return response()->json([
-                'message' => 'Profile Does not exist'
+                'message' => 'Profile Does not exist',
             ]);
         }
 
         if ($profile->is_default) {
             return response()->json([
-                'message' => 'You can not delete Default Profile.'
+                'message' => 'You cannot delete the Default Profile.',
             ]);
         }
 
         if ($profile->enterprise_id) {
             return response()->json([
-                'message' => 'You can not delete enterprise Profile.'
+                'message' => 'You cannot delete an enterprise Profile.',
             ]);
         }
 
-        $this->deleteProfilePlatforms($profile->id);
-        // delete profile platforms from profile_platforms table
-        // remove profile from all groups where it exists
-        // decrement total_profiles from all groups
-        // delete all cards liked with profile
-        // card status active
-        // delete profile cover photo
-        // delete profile photo
-        // delete profile
+        try {
 
+            DB::transaction(function () use ($profile) {
+                // Delete profile platforms from profile_platforms table
+                $this->deleteProfilePlatforms($profile->id);
+
+                // Delete all cards linked with the profile and set their status to inactive
+                $this->deleteProfileCards($profile->id);
+
+                // Remove the profile from all groups where it exists and decrement total_profiles
+                $this->removeProfileFromGroups($profile->id);
+
+                // Remove from connects
+                $this->removeFromConnects($profile->id);
+
+                // Delete profile cover photo
+                if ($profile->cover_photo) {
+                    Storage::disk('public')->delete($profile->cover_photo);
+                }
+
+                // Delete profile photo
+                if ($profile->photo) {
+                    Storage::disk('public')->delete($profile->photo);
+                }
+
+                // Delete profile
+                $profile->delete();
+            });
+
+
+            $profile = Profile::where('user_id', auth()->id())->where('active', 1)->first();
+
+            if (!$profile) {
+                Profile::where('user_id', auth()->id())->where('is_default', 1)->update([
+                    'active' => 1
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Profile deleted successfully',
+            ]);
+        } catch (Exception $ex) {
+            return response()->json([
+                'message' => $ex->getMessage(),
+            ], 500);
+        }
     }
 
-    private function deleteProfilePlatforms($profileId) {}
+    private function deleteProfilePlatforms($profileId)
+    {
+        DB::table('profile_platforms')->where('profile_id', $profileId)->delete();
+    }
 
-    private function removeProfileFromGroups() {}
+    private function deleteProfileCards($profileId)
+    {
+        $profile_cards = DB::table('profile_cards')->where('profile_id', $profileId)->get();
+        foreach ($profile_cards as $card) {
+            Card::where('id', $card->card_id)->update(['status' => 0]);
+        }
+        DB::table('profile_cards')->where('profile_id', $profileId)->delete();
+    }
 
-    private function deleteProfileCards() {}
+    private function removeFromConnects($profileId)
+    {
+        DB::table('connects')->where('connected_id', $profileId)->delete();
+    }
+
+    private function removeProfileFromGroups($profileId)
+    {
+        $user_groups = DB::table('user_groups')->where('profile_id', $profileId)->get();
+        foreach ($user_groups as $group) {
+            Group::where('id', $group->group_id)->decrement('total_profiles');
+        }
+        DB::table('user_groups')->where('profile_id', $profileId)->delete();
+    }
+
+    /**
+     * Delete Profile
+     */
+    // public function deleteProfile(Request $request)
+    // {
+    //     $request->validate([
+    //         'profile_id' => ['required']
+    //     ], [
+    //         'profile_id.required' => 'Please enter valid Profile Id'
+    //     ]);
+
+    //     $profile = Profile::where('user_id', auth()->id())
+    //         ->where('id', $request->profile_id)
+    //         ->first();
+    //     if (!$profile) {
+    //         return response()->json([
+    //             'message' => 'Profile Does not exist'
+    //         ]);
+    //     }
+
+    //     if ($profile->is_default) {
+    //         return response()->json([
+    //             'message' => 'You can not delete Default Profile.'
+    //         ]);
+    //     }
+
+    //     if ($profile->enterprise_id) {
+    //         return response()->json([
+    //             'message' => 'You can not delete enterprise Profile.'
+    //         ]);
+    //     }
+
+    //     try {
+    //         // delete profile platforms from profile_platforms table
+    //         $this->deleteProfilePlatforms($profile->id);
+
+    //         // card status active
+    //         // delete all cards liked with profile
+    //         $this->deleteProfileCards($profile->id);
+    //         // remove profile from all groups where it exists
+
+    //         // remove from connects
+    //         $this->removeFromConnects($profile->id);
+
+    //         // decrement total_profiles from all groups
+    //         // remove from groups
+    //         $this->removeProfileFromGroups($profile->id);
+
+    //         // delete profile cover photo
+    //         if ($profile->cover_photo) {
+    //             Storage::disk('public')->delete($profile->cover_photo);
+    //         }
+    //         // delete profile photo
+    //         if ($profile->photo) {
+    //             Storage::disk('public')->delete($profile->photo);
+    //         }
+    //         // delete profile
+
+    //         Profile::where('id', $profile->id)->delete();
+    //         return response()->json([
+    //             'message' => 'Profile Delete Successfully'
+    //         ]);
+    //     } catch (Exception $ex) {
+
+    //         return response()->json([
+    //             'message' => $ex->getMessage()
+    //         ]);
+    //     }
+    // }
+
+    // private function deleteProfilePlatforms($profileId)
+    // {
+    //     DB::table('profile_platforms')->where('profile_id', $profileId)->delete();
+    // }
+
+    // private function deleteProfileCards($profileId)
+    // {
+    //     $profile_cards = DB::table('profile_cards')->where('profile_id', $profileId)->get();
+    //     foreach ($profile_cards as $card) {
+    //         Card::where('id', $card->card_id)->update([
+    //             'status' => 0
+    //         ]);
+    //         DB::table('profile_cards')->where('card_id', $card->card_id)
+    //             ->where('profile_id', $profileId)
+    //             ->delete();
+    //     }
+    // }
+
+    // private function removeFromConnects($profileId)
+    // {
+    //     DB::table('connects')->where('connected_id', $profileId)->delete();
+    // }
+
+    // private function removeProfileFromGroups($profileId)
+    // {
+    //     $user_groups = DB::table('user_groups')->where('profile_id', $profileId)->get();
+    //     foreach ($user_groups as $group) {
+    //         Group::where('id', $group->group_id)->decrement('total_profiles');
+    //         DB::table('user_groups')->where('group_id', $group->group_id)
+    //             ->where('profile_id', $profileId)
+    //             ->delete();
+    //     }
+    // }
 }

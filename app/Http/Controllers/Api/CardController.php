@@ -13,6 +13,7 @@ class CardController extends Controller
 {
     public function index()
     {
+        $profile = getActiveProfile();
         $cards = DB::table('profile_cards')
             ->select(
                 'cards.id',
@@ -22,7 +23,7 @@ class CardController extends Controller
                 'profile_cards.created_at'
             )
             ->join('cards', 'cards.id', 'profile_cards.card_id')
-            ->where('user_id', auth()->id())
+            ->where('profile_cards.profile_id', $profile->id)
             ->get();
 
         return response()->json([
