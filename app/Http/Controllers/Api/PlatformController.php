@@ -52,7 +52,7 @@ class PlatformController extends Controller
         );
     }
 
-    public function add(AddPlatformRequest $request)
+    public function addPlatform(AddPlatformRequest $request)
     {
         $platform = Platform::where('id', $request->platform_id)
             ->where('status', 1)
@@ -135,9 +135,9 @@ class PlatformController extends Controller
     }
 
     /**
-     * Remove platform
+     * Delete platform
      */
-    public function remove(PlatformRequest $request)
+    public function deletePlatform(PlatformRequest $request)
     {
         $profile = getActiveProfile();
         $platform = DB::table('profile_platforms')
@@ -166,7 +166,7 @@ class PlatformController extends Controller
     /**
      * Swap order
      */
-    public function swap(SwapPlatformRequest $request)
+    public function swapPlatform(SwapPlatformRequest $request)
     {
         if (!is_array($request->orderList)) {
             return response()->json(['message' => trans("order list must be an array")]);

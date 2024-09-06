@@ -7,6 +7,8 @@ use App\Http\Requests\Api\PhoneContact\AddPhoneContactRequest;
 use App\Http\Requests\Api\PhoneContact\ContactDetailsRequest;
 use App\Http\Requests\Api\PhoneContact\UpdatePhoneContactRequest;
 use App\Http\Resources\Api\ContactResource;
+use App\Models\Group;
+use App\Models\PhoneContact;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -64,7 +66,7 @@ class PhoneContactController extends Controller
     /**
      * Add Contact
      */
-    public function add(AddPhoneContactRequest $request)
+    public function addPhoneContact(AddPhoneContactRequest $request)
     {
         $photo = null;
 
@@ -103,7 +105,7 @@ class PhoneContactController extends Controller
     /**
      * Update Contact
      */
-    public function update(UpdatePhoneContactRequest $request)
+    public function updatePhoneContact(UpdatePhoneContactRequest $request)
     {
         $contact = DB::table('phone_contacts')
             ->where('id', $request->contact_id)
@@ -155,28 +157,61 @@ class PhoneContactController extends Controller
     }
 
     /**
-     * Remove Contact
+     * Delete Phone Contact
      */
-    public function remove(ContactDetailsRequest $request)
+    public function deletePhoneContact(ContactDetailsRequest $request)
     {
         $contact_id = $request->contact_id;
-        $platform = DB::table('phone_contacts')
+
+        // check phone contact belongs to logged in user
+        $phoneContact = PhoneContact::where('id', $contact_id)
             ->where('user_id', auth()->id())
-            ->where('id', $contact_id)
-            ->delete();
-        if (!$platform) {
-            return response()->json(
-                [
-                    'message' => trans('backend.phone_contact_not_found')
-                ],
-            );
+            ->first();
+        if (!$phoneContact) {
+            return response()->json([
+                'message' => 'Phone Contact Not Found'
+            ], 404);
         }
 
-        return response()->json(
-            [
-                'message' => trans('backend.phone_contact_deleted_success')
-            ],
+        try {
 
-        );
+            DB::transaction(function () use ($phoneContact) {
+
+                // delete phone contact all logged in user's all groups
+                $this->removePhoneContactFromGroups($phoneContact->id);
+
+                // delete phone contact images
+                if ($phoneContact->photo && Storage::disk('public')->exists($phoneContact->photo)) {
+                    Storage::disk('public')->delete($phoneContact->photo);
+                }
+
+                // delete phone contact
+                $phoneContact->delete();
+            });
+
+            return response()->json([
+                'message' => 'Phone Contact deleted successfully',
+            ]);
+        } catch (Exception $ex) {
+            return response()->json([
+                'message' => $ex->getMessage(),
+            ], 500);
+        }
+    }
+
+    private function removePhoneContactFromGroups($contactId)
+    {
+        // Get all groups that contain the contact and decrement total_contacts in one query
+        $groups = DB::table('group_contacts')
+            ->where('contact_id', $contactId)
+            ->pluck('group_id');
+
+        if ($groups->isNotEmpty()) {
+            // Decrement total_contacts for all groups
+            Group::whereIn('id', $groups)->decrement('total_contacts');
+        }
+
+        // Delete the contact from group_contacts
+        DB::table('group_contacts')->where('contact_id', $contactId)->delete();
     }
 }

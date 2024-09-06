@@ -148,7 +148,7 @@ class ProfileController extends Controller
         }
     }
 
-    public function update(UpdateProfileRequest $request)
+    public function updateProfile(UpdateProfileRequest $request)
     {
         $profile = getActiveProfile();
         try {
@@ -392,108 +392,4 @@ class ProfileController extends Controller
         }
         DB::table('user_groups')->where('profile_id', $profileId)->delete();
     }
-
-    /**
-     * Delete Profile
-     */
-    // public function deleteProfile(Request $request)
-    // {
-    //     $request->validate([
-    //         'profile_id' => ['required']
-    //     ], [
-    //         'profile_id.required' => 'Please enter valid Profile Id'
-    //     ]);
-
-    //     $profile = Profile::where('user_id', auth()->id())
-    //         ->where('id', $request->profile_id)
-    //         ->first();
-    //     if (!$profile) {
-    //         return response()->json([
-    //             'message' => 'Profile Does not exist'
-    //         ]);
-    //     }
-
-    //     if ($profile->is_default) {
-    //         return response()->json([
-    //             'message' => 'You can not delete Default Profile.'
-    //         ]);
-    //     }
-
-    //     if ($profile->enterprise_id) {
-    //         return response()->json([
-    //             'message' => 'You can not delete enterprise Profile.'
-    //         ]);
-    //     }
-
-    //     try {
-    //         // delete profile platforms from profile_platforms table
-    //         $this->deleteProfilePlatforms($profile->id);
-
-    //         // card status active
-    //         // delete all cards liked with profile
-    //         $this->deleteProfileCards($profile->id);
-    //         // remove profile from all groups where it exists
-
-    //         // remove from connects
-    //         $this->removeFromConnects($profile->id);
-
-    //         // decrement total_profiles from all groups
-    //         // remove from groups
-    //         $this->removeProfileFromGroups($profile->id);
-
-    //         // delete profile cover photo
-    //         if ($profile->cover_photo) {
-    //             Storage::disk('public')->delete($profile->cover_photo);
-    //         }
-    //         // delete profile photo
-    //         if ($profile->photo) {
-    //             Storage::disk('public')->delete($profile->photo);
-    //         }
-    //         // delete profile
-
-    //         Profile::where('id', $profile->id)->delete();
-    //         return response()->json([
-    //             'message' => 'Profile Delete Successfully'
-    //         ]);
-    //     } catch (Exception $ex) {
-
-    //         return response()->json([
-    //             'message' => $ex->getMessage()
-    //         ]);
-    //     }
-    // }
-
-    // private function deleteProfilePlatforms($profileId)
-    // {
-    //     DB::table('profile_platforms')->where('profile_id', $profileId)->delete();
-    // }
-
-    // private function deleteProfileCards($profileId)
-    // {
-    //     $profile_cards = DB::table('profile_cards')->where('profile_id', $profileId)->get();
-    //     foreach ($profile_cards as $card) {
-    //         Card::where('id', $card->card_id)->update([
-    //             'status' => 0
-    //         ]);
-    //         DB::table('profile_cards')->where('card_id', $card->card_id)
-    //             ->where('profile_id', $profileId)
-    //             ->delete();
-    //     }
-    // }
-
-    // private function removeFromConnects($profileId)
-    // {
-    //     DB::table('connects')->where('connected_id', $profileId)->delete();
-    // }
-
-    // private function removeProfileFromGroups($profileId)
-    // {
-    //     $user_groups = DB::table('user_groups')->where('profile_id', $profileId)->get();
-    //     foreach ($user_groups as $group) {
-    //         Group::where('id', $group->group_id)->decrement('total_profiles');
-    //         DB::table('user_groups')->where('group_id', $group->group_id)
-    //             ->where('profile_id', $profileId)
-    //             ->delete();
-    //     }
-    // }
 }

@@ -39,6 +39,8 @@
      integrity="sha512-eYSzo+20ajZMRsjxB6L7eyqo5kuXuS2+wEbbOkpaur+sA2shQameiJiWEzCIDwJqaB0a4a6tCuEvCOBHUg3Skg=="
      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+ <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
  <script>
      function changePassword() {
          $('#changePassword').modal('show');

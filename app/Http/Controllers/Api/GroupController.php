@@ -80,7 +80,7 @@ class GroupController extends Controller
         );
     }
 
-    public function add(AddGroupRequest $request)
+    public function addGroup(AddGroupRequest $request)
     {
         $isExist = Group::where('user_id', auth()->id())
             ->where('title', $request->title)
@@ -103,7 +103,7 @@ class GroupController extends Controller
         ]);
     }
 
-    public function update(UpdateGroupRequest $request)
+    public function updateGroup(UpdateGroupRequest $request)
     {
         $group = Group::where('id', $request->group_id)->where('user_id', auth()->id())->first();
 
@@ -126,7 +126,7 @@ class GroupController extends Controller
         ]);
     }
 
-    public function destroy(GroupDetailsRequest $request)
+    public function deleteGroup(GroupDetailsRequest $request)
     {
         $group = Group::where('id', $request->group_id)->where('user_id', auth()->id())->first();
         if (!$group) {
@@ -155,7 +155,7 @@ class GroupController extends Controller
     /**
      * Add user in group
      */
-    public function addProfile(UserInGroupRequest $request)
+    public function addProfileIntoGroup(UserInGroupRequest $request)
     {
         // check if it is logged in user's profile
         $isLoggedInUserProfile = Profile::where('user_id', auth()->id())
@@ -234,7 +234,7 @@ class GroupController extends Controller
     /**
      * Remove user from group
      */
-    public function removeProfile(UserInGroupRequest $request)
+    public function removeProfileFromGroup(UserInGroupRequest $request)
     {
         // check group belongs to the user
         $group = Group::where('user_id', auth()->id())
@@ -281,7 +281,7 @@ class GroupController extends Controller
     /**
      * Add contact in group
      */
-    public function addContact(ContactInGroupRequest $request)
+    public function addPhoneContactIntoGroup(ContactInGroupRequest $request)
     {
         $contact = DB::table('phone_contacts')
             ->where('id', $request->contact_id)
@@ -351,7 +351,7 @@ class GroupController extends Controller
     /**
      * Remove contact from group
      */
-    public function removeContact(Request $request)
+    public function removePhoneContactFromGroup(Request $request)
     {
         // check group belongs to the user
         $group = Group::where('user_id', auth()->id())->where('id', $request->group_id)->first();

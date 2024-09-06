@@ -83,6 +83,12 @@
                                             data-bs-placement="top" data-bs-html="true" title="Edit">
                                             <i class="bx bx-edit-alt"></i>
                                         </a>
+                                        <button class="btn btn-danger" type="button" data-bs-dismiss="modal"
+                                            data-bs-toggle="modal" data-bs-target="#qr_scan"
+                                            class="btn btn-custom btn-sm">
+                                            Activate by QR
+                                            <i class='bx bx-qr-scan'></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -103,6 +109,142 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="qr_scan" tabindex="-1" aria-labelledby="qr_scan" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title " id="qr_scan">Scan QR to activate Tag</h5>
+                    <button type="button" class="btn-close cursor-pointer" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row g-2 text-center">
+                        <div id="reader" width="600px"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var QrScanModal = document.getElementById('qr_scan');
+        var html5QrcodeScanner;
+
+        QrScanModal.addEventListener('shown.bs.modal', function(event) {
+
+            html5QrcodeScanner = new Html5QrcodeScanner(
+                "reader", {
+                    fps: 10,
+                    qrbox: {
+                        width: 300,
+                        height: 300
+                    }
+                },
+                false);
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        });
+
+        QrScanModal.addEventListener('hide.bs.modal', function(event) {
+            html5QrcodeScanner.clear();
+        });
+
+
+        function onScanSuccess(decodedText, decodedResult) {
+
+            const urlObject = new URL(decodedText);
+
+            let exist = urlObject.pathname.includes('/card_id/');
+
+            if (exist) {
+                alert('valid url');
+            } else {
+                alert('not valid url');
+            }
+
+            // if (decodedText && (decodedText.includes(
+            //         'localhost') || (domainName && decodedText.includes(domainName[0]))) && (decodedText.toLowerCase()
+            //         .includes(
+            //             '/p'))) {
+            //     const uuid = decodedText.split('/').pop();
+            //     // Livewire.emit('activateTag', uuid);
+
+            // } else {
+            //     // alert('Invalid card');
+            // }
+            // html5QrcodeScanner.clear();
+        }
+
+        function onScanFailure(error) {
+            // handle scan failure, usually better to ignore and keep scanning.
+            // console.warn(`Code scan error = ${error}`);
+        }
+
+        const nfcScanBtn = document.querySelector('#nfcScanBtn');
+
+        if ('NDEFReader' in window) {} else {
+            nfcScanBtn.disabled = true;
+            console.log('NFC is not available on this device');
+        }
+
+        var ndef;
+        nfcScanBtn.addEventListener("click", async () => {
+
+            console.log("User clicked scan button");
+
+            try {
+                ndef = new NDEFReader();
+                await ndef.scan();
+                console.log("> Scan started");
+
+                ndef.addEventListener("readingerror", () => {
+                    alert(
+                        "Argh! Cannot read data from the NFC tag. Try another one?"
+                    );
+                });
+
+                ndef.addEventListener("reading", ({
+                    message,
+                    serialNumber
+                }) => {
+
+                    let url = '';
+                    for (const record of message.records) {
+                        if (record.recordType == 'url' || record.recordType ==
+                            'text') {
+
+                            const decoder = record.recordType == 'text' ?
+                                new TextDecoder(record
+                                    .encoding) : new TextDecoder();
+                            url = decoder.decode(record.data);
+                        }
+                    }
+
+                    if (url && (url.includes('localhost') || (domainName && url.includes(domainName[
+                            0]))) && (url.toLowerCase().includes('/p'))) {
+                        const uuid = url.split('/').pop();
+                        Livewire.emit('activateTag', uuid);
+                    } else {
+                        alert('Invalid Card');
+                        location.reload();
+                        return;
+                    }
+                });
+            } catch (error) {
+                console.log("Argh! " + error);
+            }
+        });
+
+        const scanNfcModal = document.getElementById('ScanNFC');
+
+        scanNfcModal.addEventListener('hide.bs.offcanvas', event => {
+            console.log('ndef scan abort')
+            if (ndef)
+                ndef.abort();
+        });
+    </script>
 
 </div>
 
