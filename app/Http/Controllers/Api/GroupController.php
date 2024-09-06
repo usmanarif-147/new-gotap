@@ -354,7 +354,9 @@ class GroupController extends Controller
     public function removePhoneContactFromGroup(Request $request)
     {
         // check group belongs to the user
-        $group = Group::where('user_id', auth()->id())->where('id', $request->group_id)->first();
+        $group = Group::where('user_id', auth()->id())
+            ->where('id', $request->group_id)
+            ->first();
         if (!$group) {
             return response()->json([
                 'message' => trans('backend.group_not_found')
@@ -379,7 +381,9 @@ class GroupController extends Controller
                 ->where('group_id', $request->group_id)
                 ->delete();
 
-            Group::where('user_id', auth()->id())->where('id', $request->group_id)->decrement('total_contacts');
+            Group::where('user_id', auth()->id())
+                ->where('id', $request->group_id)
+                ->decrement('total_contacts');
             return response()->json([
 
                 'message' => trans('backend.contact_removed_success')

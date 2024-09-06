@@ -201,6 +201,7 @@ class PhoneContactController extends Controller
 
     private function removePhoneContactFromGroups($contactId)
     {
+
         // Get all groups that contain the contact and decrement total_contacts in one query
         $groups = DB::table('group_contacts')
             ->where('contact_id', $contactId)
