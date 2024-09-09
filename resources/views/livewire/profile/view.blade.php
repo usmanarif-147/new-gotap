@@ -28,19 +28,23 @@
                                     <p style=" margin-left:30px; font-size:16px; color:#24171E;" class="user-name">
                                         {{ $profile->job_title }} at {{ $profile->company }}
 
-                                    </p><br>
+                                    </p>
+                                    <br>
                                     <h1 style="font-size:20px; width:auto; margin-left:auto; margin-right:auto"
-                                        class="user-bio"> {{ $profile->bio }}
+                                        class="user-bio">
+                                        {{ $profile->bio }}
                                     </h1>
                                     <br>
                                 </div>
                             </div>
-                            <div class="col-12 d-flex justify-content-center" style="padding: 0px;">
+                            <div class="col-12 d-flex justify-content-center p-0 mt-5">
                                 <div class=" col-md-6 col-8" style="padding: 0px;">
                                     <button id="connectBTN" class="btn btn-block AddBtn rounded-pill px-4 py-3 "
                                         style="background-color: #000000;">
                                         <a style="text-decoration: none;" target="_blank" class="text-white"
-                                            href="{{ route('save.contact', $profile->id) }}"><b>Save to contact</b></a>
+                                            href="{{ route('save.contact', $profile->id) }}">
+                                            <b>Save to contact</b>
+                                        </a>
                                     </button>
                                 </div>
                             </div>
