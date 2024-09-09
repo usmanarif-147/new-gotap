@@ -9,6 +9,8 @@ use App\Models\User;
 Route::view('/', 'welcome');
 
 Route::get('/set/default/profile', function () {
+
+
     $users = User::select('id')
         ->orderBy('id')
         ->get();

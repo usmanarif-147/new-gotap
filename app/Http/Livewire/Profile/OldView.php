@@ -7,10 +7,9 @@ use App\Models\Platform;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
-class View extends Component
+class OldView extends Component
 {
     public $identifier = null;
 
@@ -91,43 +90,31 @@ class View extends Component
             ->where('profile_id', $this->profile->id)
             ->where('platform_order', 1)
             ->first();
+        $platform = Platform::where('id', $userPlatform->platform_id)->first();
 
-        if ($userPlatform) {
-            $platform = Platform::where('id', $userPlatform->platform_id)->first();
-
-            if ($platform) {
-                if (!str_contains($userPlatform->path, 'https') && !str_contains($userPlatform->path, 'http')) {
-                    $this->redicretTo = 'https://' . $userPlatform->path;
-                } else {
-                    $this->redicretTo = $userPlatform->path;
-                }
-
-                if ($platform->baseURL) {
-                    $this->redicretTo = $platform->baseURL . '/' . $userPlatform->path;
-                }
+        if (!$platform->baseURL) {
+            if (!str_contains($userPlatform->path, 'https') && !str_contains($userPlatform->path, 'http')) {
+                $this->redicretTo = 'https://' . $userPlatform->path;
             }
+        } else {
+            $this->redicretTo = $platform->baseURL . '/' . $userPlatform->path;
         }
     }
 
-
     public function increment($platformId, $url)
     {
-        dd($url);
         if (!$this->profile->private) {
+
             DB::table('profile_platforms')
                 ->where('profile_id', $this->profile->id)
                 ->where('platform_id', $platformId)
                 ->increment('clicks');
-
-            // Log the URL to verify it
-            Log::info('Redirecting to: ' . $url);
 
             $this->dispatchBrowserEvent('redirect', [
                 'url' => $url
             ]);
         }
     }
-
 
 
     public function render()

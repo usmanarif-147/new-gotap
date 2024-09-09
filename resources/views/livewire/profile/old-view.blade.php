@@ -49,8 +49,8 @@
                                     @foreach ($platforms as $chunk)
                                         @foreach ($chunk as $platform)
                                             <div class="col-4 d-flex justify-content-center">
-                                                <a class="social" href="{{ $platform->base_url . $platform->path }}"
-                                                    target="_blank"
+                                                <a class="social" href="javascript:void(0)"
+                                                    wire:click="increment('{{ $platform->platform_id }}','{{ $platform->base_url . $platform->path }}')"
                                                     style="{{ $profile->private ? 'filter: blur(5px);' : '' }}">
                                                     <img src="{{ asset(isImageExist($platform->icon, 'platform')) }}"
                                                         class="gallery-image img-fluid"
@@ -91,10 +91,8 @@
         })
 
         window.addEventListener('redirect', event => {
-            let url = event.detail.url;
-            if (url) {
-                window.location.href = url;
-            }
+            console.log(event.detail.url);
+            // window.open(event.detail.url, "_blank")
         });
     </script>
 
