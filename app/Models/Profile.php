@@ -42,4 +42,5 @@ class Profile extends Model
             ->withPivot('path', 'direct', 'platform_order', 'label')
             ->orderBy('platform_order');
     }
+
 }

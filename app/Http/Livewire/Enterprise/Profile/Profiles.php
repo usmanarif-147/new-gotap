@@ -2,16 +2,18 @@
 
 namespace App\Http\Livewire\Enterprise\Profile;
 
+use App\Models\Card;
 use App\Models\Profile;
+use App\Models\ProfileCard;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
 
 class Profiles extends Component
 {
 
     use WithFileUploads, WithPagination;
-
     protected $paginationTheme = 'bootstrap';
 
     public $profileId, $methodType, $modalTitle, $modalBody, $modalActionBtnColor, $modalActionBtnText;
@@ -19,6 +21,57 @@ class Profiles extends Component
     public $search = '', $filterByStatus, $filterByCategory, $sortBy;
 
     public $total, $heading, $statuses = [], $categories;
+
+    protected $listeners = ['activateTag'];
+
+    public function activateTag($card_uuid, $profile_id)
+    {
+        // dd($profile_id);
+        $card = null;
+        $check = 1;
+        // check card exist
+        if ($card_uuid) {
+            $card = Card::where('uuid', $card_uuid)->first();
+        }
+
+        if (!$card) {
+            $check = 0;
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'info',
+                'message' => 'Card not found!',
+            ]);
+        }
+
+        // check card is already activated
+        if ($card->status) {
+            $check = 0;
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'info',
+                'message' => 'Card is already active!',
+            ]);
+        }
+
+        if ($check) {
+            // insert card in user cards table
+            $profile_card = new ProfileCard();
+            $profile_card->card_id = $card->id;
+            $profile_card->profile_id = $profile_id;
+            $profile_card->status = 1;
+            $profile_card->save();
+
+            // update card status to activated
+            Card::whereId($card->id)->update([
+                'status' => 1
+            ]);
+
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'success',
+                'message' => 'Card activated successfully!',
+            ]);
+            // $this->resetPage();
+        }
+
+    }
 
     public function updatedFilterByStatus()
     {
@@ -46,6 +99,7 @@ class Profiles extends Component
             'profiles.username',
             'profiles.photo',
             'profiles.phone',
+
             // 'profiles.status',
         )
             // ->when($this->filterByStatus, function ($query) {
@@ -106,6 +160,8 @@ class Profiles extends Component
     {
 
         $data = $this->getData();
+
+        dd($data->get()->toArray());
 
         $this->heading = "Profiles";
         $profiles = $data->paginate(10);

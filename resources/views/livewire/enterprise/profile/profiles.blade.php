@@ -83,8 +83,8 @@
                                             data-bs-placement="top" data-bs-html="true" title="Edit">
                                             <i class="bx bx-edit-alt"></i>
                                         </a>
-                                        <button class="btn btn-danger" type="button" data-bs-dismiss="modal"
-                                            data-bs-toggle="modal" data-bs-target="#qr_scan"
+                                        <button class="btn btn-danger" data-id={{ $profile->id }} type="button"
+                                            data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#qr_scan"
                                             class="btn btn-custom btn-sm">
                                             Activate by QR
                                             <i class='bx bx-qr-scan'></i>
@@ -132,9 +132,10 @@
     <script>
         var QrScanModal = document.getElementById('qr_scan');
         var html5QrcodeScanner;
+        let profile_id;
 
         QrScanModal.addEventListener('shown.bs.modal', function(event) {
-
+            profile_id = event.relatedTarget.dataset.id;
             html5QrcodeScanner = new Html5QrcodeScanner(
                 "reader", {
                     fps: 10,
@@ -155,11 +156,11 @@
         function onScanSuccess(decodedText, decodedResult) {
 
             const urlObject = new URL(decodedText);
-
             let exist = urlObject.pathname.includes('/card_id/');
 
             if (exist) {
-                alert('valid url');
+                const uuid = decodedText.split('/').pop();
+                Livewire.emit('activateTag', uuid, profile_id);
             } else {
                 alert('not valid url');
             }
@@ -174,7 +175,8 @@
             // } else {
             //     // alert('Invalid card');
             // }
-            // html5QrcodeScanner.clear();
+            html5QrcodeScanner.clear();
+            $('#qr_scan').modal('hide');
         }
 
         function onScanFailure(error) {
@@ -249,6 +251,14 @@
 </div>
 
 @section('script')
+    <script>
+        window.addEventListener('swal:modal', event => {
+            swal({
+                title: event.detail.message,
+                icon: event.detail.type,
+            });
+        });
+    </script>
     {{-- <script>
         window.addEventListener('swal:modal', event => {
             swal({
