@@ -137,7 +137,7 @@ class ProfileController extends Controller
 
             return response()->json([
                 'message' => trans('profile created successfully'),
-                'data' => new UserProfileResource($profile)
+                'profile' => new UserProfileResource($profile)
             ]);
         } catch (Exception $ex) {
 
@@ -201,7 +201,7 @@ class ProfileController extends Controller
 
             return response()->json([
                 'message' => trans('backend.profile_updated_success'),
-                'user' => new UserResource($user),
+                // 'user' => new UserResource($user),
                 'profile' => new UserProfileResource($profile)
             ]);
         } catch (Exception $ex) {
