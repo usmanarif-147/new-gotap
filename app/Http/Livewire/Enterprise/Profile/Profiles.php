@@ -161,8 +161,6 @@ class Profiles extends Component
 
         $data = $this->getData();
 
-        dd($data->get()->toArray());
-
         $this->heading = "Profiles";
         $profiles = $data->paginate(10);
 

@@ -78,17 +78,23 @@
                                         {{ $profile->status }}
                                     </td>
                                     <td>
-                                        <a href="{{ route('enterprise.profile.edit', [$profile->id]) }}"
+                                        {{-- <a href="{{ route('enterprise.profile.edit', [$profile->id]) }}"
                                             class="btn btn-warning" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                             data-bs-placement="top" data-bs-html="true" title="Edit">
                                             <i class="bx bx-edit-alt"></i>
-                                        </a>
+                                        </a> --}}
                                         <button class="btn btn-danger" data-id={{ $profile->id }} type="button"
                                             data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#qr_scan"
                                             class="btn btn-custom btn-sm">
                                             Activate by QR
                                             <i class='bx bx-qr-scan'></i>
                                         </button>
+                                        <a href="{{ route('enterprise.profile.manage', [$profile->id]) }}"
+                                            class="btn btn-warning" data-bs-toggle="tooltip" data-bs-offset="0,4"
+                                            data-bs-placement="top" data-bs-html="true" title="Manage">
+                                            Manage Profile
+                                            <i class='bx bx-street-view'></i>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach

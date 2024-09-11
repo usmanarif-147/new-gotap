@@ -302,19 +302,19 @@ class ProfileController extends Controller
         if (!$profile) {
             return response()->json([
                 'message' => 'Profile Does not exist',
-            ]);
+            ], 400);
         }
 
         if ($profile->is_default) {
             return response()->json([
                 'message' => 'You cannot delete the Default Profile.',
-            ]);
+            ], 400);
         }
 
         if ($profile->enterprise_id) {
             return response()->json([
                 'message' => 'You cannot delete an enterprise Profile.',
-            ]);
+            ], 400);
         }
 
         try {
