@@ -12,28 +12,28 @@ class Edit extends Component
 {
     use WithFileUploads;
 
-    public $heading;
+    // public $heading;
 
     public $profile_id;
 
     public $old_photo, $old_cover_photo;
 
     public
-        $name,
-        $email,
-        $username,
-        $work_position,
-        $job_title,
-        $company,
-        $address,
-        $bio,
-        $phone,
-        $photo,
-        $cover_photo;
+    $name,
+    $email,
+    $username,
+    $work_position,
+    $job_title,
+    $company,
+    $address,
+    $bio,
+    $phone,
+    $photo,
+    $cover_photo;
 
-    public function mount()
+    public function mount($id)
     {
-        $this->profile_id = request()->id;
+        $this->profile_id = $id;
         $profile = Profile::where('id', $this->profile_id)->first();
 
         $this->name = $profile->name;
@@ -57,10 +57,10 @@ class Edit extends Component
     protected function rules()
     {
         return [
-            'name'              => ['nullable', 'min:5', 'max:15'],
-            'email'             => ['nullable', 'email'],
-            'phone'             => ['nullable', 'min:5', 'max:15'],
-            'username'          => [
+            'name' => ['nullable', 'min:5', 'max:15'],
+            'email' => ['nullable', 'email'],
+            'phone' => ['nullable', 'min:5', 'max:15'],
+            'username' => [
                 'required',
                 'min:3',
                 'max:20',
@@ -69,13 +69,13 @@ class Edit extends Component
                     ->where('enterprise_id', auth()->user()->id)
                     ->ignore($this->profile_id)
             ],
-            'work_position'     => ['nullable', 'min:3', 'max:20'],
-            'job_title'         => ['nullable', 'string'],
-            'company'           => ['nullable', 'string'],
-            'address'           => ['nullable'],
-            'bio'               => ['nullable'],
-            'cover_photo'       => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
-            'photo'             => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'work_position' => ['nullable', 'min:3', 'max:20'],
+            'job_title' => ['nullable', 'string'],
+            'company' => ['nullable', 'string'],
+            'address' => ['nullable'],
+            'bio' => ['nullable'],
+            'cover_photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ];
     }
 
@@ -144,11 +144,12 @@ class Edit extends Component
             'type' => 'success',
             'message' => 'Profile updated successfully!',
         ]);
+        $this->emit('refresh-profile', $this->profile_id);
     }
 
     public function render()
     {
-        $this->heading = 'Create';
+        // $this->heading = 'Create';
         return view('livewire.enterprise.profile.edit');
     }
 }
