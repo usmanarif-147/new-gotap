@@ -64,6 +64,7 @@ Route::middleware('localization')->group(function () {
             Route::get('/getProfiles', [ProfileController::class, 'index']);
             Route::get('/profile', [ProfileController::class, 'profile']);
             Route::post('/addProfile', [ProfileController::class, 'addProfile']);
+            Route::post('/addEnterpiseProfile', [ProfileController::class, 'addEnterpiseProfile']);
             Route::post('/deleteProfile', [ProfileController::class, 'deleteProfile']);
             Route::post('/switchProfile', [ProfileController::class, 'switchProfile']);
             Route::post('/updateProfile', [ProfileController::class, 'updateProfile']);

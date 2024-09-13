@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\ProfileCard;
 use Exception;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -146,6 +147,63 @@ class ProfileController extends Controller
                 'message' => $ex->getMessage(),
             ]);
         }
+    }
+
+    public function addEnterpiseProfile(Request $request)
+    {
+        $data = $request->validate([
+            'user_id' => 'required',
+            'card_id' => 'required'
+        ], [
+            'user_id.required' => 'User id is required',
+            'card_id.required' => 'Card Id is required'
+        ]);
+
+        // check user exist
+        $exist = User::where('id', $request->user_id)
+            ->exists();
+        if (!$exist) {
+            return response()->json([
+                'message' => 'User Does not exist'
+            ]);
+        }
+        // check card exist
+        $exist = Card::where('id', $request->card_id)
+            ->orWhere('uuid', $request->card_id)
+            ->exists();
+        if (!$exist) {
+            return response()->json([
+                'message' => 'Card Does not exist'
+            ]);
+        }
+        // check card status
+        $card = Card::find($request->card_id);
+        if ($card->status == 0) {
+            return response()->json([
+                'message' => 'Card is not active yet!'
+            ]);
+        }
+        // link profile with user
+        $profileCard = ProfileCard::where('card_id', $card->id)->first();
+        $profileCardID = $profileCard->id;
+        $profileID = $profileCard->profile_id;
+        $profile = Profile::find($profileID);
+        $profilePlatforms = DB::table('profile_platforms')->where('profile_id', $profileID)->get();
+        foreach ($profilePlatforms as $key => $value) {
+            DB::table('profile_platforms')
+                ->where('id', $value->id)
+                ->update([
+                    'user_id' => $request->user_id
+                ]);
+        }
+        Profile::where('id', $profileID)->update(['user_id' => $request->user_id]);
+        ProfileCard::where('id', $profileCardID)->update(['user_id' => $request->user_id]);
+
+        return response()->json([
+            'message' => trans('enterprise profile linked successfully'),
+            'profile' => new UserProfileResource($profile)
+        ]);
+
     }
 
     public function updateProfile(UpdateProfileRequest $request)
