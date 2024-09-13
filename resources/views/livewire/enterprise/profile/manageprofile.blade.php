@@ -10,7 +10,7 @@
         <div class="card mb-3">
             <div class="row p-2">
                 <div class="col-md-3 align-content-center">
-                    <img src="{{ !is_null($photo) || Storage::exists($photo) ? Storage::url($photo) : asset('user.png') }}"
+                    <img src="{{ !is_null($profile->photo) || Storage::exists($profile->photo) ? Storage::url($profile->photo) : asset('user.png') }}"
                         class="img-fluid rounded" height="300" width="250">
                 </div>
                 <div class="col-md-9">
@@ -20,16 +20,16 @@
                                 <h4 class="fw-bold text-center"> Profile Details </h4>
                             </div>
                             <div class="col-6">
-                                <x-custom.detail-section label="Name" :value="$name" />
-                                <x-custom.detail-section label="Email" :value="$email" />
-                                <x-custom.detail-section label="Phone" :value="$phone" />
-                                <x-custom.detail-section label="Registered" :value="$created_at" />
+                                <x-custom.detail-section label="Name" :value="$profile->name" />
+                                <x-custom.detail-section label="Email" :value="$profile->email" />
+                                <x-custom.detail-section label="Phone" :value="$profile->phone" />
+                                <x-custom.detail-section label="Registered" :value="$profile->created_at->diffForHumans()" />
                             </div>
                             <div class="col-6">
                                 {{-- <h4 class="fw-bold"> Analytics </h4> --}}
-                                <x-custom.detail-section label="Profile" :value="$username" />
-                                <x-custom.detail-section label="Cards" :value="$email" />
-                                <x-custom.detail-section label="Views" :value="$phone" />
+                                <x-custom.detail-section label="Profile" :value="$profile->username" />
+                                <x-custom.detail-section label="Cards" :value="$profile->email" />
+                                <x-custom.detail-section label="Views" :value="$profile->phone" />
                                 <x-custom.detail-section label="Platforms" :value="null" />
                             </div>
                         </div>
@@ -48,7 +48,7 @@
                             </div>
                             <div class="col-7 form-check form-switch">
                                 <input class="form-check-input" wire:change="Isdirect($event.target.checked)"
-                                    type="checkbox" {{ $user_direct == 1 ? 'checked' : '' }}>
+                                    type="checkbox" {{ $profile->user_direct == 1 ? 'checked' : '' }}>
                             </div>
                         </div>
                     </div>
@@ -59,7 +59,8 @@
                             </div>
                             <div class="col-7 form-check form-switch">
                                 <input class="form-check-input" type="checkbox"
-                                    wire:change="Isprivate($event.target.checked)" {{ $private == 1 ? 'checked' : '' }}>
+                                    wire:change="Isprivate($event.target.checked)"
+                                    {{ $profile->private == 1 ? 'checked' : '' }}>
                             </div>
                         </div>
                     </div>
@@ -69,53 +70,42 @@
     </div>
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
-                type="button" role="tab" aria-controls="pills-home" aria-selected="true"
-                wire:click="edit_profile({{ $profile_id }})">Edit</button>
+            <button class="nav-link {{ $tab_change == 1 ? 'active' : '' }}" type="button"
+                wire:click="edit_profile()">Edit
+                Profile</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
-                type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Manage
-                Plateforms</button>
+            <button class="nav-link {{ $tab_change == 2 ? 'active' : '' }}" type="button"
+                wire:click="platforms_links()">Add
+                Links</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {{ $tab_change == 3 ? 'active' : '' }}" type="button"
+                wire:click="platforms_profile()">profile
+                Links</button>
         </li>
     </ul>
-    <div class="tab-content" id="pills-tabContent">
-        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-            @if ($edit_profile)
-                <livewire:enterprise.profile.edit :id="$profile_id" />
-            @endif
-        </div>
-        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-            @if ($edit_profile)
-                <livewire:enterprise.profile.platforms :id="$profile_id" />
-            @endif
-        </div>
-    </div>
-    {{-- <div>
-        <!-- Toggle Buttons -->
-        <div class="btn-group mb-3" role="group">
-            <button class="btn btn-primary {{ $edit_profile ? 'active' : '' }}" data-bs-toggle="tooltip"
-                data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true" title="Edit"
-                wire:click="edit_profile({{ $profile_id }})"><i class="bx bx-edit-alt"></i></button>
-            <button class="btn btn-secondary {{ !$edit_profile ? 'active' : '' }}" data-bs-toggle="tooltip"
-                data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true" title="plateform"
-                wire:click="plateforms"><i class='bx bxs-box'></i></button>
-        </div>
-
-        <!-- Component 1 -->
-        @if ($edit_profile)
+    <div>
+        @if ($tab_change == 1)
             <livewire:enterprise.profile.edit :id="$profile_id" />
         @endif
-
-        <!-- Component 2 -->
-        @if (!$edit_profile)
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Component 2</h5>
-                    <p class="card-text">This is the content of the second component.</p>
-                </div>
-            </div>
+    </div>
+    <div>
+        @if ($tab_change == 2)
+            <livewire:enterprise.profile.platforms :id="$profile_id" :tab="$tab_change" />
         @endif
-    </div> --}}
-
+    </div>
+    <div>
+        @if ($tab_change == 3)
+            <livewire:enterprise.profile.platforms :id="$profile_id" :tab="$tab_change" />
+        @endif
+    </div>
+    <script>
+        window.addEventListener('swal:modal', event => {
+            swal({
+                title: event.detail.message,
+                icon: event.detail.type,
+            });
+        });
+    </script>
 </div>

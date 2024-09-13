@@ -290,4 +290,34 @@ class PlatformController extends Controller
             return "https://www." . $userInput;
         }
     }
+
+
+
+    /**
+     * Testing
+     */
+    public function getAllPlatforms()
+    {
+        $profile = getActiveProfile();
+
+        $total = DB::table('profile_platforms')->where('profile_id', $profile->id)->count();
+
+        $platforms = DB::table('profile_platforms')
+            ->select(
+                'platforms.title',
+                'platforms.id as platform_id',
+                'profile_platforms.platform_id as profile_platform_id',
+                'profile_platforms.profile_id',
+                'profile_platforms.platform_order'
+            )
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
+            ->where('profile_platforms.profile_id', $profile->id)
+            ->get();
+
+        return response()->json([
+            'total' => $total,
+            'platforms' => $platforms
+        ]);
+
+    }
 }
