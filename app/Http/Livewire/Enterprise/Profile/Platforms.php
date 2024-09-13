@@ -80,7 +80,6 @@ class Platforms extends Component
     public function PlatformDelete()
     {
         $platform = DB::table('profile_platforms')
-            ->where('user_id', null)
             ->where('profile_id', $this->profile_id)
             ->where('platform_id', $this->platformId)
             ->first();
@@ -93,7 +92,6 @@ class Platforms extends Component
             ]);
         } else {
             $platform = DB::table('profile_platforms')
-                ->where('user_id', null)
                 ->where('profile_id', $this->profile_id)
                 ->where('platform_id', $this->platformId)
                 ->delete();
@@ -129,7 +127,6 @@ class Platforms extends Component
             )
             ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
             ->where('platform_id', $id)
-            ->where('user_id', null)
             ->where('profile_id', $profileId)
             ->first();
 
@@ -158,7 +155,6 @@ class Platforms extends Component
 
             $user_platform = DB::table('profile_platforms')
                 ->where('platform_id', $this->platformId)
-                ->where('user_id', null)
                 ->where('profile_id', $this->profile_id)
                 ->first();
             if ($user_platform) {
@@ -167,7 +163,6 @@ class Platforms extends Component
 
                 DB::table('profile_platforms')
                     ->where('platform_id', $this->platformId)
-                    ->where('user_id', null)
                     ->where('profile_id', $this->profile_id)
                     ->update([
                         'label' => $this->label,
@@ -183,14 +178,12 @@ class Platforms extends Component
                 // Add new platform
                 $path = $this->path;
                 $latestPlatform = DB::table('profile_platforms')
-                    ->where('user_id', null)
                     ->where('profile_id', $this->profile_id)
                     ->orderBy('platform_order', 'desc')
                     ->get()
                     ->first();
 
                 DB::table('profile_platforms')->insert([
-                    'user_id' => null,
                     'profile_id' => $this->profile_id,
                     'platform_id' => $this->platformId,
                     'direct' => $this->direct ? $this->direct : 0,
