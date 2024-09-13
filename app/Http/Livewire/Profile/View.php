@@ -45,6 +45,7 @@ class View extends Component
                 'company',
                 'photo',
                 'cover_photo',
+                'user_direct',
                 'private'
             )
                 ->where('username', $this->identifier)
@@ -57,6 +58,7 @@ class View extends Component
 
         User::where('id', $this->profile->user_id)->increment('tiks');
         Profile::where('id', $this->profile->id)->increment('tiks');
+
 
         if ($this->profile->user_direct) {
             $this->isProfileDirect();
@@ -79,7 +81,7 @@ class View extends Component
             ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
             ->join('profiles', 'profile_platforms.profile_id', 'profiles.id')
             ->where('profile_id', $this->profile->id)
-            ->orderBy(('profile_platforms.platform_order'))
+            ->orderBy('profile_platforms.platform_order')
             ->get();
 
         $this->platforms = $platforms->chunk(4);
@@ -89,12 +91,11 @@ class View extends Component
     {
         $userPlatform = DB::table('profile_platforms')
             ->where('profile_id', $this->profile->id)
-            ->where('platform_order', 1)
+            ->orderBy('platform_order')
             ->first();
 
         if ($userPlatform) {
             $platform = Platform::where('id', $userPlatform->platform_id)->first();
-
             if ($platform) {
                 if (!str_contains($userPlatform->path, 'https') && !str_contains($userPlatform->path, 'http')) {
                     $this->redicretTo = 'https://' . $userPlatform->path;
@@ -112,7 +113,6 @@ class View extends Component
 
     public function increment($platformId, $url)
     {
-        dd($url);
         if (!$this->profile->private) {
             DB::table('profile_platforms')
                 ->where('profile_id', $this->profile->id)

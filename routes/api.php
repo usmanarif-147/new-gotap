@@ -76,6 +76,7 @@ Route::middleware('localization')->group(function () {
             Route::post('/addPlatform', [PlatformController::class, 'addPlatform']);
             Route::post('/removePlatform', [PlatformController::class, 'deletePlatform']);
             Route::post('/swapOrder', [PlatformController::class, 'swapPlatform']);
+            Route::get('/getAllPlatforms', [PlatformController::class, 'getAllPlatforms']);
 
             // Phone Contact
             Route::get('/phoneContacts', [PhoneContactController::class, 'index']);

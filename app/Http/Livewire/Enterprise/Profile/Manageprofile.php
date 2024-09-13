@@ -13,23 +13,7 @@ class Manageprofile extends Component
 
     // public $Isdirect, $Isprivate;
 
-    public $edit_profile = true;
-
-    public
-    $name,
-    $email,
-    $username,
-    $work_position,
-    $job_title,
-    $company,
-    $address,
-    $bio,
-    $phone,
-    $photo,
-    $cover_photo,
-    $user_direct,
-    $private,
-    $created_at;
+    public $tab_change = 1;
 
     protected $listeners = ['refresh-profile' => 'profileData'];
     public function profileData($id)
@@ -41,58 +25,69 @@ class Manageprofile extends Component
         }
         $profile = Profile::where('id', $this->profile_id)->first();
 
-        $this->name = $profile->name;
-        $this->email = $profile->email;
-        $this->username = $profile->username;
-        $this->work_position = $profile->work_position;
-        $this->job_title = $profile->job_title;
-        $this->company = $profile->company;
-        $this->address = $profile->address;
-        $this->bio = $profile->bio;
-        $this->phone = $profile->phone;
-        $this->user_direct = $profile->user_direct;
-        $this->private = $profile->private;
-        $this->created_at = $profile->created_at->diffForHumans();
-        $this->photo = $profile->photo;
-        $this->cover_photo = $profile->cover_photo;
+        return $profile;
     }
 
     public function Isdirect($value)
     {
+        $string = '';
         $profile = Profile::where('id', $this->profile_id)->first();
         if ($value) {
             $profile->user_direct = 1;
+            $string = 'Only first platform on top set to public';
         } else {
             $profile->user_direct = 0;
+            $string = 'All platforms are set to public';
         }
         $profile->update();
+        $this->dispatchBrowserEvent('swal:modal', [
+            'type' => 'success',
+            'message' => $string,
+        ]);
     }
 
     public function Isprivate($value)
     {
+        $string = '';
         $profile = Profile::where('id', $this->profile_id)->first();
         if ($value) {
             $profile->private = 1;
+            $string = 'Profile is set to private';
         } else {
             $profile->private = 0;
+            $string = 'Profile is set to public';
         }
         $profile->update();
+        $this->dispatchBrowserEvent('swal:modal', [
+            'type' => 'success',
+            'message' => $string,
+        ]);
     }
 
-    public function edit_profile($profile_id)
+    public function edit_profile()
     {
-        $this->edit_profile = true;
-        $this->profile_id = $profile_id;
+        $this->tab_change = 1;
+        // $this->profile_id = $profile_id;
     }
 
-    public function plateforms()
+    public function platforms_links()
     {
-        $this->edit_profile = false;
+        $this->tab_change = 2;
+        // $this->profile_id = $id;
+    }
+
+    public function platforms_profile()
+    {
+        $this->tab_change = 3;
+        // $this->profile_id = $id;
     }
     public function render()
     {
-        $this->profileData($this->profile_id);
+        $id = $this->profile_id;
+        $profile = $this->profileData($id);
         $this->heading = "Manage Profile";
-        return view('livewire.enterprise.profile.manageprofile');
+        return view('livewire.enterprise.profile.manageprofile', [
+            'profile' => $profile
+        ]);
     }
 }
