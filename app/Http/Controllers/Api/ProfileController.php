@@ -177,10 +177,12 @@ class ProfileController extends Controller
             ], 400);
         }
         // check card status
-        $card = Card::find($request->card_id);
-        if ($card->status == 1) {
+        $card = Card::where('id', $request->card_id)
+            ->orWhere('uuid', $request->card_id)
+            ->first();
+        if ($card->status == 0) {
             return response()->json([
-                'message' => 'Card is already active!'
+                'message' => 'Card is not active yet with any profile!'
             ], 400);
         }
         // link profile with user
