@@ -45,12 +45,13 @@
         <div class="card-body">
             <div class="row">
                 <div class="table-responsive text-nowrap">
-                    <table class="table admin-table">
+                    <table class="table admin-table table-sm">
                         <thead class="table-light">
                             <tr>
                                 <th> Photo </th>
                                 <th> Name </th>
                                 <th> Username </th>
+                                <th> Uuid Link </th>
                                 <th> Email </th>
                                 <th> Status </th>
                                 <th> Actions </th>
@@ -66,16 +67,39 @@
                                         </div>
                                     </td>
                                     <td>
-                                        {{ $profile->name }}
+                                        {{ $profile->name ? $profile->name : 'N\A' }}
                                     </td>
                                     <td>
-                                        {{ $profile->username }}
+                                        {{ $profile->username ? $profile->username : 'N\A' }}
                                     </td>
                                     <td>
-                                        {{ $profile->email }}
+                                        @if (!empty($profile->uuid))
+                                            <div class="row">
+                                                <div class="col-md-10">
+                                                    <input id="card-{{ $profile->card_id }}" type="hidden"
+                                                        value="{{ $profile->uuid }}">
+                                                    {{ $profile->uuid }}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <a href="javascript:void(0)"
+                                                        onclick="copy('{{ $profile->card_id }}')">
+                                                        <i class="bx bx-clipboard" data-toggle="tooltip"
+                                                            data-placement="top" title="Copy Link"
+                                                            aria-hidden="true"></i>
+                                                    </a>
+
+                                                </div>
+                                            </div>
+                                        @else
+                                            N\A
+                                        @endif
+
                                     </td>
                                     <td>
-                                        {{ $profile->status }}
+                                        {{ $profile->email ? $profile->email : 'N\A' }}
+                                    </td>
+                                    <td>
+                                        {{ $profile->status ? $profile->status : 'N\A' }}
                                     </td>
                                     <td>
                                         {{-- <a href="{{ route('enterprise.profile.edit', [$profile->id]) }}"
@@ -83,16 +107,18 @@
                                             data-bs-placement="top" data-bs-html="true" title="Edit">
                                             <i class="bx bx-edit-alt"></i>
                                         </a> --}}
-                                        <button class="btn btn-danger" data-id={{ $profile->id }} type="button"
-                                            data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#qr_scan"
+                                        <button
+                                            class="btn btn-danger btn-sm {{ $profile->uuid != null ? 'disabled' : '' }}"
+                                            data-id={{ $profile->id }} type="button" data-bs-dismiss="modal"
+                                            data-bs-toggle="modal" data-bs-target="#qr_scan"
                                             class="btn btn-custom btn-sm">
-                                            Activate by QR
+                                            {{-- Activate by QR --}}
                                             <i class='bx bx-qr-scan'></i>
                                         </button>
                                         <a href="{{ route('enterprise.profile.manage', [$profile->id]) }}"
-                                            class="btn btn-warning" data-bs-toggle="tooltip" data-bs-offset="0,4"
+                                            class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                             data-bs-placement="top" data-bs-html="true" title="Manage">
-                                            Manage Profile
+                                            {{-- Manage Profile --}}
                                             <i class='bx bx-street-view'></i>
                                         </a>
                                     </td>
@@ -120,7 +146,7 @@
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title " id="qr_scan">Scan QR to activate Tag</h5>
+                    <h5 class="modal-title" id="qr_scan">Scan QR to activate Tag</h5>
                     <button type="button" class="btn-close cursor-pointer" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
@@ -252,6 +278,27 @@
             if (ndef)
                 ndef.abort();
         });
+    </script>
+
+    <script>
+        function copy(id) {
+            let url = window.location.origin + '/card_id' + '/' + $('#card-' + id).val();
+            var tempInput = document.createElement("input");
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+
+            // Select the text inside the input
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // For mobile devices
+
+            // Copy the text to the clipboard
+            document.execCommand("copy");
+
+            // Remove the temporary input
+            document.body.removeChild(tempInput);
+
+            alert("copied");
+        }
     </script>
 
 </div>

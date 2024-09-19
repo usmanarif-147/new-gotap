@@ -33,29 +33,15 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#about-us">About Us</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="#register">Register</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="login.html">Login</a>
+                        <a class="nav-link" href="{{ route('enterprise.login.form') }}">Login</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-
-    <!-- About Us Section -->
-    <section id="about-us" class="section bg-light">
-        <div class="container">
-            <h1 class="text-center">About Us</h1>
-            <p class="text-center">
-                Welcome to our website! We are dedicated to providing the best service possible.
-                Our team is committed to excellence and always strives to meet our customers' needs.
-            </p>
-        </div>
-    </section>
 
     <!-- Register Section -->
     <section id="register" class="section bg-light">
@@ -64,7 +50,7 @@
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+    {{-- <script>
         // Smooth scroll for links with hashes
         document.querySelectorAll('a.nav-link').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
@@ -74,7 +60,7 @@
                 });
             });
         });
-    </script>
+    </script> --}}
     @livewireScripts
 </body>
 

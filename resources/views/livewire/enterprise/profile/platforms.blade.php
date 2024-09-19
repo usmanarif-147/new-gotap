@@ -34,7 +34,7 @@
         </div>
     @elseif ($tab_change == 3)
         <div wire:sortable="updateOrder" style="margin: 0 25%;">
-            @foreach ($sort_platform as $platforms)
+            @forelse ($sort_platform as $platforms)
                 <div wire:sortable.item="{{ $platforms['id'] }}" wire:key="platform-{{ $platforms['id'] }}">
                     <div class="mb-2">
                         <div class="card">
@@ -71,7 +71,9 @@
                         </div>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <p>No selected platforms available.</p>
+            @endforelse
         </div>
     @endif
     <!-- Bootstrap Modal -->

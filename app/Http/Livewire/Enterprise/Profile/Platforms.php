@@ -199,6 +199,7 @@ class Platforms extends Component
                 ]);
             }
             $this->emit('refresh-platforms');
+            $this->emit('refresh-profile', $this->profile_id);
         }
     }
 
