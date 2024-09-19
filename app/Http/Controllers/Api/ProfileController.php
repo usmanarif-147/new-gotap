@@ -165,7 +165,7 @@ class ProfileController extends Controller
         if (!$exist) {
             return response()->json([
                 'message' => 'User Does not exist'
-            ]);
+            ], 401);
         }
         // check card exist
         $exist = Card::where('id', $request->card_id)
@@ -174,14 +174,14 @@ class ProfileController extends Controller
         if (!$exist) {
             return response()->json([
                 'message' => 'Card Does not exist'
-            ]);
+            ], 401);
         }
         // check card status
         $card = Card::find($request->card_id);
-        if ($card->status == 0) {
+        if ($card->status == 1) {
             return response()->json([
-                'message' => 'Card is not active yet!'
-            ]);
+                'message' => 'Card is already active!'
+            ], 400);
         }
         // link profile with user
         $profileCard = ProfileCard::where('card_id', $card->id)->first();
