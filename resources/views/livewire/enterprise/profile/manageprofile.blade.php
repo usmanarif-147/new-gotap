@@ -10,7 +10,7 @@
         <div class="card mb-3">
             <div class="row p-2">
                 <div class="col-md-3 align-content-center">
-                    <img src="{{ !is_null($profile->photo) || Storage::exists($profile->photo) ? Storage::url($profile->photo) : asset('user.png') }}"
+                    <img src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}"
                         class="img-fluid rounded" height="300" width="250">
                 </div>
                 <div class="col-md-9">
@@ -29,8 +29,8 @@
                                 {{-- <h4 class="fw-bold"> Analytics </h4> --}}
                                 <x-custom.detail-section label="Profile" :value="$profile->username" />
                                 <x-custom.detail-section label="Cards" :value="$profile->email" />
-                                <x-custom.detail-section label="Views" :value="$profile->phone" />
-                                <x-custom.detail-section label="Platforms" :value="null" />
+                                <x-custom.detail-section label="Views" :value="$profile->tiks" />
+                                <x-custom.detail-section label="Platforms" :value="$total_platforms" />
                             </div>
                         </div>
                     </div>

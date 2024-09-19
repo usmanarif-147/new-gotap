@@ -20,8 +20,8 @@
                                             <img src="{{ $photo->temporaryUrl() }}" alt="user-avatar"
                                                 class="d-block rounded" height="200" width="170">
                                         @else
-                                            <img src="{{ asset(Storage::url($old_photo)) }}" alt="user-avatar"
-                                                class="d-block rounded" height="200" width="200">
+                                            <img src="{{ asset($old_photo ? Storage::url($old_photo) : 'user.png') }}"
+                                                alt="user-avatar" class="d-block rounded" height="150" width="150">
                                         @endif
                                         <div wire:loading wire:target="photo" wire:key="photo">
                                             <i class="fa fa-spinner fa-spin mt-2 ml-2"></i>
@@ -42,8 +42,8 @@
                                             <img src="{{ $cover_photo->temporaryUrl() }}" alt="user-avatar"
                                                 class="d-block rounded" height="200" width="170">
                                         @else
-                                            <img src="{{ asset(Storage::url($old_cover_photo)) }}" alt="user-avatar"
-                                                class="d-block rounded" height="200" width="200">
+                                            <img src="{{ asset($old_cover_photo ? Storage::url($old_cover_photo) : 'user.png') }}"
+                                                alt="user-avatar" class="d-block rounded" height="150" width="150">
                                         @endif
                                         <div wire:loading wire:target="cover_photo" wire:key="cover_photo">
                                             <i class="fa fa-spinner fa-spin mt-2 ml-2"></i>

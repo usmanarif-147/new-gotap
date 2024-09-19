@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Enterprise\Profile;
 
 use Livewire\Component;
 use App\Models\Profile;
+use Illuminate\Support\Facades\DB;
 
 class Manageprofile extends Component
 {
@@ -25,7 +26,9 @@ class Manageprofile extends Component
         }
         $profile = Profile::where('id', $this->profile_id)->first();
 
-        return $profile;
+        $total_platforms = DB::table('profile_platforms')->where('profile_id', $this->profile_id)->count();
+
+        return ['profile' => $profile, 'total_platforms' => $total_platforms];
     }
 
     public function Isdirect($value)
@@ -87,7 +90,8 @@ class Manageprofile extends Component
         $profile = $this->profileData($id);
         $this->heading = "Manage Profile";
         return view('livewire.enterprise.profile.manageprofile', [
-            'profile' => $profile
+            'profile' => $profile['profile'],
+            'total_platforms' => $profile['total_platforms']
         ]);
     }
 }

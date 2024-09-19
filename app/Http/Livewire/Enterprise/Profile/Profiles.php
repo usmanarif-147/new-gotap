@@ -99,9 +99,12 @@ class Profiles extends Component
             'profiles.username',
             'profiles.photo',
             'profiles.phone',
-
+            'profile_cards.card_id',
+            'cards.uuid'
             // 'profiles.status',
         )
+            ->leftJoin('profile_cards', 'profiles.id', 'profile_cards.profile_id')
+            ->leftJoin('cards', 'profile_cards.card_id', 'cards.id')
             // ->when($this->filterByStatus, function ($query) {
             //     if ($this->filterByStatus == 2) {
             //         $query->where('profiles.status', 0);
@@ -127,6 +130,7 @@ class Profiles extends Component
             })
             ->where('profiles.enterprise_id', auth()->id())
             ->orderBy('profiles.created_at', 'desc');
+
 
         return $filteredData;
     }
@@ -160,9 +164,9 @@ class Profiles extends Component
     {
 
         $data = $this->getData();
-
         $this->heading = "Profiles";
         $profiles = $data->paginate(10);
+        // dd($profiles);
 
         $this->total = $profiles->total();
 

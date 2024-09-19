@@ -33,7 +33,7 @@ class SetPasswordController extends Controller
                 'token' => null,
             ]);
 
-            return redirect()->route('enterprise.login.form');
+            return view('enterprise.auth.thankyou');
         } catch (Exception $ex) {
             return redirect()->back()->with('message', $ex->getMessage());
         }
