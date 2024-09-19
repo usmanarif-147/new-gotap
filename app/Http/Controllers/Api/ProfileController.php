@@ -165,7 +165,7 @@ class ProfileController extends Controller
         if (!$exist) {
             return response()->json([
                 'message' => 'User Does not exist'
-            ], 401);
+            ], 400);
         }
         // check card exist
         $exist = Card::where('id', $request->card_id)
@@ -174,7 +174,7 @@ class ProfileController extends Controller
         if (!$exist) {
             return response()->json([
                 'message' => 'Card Does not exist'
-            ], 401);
+            ], 400);
         }
         // check card status
         $card = Card::find($request->card_id);
