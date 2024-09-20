@@ -47,7 +47,7 @@
                                 <label>Direct</label>
                             </div>
                             <div class="col-7 form-check form-switch">
-                                <input class="form-check-input" wire:change="Isdirect($event.target.checked)"
+                                <input class="form-check-input" wire:change="isDirect($event.target.checked)"
                                     type="checkbox" {{ $profile->user_direct == 1 ? 'checked' : '' }}>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                             </div>
                             <div class="col-7 form-check form-switch">
                                 <input class="form-check-input" type="checkbox"
-                                    wire:change="Isprivate($event.target.checked)"
+                                    wire:change="isPrivate($event.target.checked)"
                                     {{ $profile->private == 1 ? 'checked' : '' }}>
                             </div>
                         </div>
@@ -71,17 +71,17 @@
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $tab_change == 1 ? 'active' : '' }}" type="button"
-                wire:click="edit_profile()">Edit
+                wire:click="editProfile()">Edit
                 Profile</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $tab_change == 2 ? 'active' : '' }}" type="button"
-                wire:click="platforms_links()">Add
+                wire:click="platformsLinks()">Add
                 Links</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $tab_change == 3 ? 'active' : '' }}" type="button"
-                wire:click="platforms_profile()">profile
+                wire:click="platformsProfile()">Profile
                 Links</button>
         </li>
     </ul>

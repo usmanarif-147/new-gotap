@@ -20,89 +20,73 @@ use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
-
     public function index()
     {
-
         $user = User::where('id', auth()->id())->first();
 
-        return response()->json(
-            [
-                'message' => 'User Profiles',
-                'data' => new UserResource($user),
-            ]
-        );
+        return response()->json([
+            'message' => 'User Profiles',
+            'data' => new UserResource($user),
+        ]);
     }
 
     public function profile()
     {
         $profile = getActiveProfile();
         $platforms = DB::table('profile_platforms')
-            ->select(
-                'platforms.id',
-                'platforms.title',
-                'platforms.icon',
-                'platforms.input',
-                'platforms.baseUrl',
-                'profile_platforms.created_at',
-                'profile_platforms.path',
-                'profile_platforms.label',
-                'profile_platforms.platform_order',
-                'profile_platforms.direct',
-                'profile_platforms.profile_id'
-            )
+            ->select('platforms.id', 'platforms.title', 'platforms.icon', 'platforms.input', 'platforms.baseUrl', 'profile_platforms.created_at', 'profile_platforms.path', 'profile_platforms.label', 'profile_platforms.platform_order', 'profile_platforms.direct', 'profile_platforms.profile_id')
             ->join('platforms', 'platforms.id', '=', 'profile_platforms.platform_id')
             ->where('user_id', auth()->id())
             ->where('profile_id', $profile->id)
             ->orderBy('profile_platforms.platform_order')
             ->get();
 
-        return response()->json(
-            [
-                'profile' => new UserProfileResource($profile),
-            ]
-        );
+        return response()->json([
+            'profile' => new UserProfileResource($profile),
+        ]);
     }
 
     public function switchProfile(Request $request)
     {
-        $request->validate([
-            'profile_id' => ['required']
-        ], [
-            'profile_id.required' => 'Please enter valid Profile Id'
-        ]);
+        $request->validate(
+            [
+                'profile_id' => ['required'],
+            ],
+            [
+                'profile_id.required' => 'Please enter valid Profile Id',
+            ],
+        );
 
         $exist = Profile::where('user_id', auth()->id())
             ->where('id', $request->profile_id)
             ->exists();
         if (!$exist) {
             return response()->json([
-                'message' => 'Profile Does not exist'
+                'message' => 'Profile Does not exist',
             ]);
         }
 
         $active = Profile::where('user_id', auth()->id())
             ->where('id', $request->profile_id)
-            ->first()
-            ->active;
+            ->first()->active;
         if ($active) {
             return response()->json([
-                'message' => 'Profile is Already Active'
+                'message' => 'Profile is Already Active',
             ]);
         }
 
         Profile::where('user_id', auth()->id())->update([
-            'active' => 0
+            'active' => 0,
         ]);
 
         Profile::where('user_id', auth()->id())
             ->where('id', $request->profile_id)
             ->update([
-                'active' => 1
+                'active' => 1,
             ]);
 
         return response()->json([
-            'message' => 'Profile Switched Successfully'
+            'message' => 'Profile Switched Successfully',
         ]);
     }
 
@@ -138,10 +122,9 @@ class ProfileController extends Controller
 
             return response()->json([
                 'message' => trans('profile created successfully'),
-                'profile' => new UserProfileResource($profile)
+                'profile' => new UserProfileResource($profile),
             ]);
         } catch (Exception $ex) {
-
             DB::rollBack();
             return response()->json([
                 'message' => $ex->getMessage(),
@@ -151,40 +134,48 @@ class ProfileController extends Controller
 
     public function addEnterpiseProfile(Request $request)
     {
-        $data = $request->validate([
-            'user_id' => 'required',
-            'card_id' => 'required'
-        ], [
-            'user_id.required' => 'User id is required',
-            'card_id.required' => 'Card Id is required'
-        ]);
+        $data = $request->validate(
+            [
+                'user_id' => 'required',
+                'card_id' => 'required',
+            ],
+            [
+                'user_id.required' => 'User id is required',
+                'card_id.required' => 'Card Id is required',
+            ],
+        );
 
         // check user exist
-        $exist = User::where('id', $request->user_id)
-            ->exists();
+        $exist = User::where('id', $request->user_id)->exists();
         if (!$exist) {
-            return response()->json([
-                'message' => 'User Does not exist'
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'User Does not exist',
+                ],
+                400,
+            );
         }
-        // check card exist
-        $exist = Card::where('id', $request->card_id)
-            ->orWhere('uuid', $request->card_id)
-            ->exists();
-        if (!$exist) {
-            return response()->json([
-                'message' => 'Card Does not exist'
-            ], 400);
+        // check card status and existence
+        $card = Card::Where('uuid', $request->card_id)->first();
+
+        if (!$card) {
+            return response()->json(
+                [
+                    'message' => 'Card Does not exist',
+                ],
+                400,
+            );
         }
-        // check card status
-        $card = Card::where('id', $request->card_id)
-            ->orWhere('uuid', $request->card_id)
-            ->first();
+
         if ($card->status == 0) {
-            return response()->json([
-                'message' => 'Card is not active yet with any profile!'
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Card is not active yet with any profile!',
+                ],
+                400,
+            );
         }
+
         // link profile with user
         $profileCard = ProfileCard::where('card_id', $card->id)->first();
         $profileCardID = $profileCard->id;
@@ -195,7 +186,7 @@ class ProfileController extends Controller
             DB::table('profile_platforms')
                 ->where('id', $value->id)
                 ->update([
-                    'user_id' => $request->user_id
+                    'user_id' => $request->user_id,
                 ]);
         }
         Profile::where('id', $profileID)->update(['user_id' => $request->user_id]);
@@ -203,9 +194,8 @@ class ProfileController extends Controller
 
         return response()->json([
             'message' => trans('enterprise profile linked successfully'),
-            'profile' => new UserProfileResource($profile)
+            'profile' => new UserProfileResource($profile),
         ]);
-
     }
 
     public function updateProfile(UpdateProfileRequest $request)
@@ -249,7 +239,7 @@ class ProfileController extends Controller
 
             if (!$isUpdated) {
                 return response()->json([
-                    'message' => trans('backend.profile_updated_failed')
+                    'message' => trans('backend.profile_updated_failed'),
                 ]);
             }
 
@@ -262,11 +252,11 @@ class ProfileController extends Controller
             return response()->json([
                 'message' => trans('backend.profile_updated_success'),
                 // 'user' => new UserResource($user),
-                'profile' => new UserProfileResource($profile)
+                'profile' => new UserProfileResource($profile),
             ]);
         } catch (Exception $ex) {
             return response()->json([
-                'message' => $ex->getMessage()
+                'message' => $ex->getMessage(),
             ]);
         }
     }
@@ -275,36 +265,26 @@ class ProfileController extends Controller
     {
         $profile = getActiveProfile();
         if ($profile->user_direct) {
-            Profile::where('id', $profile->id)
-                ->update(
-                    [
-                        'user_direct' => 0
-                    ]
-                );
+            Profile::where('id', $profile->id)->update([
+                'user_direct' => 0,
+            ]);
 
             $profile = getActiveProfile();
 
-            return response()->json(
-                [
-                    'message' => trans('backend.platform_set_public'),
-                    'profile' => new UserProfileResource($profile)
-                ]
-            );
+            return response()->json([
+                'message' => trans('backend.platform_set_public'),
+                'profile' => new UserProfileResource($profile),
+            ]);
         }
 
-        Profile::where('id', $profile->id)
-            ->update(
-                [
-                    'user_direct' => 1
-                ]
-            );
+        Profile::where('id', $profile->id)->update([
+            'user_direct' => 1,
+        ]);
         $profile = getActiveProfile();
-        return response()->json(
-            [
-                'message' => trans('backend.first_platform_public'),
-                'profile' => new UserProfileResource($profile)
-            ]
-        );
+        return response()->json([
+            'message' => trans('backend.first_platform_public'),
+            'profile' => new UserProfileResource($profile),
+        ]);
     }
 
     // public function privateProfile()
@@ -340,7 +320,7 @@ class ProfileController extends Controller
 
         return response()->json([
             'message' => $message,
-            'data' => $users
+            'data' => $users,
         ]);
     }
 
@@ -349,36 +329,47 @@ class ProfileController extends Controller
      */
     public function deleteProfile(Request $request)
     {
-        $request->validate([
-            'profile_id' => ['required'],
-        ], [
-            'profile_id.required' => 'Please enter valid Profile Id',
-        ]);
+        $request->validate(
+            [
+                'profile_id' => ['required'],
+            ],
+            [
+                'profile_id.required' => 'Please enter valid Profile Id',
+            ],
+        );
 
         $profile = Profile::where('user_id', auth()->id())
             ->where('id', $request->profile_id)
             ->first();
 
         if (!$profile) {
-            return response()->json([
-                'message' => 'Profile Does not exist',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'Profile Does not exist',
+                ],
+                400,
+            );
         }
 
         if ($profile->is_default) {
-            return response()->json([
-                'message' => 'You cannot delete the Default Profile.',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'You cannot delete the Default Profile.',
+                ],
+                400,
+            );
         }
 
         if ($profile->enterprise_id) {
-            return response()->json([
-                'message' => 'You cannot delete an enterprise Profile.',
-            ], 400);
+            return response()->json(
+                [
+                    'message' => 'You cannot delete an enterprise Profile.',
+                ],
+                400,
+            );
         }
 
         try {
-
             DB::transaction(function () use ($profile) {
                 // Delete profile platforms from profile_platforms table
                 $this->deleteProfilePlatforms($profile->id);
@@ -406,22 +397,26 @@ class ProfileController extends Controller
                 $profile->delete();
             });
 
-
             $profile = Profile::where('user_id', auth()->id())->where('active', 1)->first();
 
             if (!$profile) {
-                Profile::where('user_id', auth()->id())->where('is_default', 1)->update([
-                    'active' => 1
-                ]);
+                Profile::where('user_id', auth()->id())
+                    ->where('is_default', 1)
+                    ->update([
+                        'active' => 1,
+                    ]);
             }
 
             return response()->json([
                 'message' => 'Profile deleted successfully',
             ]);
         } catch (Exception $ex) {
-            return response()->json([
-                'message' => $ex->getMessage(),
-            ], 500);
+            return response()->json(
+                [
+                    'message' => $ex->getMessage(),
+                ],
+                500,
+            );
         }
     }
 
