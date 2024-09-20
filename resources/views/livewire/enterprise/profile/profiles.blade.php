@@ -67,10 +67,10 @@
                                         </div>
                                     </td>
                                     <td>
-                                        {{ $profile->name ? $profile->name : 'N\A' }}
+                                        {{ $profile->name ? $profile->name : 'N/A' }}
                                     </td>
                                     <td>
-                                        {{ $profile->username ? $profile->username : 'N\A' }}
+                                        {{ $profile->username ? $profile->username : 'N/A' }}
                                     </td>
                                     <td>
                                         @if (!empty($profile->uuid))
@@ -91,15 +91,15 @@
                                                 </div>
                                             </div>
                                         @else
-                                            N\A
+                                            N/A
                                         @endif
 
                                     </td>
                                     <td>
-                                        {{ $profile->email ? $profile->email : 'N\A' }}
+                                        {{ $profile->email ? $profile->email : 'N/A' }}
                                     </td>
                                     <td>
-                                        {{ $profile->status ? $profile->status : 'N\A' }}
+                                        {{ $profile->status ? $profile->status : 'N/A' }}
                                     </td>
                                     <td>
                                         {{-- <a href="{{ route('enterprise.profile.edit', [$profile->id]) }}"

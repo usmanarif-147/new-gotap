@@ -12,8 +12,6 @@ class Manageprofile extends Component
 
     public $profile_id;
 
-    // public $Isdirect, $Isprivate;
-
     public $tab_change = 1;
 
     protected $listeners = ['refresh-profile' => 'profileData'];
@@ -31,7 +29,7 @@ class Manageprofile extends Component
         return ['profile' => $profile, 'total_platforms' => $total_platforms];
     }
 
-    public function Isdirect($value)
+    public function isDirect($value)
     {
         $string = '';
         $profile = Profile::where('id', $this->profile_id)->first();
@@ -49,7 +47,7 @@ class Manageprofile extends Component
         ]);
     }
 
-    public function Isprivate($value)
+    public function isPrivate($value)
     {
         $string = '';
         $profile = Profile::where('id', $this->profile_id)->first();
@@ -67,22 +65,19 @@ class Manageprofile extends Component
         ]);
     }
 
-    public function edit_profile()
+    public function editProfile()
     {
         $this->tab_change = 1;
-        // $this->profile_id = $profile_id;
     }
 
-    public function platforms_links()
+    public function platformsLinks()
     {
         $this->tab_change = 2;
-        // $this->profile_id = $id;
     }
 
-    public function platforms_profile()
+    public function platformsProfile()
     {
         $this->tab_change = 3;
-        // $this->profile_id = $id;
     }
     public function render()
     {

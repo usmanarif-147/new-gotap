@@ -10,16 +10,15 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-2 p-3" style="height: 50px;width:50px">
+                                    <div class="col-2 align-content-center" style="height: 75px;width:75px">
                                         <img src="{{ asset($platforms['icon'] ? Storage::url($platforms['icon']) : 'pbg.png') }}"
                                             class="img-fluid rounded" height="100%" width="100%">
                                     </div>
-                                    <div class="col-md-6 p-3">
+                                    <div class="col-6 align-content-center">
                                         <h5 class="card-text">{{ $platforms['title'] }}</h5>
                                     </div>
-                                    <div class="col-md-3 p-3">
+                                    <div class="col-2 align-content-center">
                                         @if ($platforms['saved'] == 0)
-                                            {{-- <div class="col-sm-6"> --}}
                                             <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#platformModal"
                                                 wire:click="addPlatform({{ $platforms['id'] }},'{{ $platforms['path'] }}','{{ $platforms['label'] }}','{{ $platforms['direct'] }}','{{ $platforms['title'] }}')">Add</button>
