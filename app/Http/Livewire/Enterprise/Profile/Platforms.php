@@ -19,7 +19,11 @@ class Platforms extends Component
     public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
     public $isEditMode = false;
 
-    protected $listeners = ['refresh-platforms' => 'categoryWithPlatforms'];
+    public $searchTerm = '';
+    // public $categories = [];
+    // public $sortedPlatforms = [];
+
+    protected $listeners = ['refresh-platforms' => 'search'];
 
     public function mount($id, $tab)
     {
@@ -229,15 +233,15 @@ class Platforms extends Component
         return 0;
     }
 
-    public function categoryWithPlatforms()
+    public function categoryWithPlatforms($searchTerm = null)
     {
         $categories = Category::whereExists(function ($query) {
             $query->select(DB::raw(1))
                 ->from('platforms')
                 ->whereRaw('platforms.category_id = categories.id')
                 ->where('platforms.status', '=', '1');
-        })
-            ->get();
+        });
+        $categories = $categories->get();
 
         $userPlatforms = DB::table('profile_platforms')
             ->select(
@@ -268,7 +272,13 @@ class Platforms extends Component
             // Create an empty array to hold the transformed platforms
             $transformedPlatforms = [];
 
-            $platforms = Platform::where('category_id', $category->id)->where('status', 1)->get();
+            $platforms = Platform::where('category_id', $category->id)->where('status', 1);
+            if ($searchTerm) {
+                $platforms->where(function ($query) use ($searchTerm) {
+                    $query->where('platforms.title', 'like', "%{$searchTerm}%");
+                });
+            }
+            $platforms = $platforms->get();
 
             // Loop through each platform in the category
             foreach ($platforms as $platform) {
@@ -324,9 +334,15 @@ class Platforms extends Component
             'sort' => $sort
         ];
     }
+
+    public function search()
+    {
+        $data = $this->categoryWithPlatforms($this->searchTerm);
+        return $data;
+    }
     public function render()
     {
-        $platforms = $this->categoryWithPlatforms();
+        $platforms = $this->search();
         return view('livewire.enterprise.profile.platforms', [
             'platforms' => $platforms['transformedResponse'],
             'sort_platform' => $platforms['sort']

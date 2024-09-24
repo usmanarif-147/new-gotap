@@ -1,5 +1,6 @@
-<x-guest-layout>
+@extends('layouts.enterprise.auth.layout')
 
+@section('content')
     <div class="container-xxl">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner">
@@ -17,7 +18,7 @@
                     @endif
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('admin.password.store') }}">
+                        <form method="POST" action="{{ route('enterprise.password.store') }}">
                             @csrf
 
                             <!-- Password Reset Token -->
@@ -28,15 +29,14 @@
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="text" class="form-control" type="email" name="email" requiired
-                                    value="{{ old('email', $request->email) }}" placeholder="Enter your email"
-                                    autofocus />
+                                    value="{{ old('email', $request->email) }}" placeholder="Enter your email" autofocus />
                                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
                             </div>
 
                             <div class="mb-3">
                                 <label for="email" class="form-label">Password</label>
-                                <input type="password" name="password" class="form-control" requiired
-                                    placeholder="Password" autofocus />
+                                <input type="password" name="password" class="form-control" requiired placeholder="Password"
+                                    autofocus />
                                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
                             </div>
 
@@ -98,4 +98,4 @@
             </x-primary-button>
         </div>
     </form> --}}
-</x-guest-layout>
+@endsection

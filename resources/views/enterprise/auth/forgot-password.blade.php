@@ -1,4 +1,6 @@
-<x-guest-layout>
+@extends('layouts.enterprise.auth.layout')
+
+@section('content')
     <div class="container-xxl">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner">
@@ -14,13 +16,13 @@
                         <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
                             {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
                         </div>
-                        @if(session()->has('message'))
-                        <div class="mb-4 text-sm text-gray-600 dark:text-gray-400" style="color:red">
-                            {{ session('message') }}
-                        </div>
+                        @if (session()->has('message'))
+                            <div class="mb-4 text-sm text-gray-600 dark:text-gray-400" style="color:red">
+                                {{ session('message') }}
+                            </div>
                         @endif
 
-                        <form method="POST" action="{{ route('admin.password.email') }}">
+                        <form method="POST" action="{{ route('enterprise.password.email') }}">
                             @csrf
 
                             <!-- Email Address -->
@@ -46,5 +48,4 @@
             </div>
         </div>
     </div>
-
-</x-guest-layout>
+@endsection

@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class AdminForgotPasswordMail extends Mailable implements ShouldQueue
+class EnterpriserForgotPasswordMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -19,11 +19,9 @@ class AdminForgotPasswordMail extends Mailable implements ShouldQueue
      *
      * @return void
      */
-
-
     public function __construct(public User $admin)
     {
-
+        //
     }
 
     /**
@@ -34,7 +32,7 @@ class AdminForgotPasswordMail extends Mailable implements ShouldQueue
     public function envelope()
     {
         return new Envelope(
-            subject: 'Admin Forgot Password Mail',
+            subject: 'Enterpriser Forgot Password Mail',
         );
     }
 
@@ -46,7 +44,7 @@ class AdminForgotPasswordMail extends Mailable implements ShouldQueue
     public function content()
     {
         return new Content(
-            view: 'emails.admin-forgot-password',
+            view: 'emails.enterpriser-forgot-password',
         );
     }
 

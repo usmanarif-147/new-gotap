@@ -84,6 +84,10 @@
                 wire:click="platformsProfile()">Profile
                 Links</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {{ $tab_change == 4 ? 'active' : '' }}" type="button"
+                wire:click="profileLinkedUser()">Linked User</button>
+        </li>
     </ul>
     <div>
         @if ($tab_change == 1)
@@ -98,6 +102,11 @@
     <div>
         @if ($tab_change == 3)
             <livewire:enterprise.profile.platforms :id="$profile_id" :tab="$tab_change" />
+        @endif
+    </div>
+    <div>
+        @if ($tab_change == 4)
+            <livewire:enterprise.profile.profile-user :id="$profile_id" :tab="$tab_change" />
         @endif
     </div>
     <script>

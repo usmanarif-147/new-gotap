@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\User;
+use DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +22,7 @@ class NewPasswordController extends Controller
     public function createAdmin(Request $request): View
     {
         return view(
-            'auth.reset-password',
+            'admin.auth.reset-password',
             [
                 'request' => $request
             ]
@@ -37,7 +38,7 @@ class NewPasswordController extends Controller
 
 
         $admin = User::where('email', $request->email)
-            ->where('remember_token', $request->token)
+            ->where('token', $request->token)
             ->first();
 
 
@@ -46,7 +47,7 @@ class NewPasswordController extends Controller
         }
 
         $admin->password = Hash::make($request->password);
-        $admin->remember_token = null;
+        $admin->token = null;
         $admin->save();
 
         return redirect()->route('admin.login');
@@ -60,7 +61,7 @@ class NewPasswordController extends Controller
     public function createEnterprise(Request $request): View
     {
         return view(
-            'auth.reset-password',
+            'enterprise.auth.reset-password',
             [
                 'request' => $request
             ]
@@ -76,7 +77,7 @@ class NewPasswordController extends Controller
 
 
         $admin = User::where('email', $request->email)
-            ->where('remember_token', $request->token)
+            ->where('token', $request->token)
             ->first();
 
 
@@ -85,9 +86,9 @@ class NewPasswordController extends Controller
         }
 
         $admin->password = Hash::make($request->password);
-        $admin->remember_token = null;
+        $admin->token = null;
         $admin->save();
 
-        return redirect()->route('admin.login');
+        return redirect()->route('enterprise.login.form');
     }
 }

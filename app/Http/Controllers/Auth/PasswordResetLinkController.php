@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Mail\AdminForgotPasswordMail;
+use App\Mail\EnterpriserForgotPasswordMail;
 use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +20,7 @@ class PasswordResetLinkController extends Controller
      */
     public function createAdmin(): View
     {
-        return view('auth.forgot-password');
+        return view('admin.auth.forgot-password');
     }
     public function storeAdmin(Request $request): RedirectResponse
     {
@@ -33,10 +34,11 @@ class PasswordResetLinkController extends Controller
             return back()->with('message', 'Email is not valid');
         }
 
-        $admin->remember_token = str()->random(50);
+        $admin->token = str()->random(50);
         $admin->save();
 
         Mail::to($admin->email)->send(new AdminForgotPasswordMail($admin));
+        return back()->with('message', 'Email Send To Admin Mail Address');
     }
 
 
@@ -45,7 +47,7 @@ class PasswordResetLinkController extends Controller
      */
     public function createEnterprise(): View
     {
-        return view('auth.forgot-password');
+        return view('enterprise.auth.forgot-password');
     }
     public function storeEnterprise(Request $request): RedirectResponse
     {
@@ -59,11 +61,11 @@ class PasswordResetLinkController extends Controller
             return back()->with('message', 'Email is not valid');
         }
 
-        $admin->remember_token = str()->random(50);
+        $admin->token = str()->random(50);
         $admin->save();
 
-        Mail::to($admin->email)->send(new AdminForgotPasswordMail($admin));
+        Mail::to($admin->email)->send(new EnterpriserForgotPasswordMail($admin));
 
-        return back()->with('message', 'Email Send To Admin');
+        return back()->with('message', 'Email Send To Enterpriser Mail Address');
     }
 }

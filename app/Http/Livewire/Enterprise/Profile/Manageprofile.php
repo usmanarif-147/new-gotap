@@ -79,6 +79,11 @@ class Manageprofile extends Component
     {
         $this->tab_change = 3;
     }
+
+    public function profileLinkedUser()
+    {
+        $this->tab_change = 4;
+    }
     public function render()
     {
         $id = $this->profile_id;

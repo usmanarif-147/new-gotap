@@ -33,7 +33,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <a href="{{ route('admin.password.request') }}">
+                                <a href="{{ route('enterprise.password.request') }}">
                                     <small>Forgot Password?</small>
                                 </a>
                             </div>

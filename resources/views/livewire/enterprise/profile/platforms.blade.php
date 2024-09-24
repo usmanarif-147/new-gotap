@@ -1,6 +1,11 @@
 <div>
     @if ($tab_change == 2)
         <div class="row">
+            <div class="col-md-3 offset-9">
+                <label for=""> Search </label>
+                <input class="form-control me-2" type="text" wire:model.debounce.500ms="searchTerm" placeholder="Search"
+                    aria-label="Search">
+            </div>
             @foreach ($platforms as $category)
                 <h5 class="fs-4 fw-bolder">
                     {{ $category['name'] }}

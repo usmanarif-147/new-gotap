@@ -3,12 +3,14 @@
 namespace App\Http\Livewire\Enterprise\Profile;
 
 use App\Models\Card;
+use App\Models\Group;
 use App\Models\Profile;
 use App\Models\ProfileCard;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class Profiles extends Component
 {
@@ -16,17 +18,21 @@ class Profiles extends Component
     use WithFileUploads, WithPagination;
     protected $paginationTheme = 'bootstrap';
 
-    public $profileId, $methodType, $modalTitle, $modalBody, $modalActionBtnColor, $modalActionBtnText;
+    public $profileId;
+
+    public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
 
     public $search = '', $filterByStatus, $filterByCategory, $sortBy;
 
     public $total, $heading, $statuses = [], $categories;
 
-    protected $listeners = ['activateTag'];
+    protected $listeners = [
+        'activateTag',
+        'profiles-refresh-enterprisers' => 'getData'
+    ];
 
     public function activateTag($card_uuid, $profile_id)
     {
-        // dd($profile_id);
         $card = null;
         $check = 1;
         // check card exist
@@ -68,7 +74,6 @@ class Profiles extends Component
                 'type' => 'success',
                 'message' => 'Card activated successfully!',
             ]);
-            // $this->resetPage();
         }
 
     }
@@ -100,7 +105,8 @@ class Profiles extends Component
             'profiles.photo',
             'profiles.phone',
             'profile_cards.card_id',
-            'cards.uuid'
+            'profile_cards.status as cardStatus',
+            'cards.uuid as card_uuid'
             // 'profiles.status',
         )
             ->leftJoin('profile_cards', 'profiles.id', 'profile_cards.profile_id')
@@ -135,29 +141,130 @@ class Profiles extends Component
         return $filteredData;
     }
 
+    public function confirmCardStatus($card_id, $profile_id)
+    {
+        $this->profileId = $profile_id;
+        $this->cardId = $card_id;
+        $this->c_modal_heading = 'Are You Sure';
+        $this->c_modal_body = 'You Want To Change Status of card';
+        $this->c_modal_btn_text = 'Accept';
+        $this->c_modal_btn_color = 'btn-success';
+        $this->c_modal_method = 'profileCardStatus';
+        $this->dispatchBrowserEvent('confirm-modal');
+    }
+
+    public function closeModal()
+    {
+        $this->c_modal_heading = '';
+        $this->c_modal_body = '';
+        $this->c_modal_btn_text = '';
+        $this->c_modal_btn_color = '';
+        $this->c_modal_method = '';
+        $this->dispatchBrowserEvent('close-modal');
+    }
+
+    public function profileCardStatus()
+    {
+        $profileCard = ProfileCard::where('profile_id', $this->profileId)
+            ->where('card_id', $this->cardId)->first();
+
+        $profileCard->update(['status' => $profileCard->status ? 0 : 1]);
+        $this->closeModal();
+
+        $this->dispatchBrowserEvent('swal:modal', [
+            'message' => 'Profile Card Status Changed Successfully!',
+            'type' => 'success'
+        ]);
+        $this->emit('profiles-refresh-enterprisers');
+
+    }
+
     public function confirmModal($id)
     {
         $this->profileId = $id;
-        $this->methodType = 'delete';
-        $this->modalTitle = 'Are you sure';
-        $this->modalBody = 'You want to deactivate this platform!';
-        $this->modalActionBtnColor = 'btn-danger';
-        $this->modalActionBtnText = 'Deactivate';
-        $this->dispatchBrowserEvent('confirmModal');
+        $this->c_modal_heading = 'Are You Sure';
+        $this->c_modal_body = 'You want to delete this profile!';
+        $this->c_modal_btn_text = 'Delete';
+        $this->c_modal_btn_color = 'btn-danger';
+        $this->c_modal_method = 'delete';
+        $this->dispatchBrowserEvent('confirm-modal');
     }
 
     public function delete()
     {
+        $profile = Profile::where('id', $this->profileId)->first();
+        $userId = $profile->user_id;
+        DB::transaction(function () use ($profile) {
+            // Delete profile platforms from profile_platforms table
+            $this->deleteProfilePlatforms($profile->id);
 
-        Profile::where('id', $this->profileId)->update([
-            'status' => 0
-        ]);
+            // Delete all cards linked with the profile and set their status to inactive
+            $this->deleteProfileCards($profile->id);
 
+            // Remove the profile from all groups where it exists and decrement total_profiles
+            $this->removeProfileFromGroups($profile->id);
+
+            // Remove from connects
+            $this->removeFromConnects($profile->id);
+
+            // Delete profile cover photo
+            if ($profile->cover_photo) {
+                Storage::disk('public')->delete($profile->cover_photo);
+            }
+
+            // Delete profile photo
+            if ($profile->photo) {
+                Storage::disk('public')->delete($profile->photo);
+            }
+
+            // Delete profile
+            $profile->delete();
+        });
+        if ($userId != null) {
+            $profile = Profile::where('user_id', auth()->id())->where('active', 1)->first();
+
+            if (!$profile) {
+                Profile::where('user_id', auth()->id())
+                    ->where('is_default', 1)
+                    ->update([
+                        'active' => 1,
+                    ]);
+            }
+        }
         $this->resetPage();
+        $this->closeModal();
         $this->dispatchBrowserEvent('swal:modal', [
             'type' => 'success',
-            'message' => 'Platform deactivated successfully!',
+            'message' => 'Profile deleted successfully!',
         ]);
+    }
+
+    private function deleteProfilePlatforms($profileId)
+    {
+        DB::table('profile_platforms')->where('profile_id', $profileId)->delete();
+    }
+
+    private function deleteProfileCards($profileId)
+    {
+        $profile_cards = DB::table('profile_cards')->where('profile_id', $profileId)->get();
+        foreach ($profile_cards as $card) {
+            Card::where('id', $card->card_id)->update(['status' => 0]);
+        }
+        DB::table('profile_cards')->where('profile_id', $profileId)->delete();
+    }
+
+    private function removeFromConnects($profileId)
+    {
+        DB::table('connects')->where('connected_id', $profileId)->delete();
+    }
+
+    private function removeProfileFromGroups($profileId)
+    {
+        $user_groups = DB::table('user_groups')->where('profile_id', $profileId)->get();
+        foreach ($user_groups as $group) {
+            Group::where('id', $group->group_id)->decrement('total_profiles');
+        }
+        DB::table('user_groups')->where('profile_id', $profileId)->delete();
     }
 
     public function render()
@@ -166,7 +273,6 @@ class Profiles extends Component
         $data = $this->getData();
         $this->heading = "Profiles";
         $profiles = $data->paginate(10);
-        // dd($profiles);
 
         $this->total = $profiles->total();
 
