@@ -12,8 +12,7 @@ class Dashboard extends Component
 
     public function mount()
     {
-        // Assuming profiles have a relation with platforms
-        $profiles = Profile::with('platforms')->where('enterprise_id', Auth::user()->id)->get();
+        $profiles = Profile::where('enterprise_id', Auth::user()->id)->orderBy('tiks', 'DESC')->take(10)->get();
         $this->chartData = $this->prepareChartData($profiles);
         $this->totalProfiles = Profile::where('enterprise_id', Auth::user()->id)->count();
         $this->activeCards = Profile::join('profile_cards', 'profiles.id', 'profile_cards.profile_id')->count();
@@ -24,10 +23,9 @@ class Dashboard extends Component
         $data = [];
 
         foreach ($profiles as $profile) {
-            $data['labels'][] = $profile->username; // or another unique identifier
-            $data['data'][] = $profile->platforms->count(); // Number of attached platforms
+            $data['labels'][] = $profile->username;
+            $data['data'][] = $profile->tiks;
         }
-
         return $data;
     }
     public function render()

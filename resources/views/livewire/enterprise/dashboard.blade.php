@@ -27,7 +27,7 @@
                     data: {
                         labels: chartData.labels,
                         datasets: [{
-                            label: 'Platforms per Profile',
+                            label: 'Total views',
                             data: chartData.data,
                             backgroundColor: 'rgba(75, 192, 192, 0.2)',
                             borderColor: 'rgba(75, 192, 192, 1)',

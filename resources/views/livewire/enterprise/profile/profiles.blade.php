@@ -53,7 +53,7 @@
                                 <th> Username </th>
                                 <th> Uuid Link </th>
                                 <th> Email </th>
-                                <th> Status </th>
+                                <th> Card Status </th>
                                 <th> Actions </th>
                             </tr>
                         </thead>
@@ -73,21 +73,20 @@
                                         {{ $profile->username ? $profile->username : 'N/A' }}
                                     </td>
                                     <td>
-                                        @if (!empty($profile->uuid))
+                                        @if (!empty($profile->card_uuid))
                                             <div class="row">
                                                 <div class="col-md-10">
                                                     <input id="card-{{ $profile->card_id }}" type="hidden"
-                                                        value="{{ $profile->uuid }}">
-                                                    {{ $profile->uuid }}
+                                                        value="{{ $profile->card_uuid }}">
+                                                    {{-- {{ $profile->uuid }} --}}
                                                 </div>
                                                 <div class="col-md-2">
                                                     <a href="javascript:void(0)"
                                                         onclick="copy('{{ $profile->card_id }}')">
-                                                        <i class="bx bx-clipboard" data-toggle="tooltip"
-                                                            data-placement="top" title="Copy Link"
-                                                            aria-hidden="true"></i>
+                                                        <i class="bx bx-clipboard" data-bs-toggle="tooltip"
+                                                            data-bs-offset="0,4" data-bs-placement="top"
+                                                            title="Copy Link" aria-hidden="true"></i>
                                                     </a>
-
                                                 </div>
                                             </div>
                                         @else
@@ -99,28 +98,49 @@
                                         {{ $profile->email ? $profile->email : 'N/A' }}
                                     </td>
                                     <td>
-                                        {{ $profile->status ? $profile->status : 'N/A' }}
+                                        @if (!empty($profile->card_uuid))
+                                            <span
+                                                class="badge {{ $profile->cardStatus ? 'bg-label-success' : 'bg-label-danger' }} me-1">
+                                                {{ $profile->cardStatus ? 'Active' : 'Inactive' }}
+                                            </span>
+                                        @else
+                                            N/A
+                                        @endif
                                     </td>
                                     <td>
+                                        @if ($profile->card_uuid != null)
+                                            <button
+                                                class="btn {{ $profile->cardStatus ? 'btn-danger' : 'btn-success' }} btn-sm"
+                                                data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top"
+                                                data-bs-html="true"
+                                                title="{{ $profile->cardStatus ? 'card inactivate' : 'card activate' }}"
+                                                wire:click="confirmCardStatus({{ $profile->card_id }},{{ $profile->id }})">
+                                                <i class='bx bx-card'></i>
+                                            </button>
+                                        @else
+                                            <button class="btn btn-danger btn-sm" data-id={{ $profile->id }}
+                                                type="button" data-bs-dismiss="modal" data-bs-toggle="modal"
+                                                data-bs-target="#qr_scan" class="btn btn-custom btn-sm">
+                                                {{-- Activate by QR --}}
+                                                <i class='bx bx-qr-scan'></i>
+                                            </button>
+                                        @endif
                                         {{-- <a href="{{ route('enterprise.profile.edit', [$profile->id]) }}"
                                             class="btn btn-warning" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                             data-bs-placement="top" data-bs-html="true" title="Edit">
                                             <i class="bx bx-edit-alt"></i>
                                         </a> --}}
-                                        <button
-                                            class="btn btn-danger btn-sm {{ $profile->uuid != null ? 'disabled' : '' }}"
-                                            data-id={{ $profile->id }} type="button" data-bs-dismiss="modal"
-                                            data-bs-toggle="modal" data-bs-target="#qr_scan"
-                                            class="btn btn-custom btn-sm">
-                                            {{-- Activate by QR --}}
-                                            <i class='bx bx-qr-scan'></i>
-                                        </button>
                                         <a href="{{ route('enterprise.profile.manage', [$profile->id]) }}"
                                             class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                             data-bs-placement="top" data-bs-html="true" title="Manage">
                                             {{-- Manage Profile --}}
                                             <i class='bx bx-street-view'></i>
                                         </a>
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
+                                            data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
+                                            title="delete" wire:click="confirmModal({{ $profile->id }})">
+                                            <i class='bx bx-trash'></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -160,6 +180,7 @@
             </div>
         </div>
     </div>
+    @include('livewire.admin.confirm-modal')
 
     <script>
         var QrScanModal = document.getElementById('qr_scan');
@@ -310,6 +331,13 @@
                 title: event.detail.message,
                 icon: event.detail.type,
             });
+        });
+        window.addEventListener('confirm-modal', event => {
+            $('#confirmModal').modal('show')
+        });
+
+        window.addEventListener('close-modal', event => {
+            $('#confirmModal').modal('hide')
         });
     </script>
     {{-- <script>
