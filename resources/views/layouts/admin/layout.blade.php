@@ -17,9 +17,7 @@
     @include('layouts.admin.partials.css')
 
     @yield('style')
-
     @livewireStyles
-
 </head>
 
 <body>

@@ -1,9 +1,24 @@
+<style>
+    .custom-logo-width {
+        height: 50px !important;
+        width: 50px !important;
+    }
+
+    .custom-logo-width img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover
+    }
+</style>
+
 <div>
 
-    <div class="app-brand demo mb-4">
+    <div class="app-brand demo mb-2 d-flex justify-content-center align-items-center">
         <a href="/admin/dashboard" class="app-brand-link">
-            <span class="app-brand-logo demo" style="background:white">
-                <img src="{{ asset('logo.png') }}" class="img-fluid" width="140" alt="Logo here">
+            <span class="app-brand-logo demo " style="background:white">
+                <div class="custom-logo-width">
+                    <img src="{{ asset('logo.png') }}" class="img-fluid  " alt="Logo here">
+                </div>
             </span>
         </a>
 
@@ -66,6 +81,8 @@
                 <div>Change Password</div>
             </a>
         </li>
+
+
     </ul>
 
 </div>
