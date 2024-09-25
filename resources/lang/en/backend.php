@@ -100,5 +100,6 @@ return [
     'platform_clicks' => 'Platform Clicks',
     'platforms' => 'Platforms',
     'groups' => 'Groups',
+    'created_at' => 'Created Date',
 
 ];
