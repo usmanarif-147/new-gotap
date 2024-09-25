@@ -88,6 +88,10 @@
             <button class="nav-link {{ $tab_change == 4 ? 'active' : '' }}" type="button"
                 wire:click="profileLinkedUser()">Linked User</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {{ $tab_change == 5 ? 'active' : '' }}" type="button"
+                wire:click="profileAnalytics()">Analytics</button>
+        </li>
     </ul>
     <div>
         @if ($tab_change == 1)
@@ -109,6 +113,11 @@
             <livewire:enterprise.profile.profile-user :id="$profile_id" :tab="$tab_change" />
         @endif
     </div>
+    <div>
+        @if ($tab_change == 5)
+            <livewire:enterprise.profile.profile-analytics-chart :id="$profile_id" :tab="$tab_change" />
+        @endif
+    </div>
     <script>
         window.addEventListener('swal:modal', event => {
             swal({
@@ -117,4 +126,7 @@
             });
         });
     </script>
+    @section('script')
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    @endsection
 </div>

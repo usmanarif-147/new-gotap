@@ -11,8 +11,6 @@ use Illuminate\Support\Str;
 class Create extends Component
 {
 
-    public $heading;
-
     public $description, $quantity;
 
 
@@ -20,7 +18,7 @@ class Create extends Component
     {
         return [
             'description' => 'sometimes',
-            'quantity'    => 'numeric|required|min:1',
+            'quantity' => 'numeric|required|min:1',
         ];
     }
 
@@ -28,9 +26,9 @@ class Create extends Component
     {
         return [
             'description.sometimes' => 'sometimes',
-            'quantity.required'     =>  'required',
-            'quantity.numeric'      => 'numeric',
-            'quantity.min'          => 'min:1',
+            'quantity.required' => 'required',
+            'quantity.numeric' => 'numeric',
+            'quantity.min' => 'min:1',
         ];
     }
 
@@ -62,9 +60,6 @@ class Create extends Component
 
     public function render()
     {
-
-        $this->heading = "Create";
-
         return view('livewire.admin.card.create');
     }
 }
