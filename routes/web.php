@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\VCardController;
+use App\Models\Group;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,18 @@ Route::get('/key', function () {
 Route::get('/storage-link', function () {
     Artisan::call('storage:link');
     dd("storage linked");
+});
+
+Route::get('/user-new-group', function () {
+    $users = User::where('role', 'user')->pluck('id');
+    for ($i = 0; $i < $users->count(); $i++) {
+
+        Group::create([
+            'user_id' => $users[$i],
+            'title' => 'leads'
+        ]);
+    }
+    dd('Add new groups');
 });
 
 Route::get('/middleware', function () {

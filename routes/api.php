@@ -70,6 +70,7 @@ Route::middleware('localization')->group(function () {
             Route::post('/updateProfile', [ProfileController::class, 'updateProfile']);
             Route::get('/userDirect', [ProfileController::class, 'userDirect']);
             Route::get('/search', [ProfileController::class, 'search']);
+            Route::get('/profileAnalytics', [ProfileController::class, 'profileAnalytics']);
 
             // Platform
             Route::get('/categories', [CategoryController::class, 'index']);

@@ -61,6 +61,11 @@ class AuthController extends Controller
                 'title' => 'scanned card',
             ]);
 
+            Group::create([
+                'user_id' => $user->id,
+                'title' => 'leads',
+            ]);
+
             Mail::to($user->email)->send(new WelcomeMail($user));
 
             DB::commit();
@@ -115,7 +120,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $token = $user->createToken(getDeviceId()  ?: $user->email)->plainTextToken;
+        $token = $user->createToken(getDeviceId() ?: $user->email)->plainTextToken;
         return response()->json(
             [
 
@@ -157,7 +162,7 @@ class AuthController extends Controller
         DB::table('password_resets')->where('email', $email)->delete();
 
         DB::table('password_resets')->insert([
-            'email' =>  $email,
+            'email' => $email,
             'token' => $otp,
             'created_at' => now(),
         ]);
@@ -205,7 +210,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        $token = $user->createToken(getDeviceId()  ?: $user->email)->plainTextToken;
+        $token = $user->createToken(getDeviceId() ?: $user->email)->plainTextToken;
 
         return response()->json(['message' => trans('backend.password_set'), 'token' => $token]);
     }

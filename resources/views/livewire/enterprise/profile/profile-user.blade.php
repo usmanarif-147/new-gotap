@@ -36,23 +36,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-4">
-                        </div>
-                        <div class="col-4">
-                            <div class="mb-1 row">
-                                <div class="col-5">
-                                    <label>D-link</label>
-                                </div>
-                                <div class="col-7 form-check form-switch">
-                                    <input class="form-check-input" wire:change="dLinkUser({{ $user->id }})"
-                                        type="checkbox" {{ $user ? 'checked' : '' }}>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     @endif

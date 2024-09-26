@@ -447,4 +447,57 @@ class ProfileController extends Controller
         }
         DB::table('user_groups')->where('profile_id', $profileId)->delete();
     }
+
+    public function profileAnalytics()
+    {
+        $profile = getActiveProfile();
+        $profileViews = $profile->tiks;
+        $platforms = DB::table('profile_platforms')
+            ->select(
+                'platforms.id',
+                'platforms.title',
+                'platforms.icon',
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.clicks',
+            )
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
+            ->where('user_id', $profile->id)
+            ->orderBy(('profile_platforms.platform_order'))
+            ->get();
+
+
+        return response()->json(
+            [
+                'ProfileAnalytics' => [
+                    [
+                        'label' => trans('backend.profile_views'),
+                        'profileViews' => $profileViews,
+                        'icon' => 'uploads/photos/profile_views.png',
+                    ],
+                    [
+                        'label' => trans('backend.created_at'),
+                        'createdDate' => $profile->created_at,
+                        'icon' => 'uploads/photos/created_date.png',
+                    ],
+                    [
+                        'label' => trans('backend.platform_clicks'),
+                        'total_clicks' => $platforms->sum('clicks'),
+                        'icon' => 'uploads/photos/total_clicks.png',
+                    ],
+                    [
+                        'label' => trans('backend.platforms'),
+                        'total_platforms' => $platforms->count(),
+                        'icon' => 'uploads/photos/total_platforms.png',
+                    ],
+                    [
+                        'label' => trans('backend.groups'),
+                        'total_groups' => DB::table('user_groups')->where('profile_id', $profile->id)->count(),
+                        'icon' => 'uploads/photos/total_groups.png',
+                    ]
+                ],
+                'platforms' => $platforms
+            ]
+        );
+    }
 }

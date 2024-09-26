@@ -15,8 +15,6 @@ class profileUser extends Component
 
     public $tab_change;
 
-    protected $listeners = ['refresh-profileUser' => 'linkedUser'];
-
     public function mount($id, $tab)
     {
         $this->profile_id = $id;
@@ -32,47 +30,6 @@ class profileUser extends Component
             $profileUser = User::find($profileUser);
             return $profileUser;
         }
-    }
-    public function dLinkUser($user_id)
-    {
-        $profile = Profile::where('id', $this->profile_id)
-            ->where('user_id', $user_id)
-            ->first();
-        if ($profile) {
-            $profileCard = ProfileCard::where('profile_id', $this->profile_id)
-                ->where('user_id', $user_id)->first();
-            if ($profileCard) {
-                $platforms = DB::table('profile_platforms')->where('profile_id', $this->profile_id)
-                    ->where('user_id', $user_id)
-                    ->get();
-                foreach ($platforms as $k => $v) {
-                    DB::table('profile_platforms')->whereId($v->id)->update([
-                        'user_id' => null
-                    ]);
-                }
-                $profileCard->update([
-                    'user_id' => null
-                ]);
-                $profile->update([
-                    'user_id' => null
-                ]);
-            } else {
-                $this->dispatchBrowserEvent('swal:modal', [
-                    'type' => 'danger',
-                    'message' => 'Card not found!',
-                ]);
-            }
-        } else {
-            $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'danger',
-                'message' => 'Profile Not Found!',
-            ]);
-        }
-        $this->dispatchBrowserEvent('swal:modal', [
-            'type' => 'success',
-            'message' => 'User D Link Successfully from this profile!',
-        ]);
-        $this->emit('refresh-profileUser');
     }
     public function render()
     {
