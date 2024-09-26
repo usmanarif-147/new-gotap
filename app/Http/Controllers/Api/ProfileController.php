@@ -462,8 +462,8 @@ class ProfileController extends Controller
                 'profile_platforms.clicks',
             )
             ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
-            ->where('user_id', $profile->id)
-            ->orderBy(('profile_platforms.platform_order'))
+            ->where('profile_id', $profile->id)
+            ->orderBy('profile_platforms.clicks')
             ->get();
 
 
@@ -471,29 +471,34 @@ class ProfileController extends Controller
             [
                 'ProfileAnalytics' => [
                     [
-                        'label' => trans('backend.profile_views'),
+                        'label' => 'World Ranking',
+                        'clicks' => '100%',
+                        'text' => 'You are in top 100% of professionals',
+                    ],
+                    [
+                        'label' => 'Tap Streak',
+                        'clicks' => 0,
+                        'text' => 'You have taped 0',
+                    ],
+                    [
+                        'label' => 'Taps',
                         'clicks' => $profileViews,
-                        'icon' => 'uploads/photos/profile_views.png',
+                        'text' => '',
                     ],
                     [
-                        'label' => trans('backend.created_at'),
-                        'clicks' => $profile->created_at,
-                        'icon' => 'uploads/photos/created_date.png',
-                    ],
-                    [
-                        'label' => trans('backend.platform_clicks'),
+                        'label' => 'Link Taps',
                         'clicks' => $platforms->sum('clicks'),
-                        'icon' => 'uploads/photos/total_clicks.png',
+                        'text' => '',
                     ],
                     [
-                        'label' => trans('backend.platforms'),
-                        'clicks' => $platforms->count(),
-                        'icon' => 'uploads/photos/total_platforms.png',
+                        'label' => 'New Connections',
+                        'clicks' => DB::table('connects')->where('connecting_id', auth()->id())->count(),
+                        'text' => '',
                     ],
                     [
-                        'label' => trans('backend.groups'),
-                        'clicks' => DB::table('user_groups')->where('profile_id', $profile->id)->count(),
-                        'icon' => 'uploads/photos/total_groups.png',
+                        'label' => 'Tap Through Rate',
+                        'clicks' => 0,
+                        'text' => '',
                     ]
                 ],
                 'platforms' => $platforms
