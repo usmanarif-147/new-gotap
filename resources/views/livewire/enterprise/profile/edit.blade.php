@@ -18,16 +18,18 @@
                                     <div class="d-flex align-items-start align-items-sm-center gap-4">
                                         @if ($photo && !is_string($photo))
                                             <img src="{{ $photo->temporaryUrl() }}" alt="user-avatar"
-                                                class="d-block rounded" height="200" width="170">
+                                                class="d-block rounded-circle" style="object-fit: cover" height="80"
+                                                style="object-fit: cover" width="80">
                                         @else
                                             <img src="{{ asset($old_photo ? Storage::url($old_photo) : 'user.png') }}"
-                                                alt="user-avatar" class="d-block rounded" height="150" width="150">
+                                                alt="user-avatar" class="d-block rounded-circle shadow" height="80"
+                                                style="object-fit: cover" width="80">
                                         @endif
                                         <div wire:loading wire:target="photo" wire:key="photo">
                                             <i class="fa fa-spinner fa-spin mt-2 ml-2"></i>
                                         </div>
 
-                                        <div class="icon-upload btn" style="background: #0EA7C1; color:white">
+                                        <div class="icon-upload btn-sm" style="background: #0EA7C1; color:white">
                                             <span>Upload Photo</span>
                                             <input type="file" class="icon-input" wire:model="photo"
                                                 accept="image/png, image/jpeg, image/jpg, image/webp">
@@ -40,16 +42,18 @@
                                     <div class="d-flex align-items-start align-items-sm-center gap-4">
                                         @if ($cover_photo && !is_string($cover_photo))
                                             <img src="{{ $cover_photo->temporaryUrl() }}" alt="user-avatar"
-                                                class="d-block rounded" height="200" width="170">
+                                                class="d-block rounded" style="object-fit: cover" height="70"
+                                                width="170">
                                         @else
                                             <img src="{{ asset($old_cover_photo ? Storage::url($old_cover_photo) : 'user.png') }}"
-                                                alt="user-avatar" class="d-block rounded" height="150" width="150">
+                                                alt="user-avatar" class="d-block rounded" style="object-fit: cover"
+                                                height="70" width="170">
                                         @endif
                                         <div wire:loading wire:target="cover_photo" wire:key="cover_photo">
                                             <i class="fa fa-spinner fa-spin mt-2 ml-2"></i>
                                         </div>
 
-                                        <div class="icon-upload btn" style="background: #0EA7C1; color:white">
+                                        <div class="icon-upload btn-sm" style="background: #0EA7C1; color:white">
                                             <span>Upload Cover Photo</span>
                                             <input type="file" class="icon-input" wire:model="cover_photo"
                                                 accept="image/png, image/jpeg, image/jpg, image/webp">

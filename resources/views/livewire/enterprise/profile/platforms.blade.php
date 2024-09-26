@@ -7,13 +7,13 @@
                     aria-label="Search">
             </div>
             @foreach ($platforms as $category)
-                <h5 class="fs-4 fw-bolder">
+                <h5 class="fs-4 fw-bolder my-4 text-dark">
                     {{ $category['name'] }}
                 </h5>
                 @foreach ($category['platforms'] as $platforms)
                     <div class="col-md-4 mb-2">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body px-4 py-3 shadow">
                                 <div class="row">
                                     <div class="col-2 align-content-center" style="height: 75px;width:75px">
                                         <img src="{{ asset($platforms['icon'] ? Storage::url($platforms['icon']) : 'pbg.png') }}"
@@ -24,7 +24,7 @@
                                     </div>
                                     <div class="col-2 align-content-center">
                                         @if ($platforms['saved'] == 0)
-                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#platformModal"
                                                 wire:click="addPlatform({{ $platforms['id'] }},'{{ $platforms['path'] }}','{{ $platforms['label'] }}','{{ $platforms['direct'] }}','{{ $platforms['title'] }}')">Add</button>
                                         @endif
@@ -41,19 +41,19 @@
             @forelse ($sort_platform as $platforms)
                 <div wire:sortable.item="{{ $platforms['id'] }}" wire:key="platform-{{ $platforms['id'] }}">
                     <div class="mb-2">
-                        <div class="card">
+                        <div class="card my-4">
                             <div class="card-body">
                                 <div class="row">
                                     <div wire:sortable.handle class="col-md-2 py-3" style="height: 50px;width:50px">
-                                        <img src="{{ asset('dots.png') }}" height="100%" width="100%"
-                                            alt="">
+                                        <img src="{{ asset('dots.png') }}" height="100%" width="100%" alt=""
+                                            class="cursor-pointer">
                                     </div>
                                     <div class="col-md-2 py-2" style="height: 75px;width:75px">
                                         <img src="{{ asset($platforms['icon'] ? Storage::url($platforms['icon']) : 'pbg.png') }}"
                                             class="img-fluid rounded" height="100%" width="100%">
                                     </div>
                                     <div class="col-md-4 p-3">
-                                        <h5 class="card-text">{{ $platforms['title'] }}
+                                        <h5 class="card-text pt-1">{{ $platforms['title'] }}
                                         </h5>
                                     </div>
                                     <div class="col-md-4 p-3">
@@ -64,7 +64,7 @@
                                                     wire:click="editPlatform({{ $platforms['id'] }},'{{ $platforms['path'] }}','{{ $platforms['label'] }}','{{ $platforms['direct'] }}','{{ $platforms['title'] }}')">Update</button>
                                             </div>
                                             <div class="col-sm-6">
-                                                <button type="button" class="btn btn-dark btn-sm"
+                                                <button type="button" class="btn btn-danger btn-sm"
                                                     wire:click="deletePlatform({{ $platforms['id'] }})">Delete</button>
                                             </div>
                                         </div>

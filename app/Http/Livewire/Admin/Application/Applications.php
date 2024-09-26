@@ -19,11 +19,11 @@ class Applications extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $search = '', $filterByStatus = '',  $sortBy = '';
+    public $search = '', $filterByStatus = '', $sortBy = '';
 
     public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
 
-    public $total, $heading;
+    public $total;
 
     public $applicationId;
 
@@ -32,14 +32,14 @@ class Applications extends Component
     protected function rules()
     {
         return [
-            'reason'  => ['required']
+            'reason' => ['required']
         ];
     }
 
     protected function messages()
     {
         return [
-            'reason.required'  => ['Reason is required']
+            'reason.required' => ['Reason is required']
         ];
     }
 
@@ -87,7 +87,7 @@ class Applications extends Component
                 'role' => 'enterpriser',
                 'status' => 1,
                 'verified' => 1,
-                'token' =>  Str::random(20) . '_' . Str::random(20)
+                'token' => Str::random(20) . '_' . Str::random(20)
             ]);
 
             $application->update([
@@ -196,8 +196,6 @@ class Applications extends Component
     public function render()
     {
         $data = $this->getData();
-
-        $this->heading = "Applications";
         $applications = $data->paginate(10);
 
         $this->total = $applications->total();

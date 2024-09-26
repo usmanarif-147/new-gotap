@@ -2,7 +2,7 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
-                {{ $heading }}
+                {{-- {{ $heading }} --}}
                 <span>
                     <h5 style="margin-top:10px"> Total: {{ $total }} </h4>
                 </span>
@@ -125,11 +125,6 @@
                                                 <i class='bx bx-qr-scan'></i>
                                             </button>
                                         @endif
-                                        {{-- <a href="{{ route('enterprise.profile.edit', [$profile->id]) }}"
-                                            class="btn btn-warning" data-bs-toggle="tooltip" data-bs-offset="0,4"
-                                            data-bs-placement="top" data-bs-html="true" title="Edit">
-                                            <i class="bx bx-edit-alt"></i>
-                                        </a> --}}
                                         <a href="{{ route('enterprise.profile.manage', [$profile->id]) }}"
                                             class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                             data-bs-placement="top" data-bs-html="true" title="Manage">
@@ -141,6 +136,14 @@
                                             title="delete" wire:click="confirmModal({{ $profile->id }})">
                                             <i class='bx bx-trash'></i>
                                         </button>
+                                        @if ($profile->user_id != null)
+                                            <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
+                                                data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
+                                                title="User Dactivate"
+                                                wire:click="confirmUserDactivate({{ $profile->id }},{{ $profile->user_id }})">
+                                                <i class='bx bx-user-x'></i>
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

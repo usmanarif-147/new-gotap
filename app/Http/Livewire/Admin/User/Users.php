@@ -14,9 +14,9 @@ class Users extends Component
     protected $paginationTheme = 'bootstrap';
 
     // filter valriables
-    public $search = '', $filterByStatus = '', $filterByRole = '',  $sortBy = '';
+    public $search = '', $filterByStatus = '', $filterByRole = '', $sortBy = '';
 
-    public $total, $heading, $statuses = [];
+    public $total, $statuses = [];
 
     public function mount()
     {
@@ -96,7 +96,6 @@ class Users extends Component
     {
         $data = $this->getFilteredData();
 
-        $this->heading = "Users";
         $users = $data->paginate(10);
 
         $this->total = $users->total();

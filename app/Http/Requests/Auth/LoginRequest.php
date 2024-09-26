@@ -51,7 +51,7 @@ class LoginRequest extends FormRequest
                 RateLimiter::hit($this->throttleKey());
 
                 throw ValidationException::withMessages([
-                    'email' => trans('auth.failed'),
+                    'auth_failed' => 'Your password or email is not valid',
                 ]);
             }
         }
@@ -61,7 +61,7 @@ class LoginRequest extends FormRequest
                 RateLimiter::hit($this->throttleKey());
 
                 throw ValidationException::withMessages([
-                    'auth_failed' => trans('auth.failed'),
+                    'auth_failed' => 'Your password or email is not valid',
                 ]);
             }
         }
