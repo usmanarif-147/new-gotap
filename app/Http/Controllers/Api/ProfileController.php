@@ -472,27 +472,27 @@ class ProfileController extends Controller
                 'ProfileAnalytics' => [
                     [
                         'label' => trans('backend.profile_views'),
-                        'profileViews' => $profileViews,
+                        'clicks' => $profileViews,
                         'icon' => 'uploads/photos/profile_views.png',
                     ],
                     [
                         'label' => trans('backend.created_at'),
-                        'createdDate' => $profile->created_at,
+                        'clicks' => $profile->created_at,
                         'icon' => 'uploads/photos/created_date.png',
                     ],
                     [
                         'label' => trans('backend.platform_clicks'),
-                        'total_clicks' => $platforms->sum('clicks'),
+                        'clicks' => $platforms->sum('clicks'),
                         'icon' => 'uploads/photos/total_clicks.png',
                     ],
                     [
                         'label' => trans('backend.platforms'),
-                        'total_platforms' => $platforms->count(),
+                        'clicks' => $platforms->count(),
                         'icon' => 'uploads/photos/total_platforms.png',
                     ],
                     [
                         'label' => trans('backend.groups'),
-                        'total_groups' => DB::table('user_groups')->where('profile_id', $profile->id)->count(),
+                        'clicks' => DB::table('user_groups')->where('profile_id', $profile->id)->count(),
                         'icon' => 'uploads/photos/total_groups.png',
                     ]
                 ],
