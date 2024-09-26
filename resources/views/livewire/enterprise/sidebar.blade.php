@@ -1,8 +1,11 @@
 <div>
-    <div class="app-brand demo mb-4">
+    <div class="app-brand demo mb-2 d-flex justify-content-center align-items-center">
         <a href="/enterprise/dashboard" class="app-brand-link">
             <span class="app-brand-logo demo" style="background:white">
-                <img src="{{ asset('logo.png') }}" class="img-fluid" width="140" alt="Logo here">
+                <div>
+                    <img src="{{ asset('logo.png') }}" class="img-fluid" height="50" width="50" alt="Logo here">
+
+                </div>
             </span>
         </a>
 

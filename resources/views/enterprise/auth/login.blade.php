@@ -13,14 +13,18 @@
                         </a>
                     </div>
                     <div class="card-body">
-                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        @if ($errors->has('auth_failed'))
+                            <div class="mt-2 alert alert-danger">
+                                {{ $errors->first('auth_failed') }}
+                            </div>
+                        @endif
                         <form id="formAuthentication" class="mb-3" method="POST"
                             action="{{ route('enterprise.login') }}">
                             @csrf
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="text" class="form-control" type="email" name="email" requiired
-                                    :value="old('email')" placeholder="Enter your email" autofocus />
+                                <input type="text" class="form-control" type="email" name="email" required
+                                    value="{{ old('email') }}" placeholder="Enter your email" autofocus />
                             </div>
                             <div class="mb-3 form-password-toggle">
                                 <label for="email" class="form-label">Password</label>

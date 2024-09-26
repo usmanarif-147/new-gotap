@@ -1,23 +1,39 @@
 <div>
-    <div>
+    <style>
+        .user-profile {
+            height: 150px;
+            width: 150px;
+        }
+
+        .user-profile img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+    </style>
+    {{-- <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
                 <a href="{{ route('enterprise.profiles') }}"> Profiles </a> / {{ $heading }}
             </h2>
         </div>
-    </div>
+    </div> --}}
     <div>
         <div class="card mb-3">
-            <div class="row p-2">
+            <div class="row p-2 align-items-center">
                 <div class="col-md-3 align-content-center">
-                    <img src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}"
-                        class="img-fluid rounded" height="300" width="250">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="user-profile border p-1 shadow rounded-3 mt-5">
+                            <img src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}"
+                                class="img-fluid rounded">
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-9">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-8">
-                                <h4 class="fw-bold text-center"> Profile Details </h4>
+                                <h4 class="fw-bold text-center text-dark"> Profile Details </h4>
                             </div>
                             <div class="col-6">
                                 <x-custom.detail-section label="Name" :value="$profile->name" />

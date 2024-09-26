@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Admin;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
-class SpyProfileController extends Controller
+class ProfileController extends Controller
 {
     // /**
     //  * Display the user's profile form.
@@ -64,7 +65,7 @@ class SpyProfileController extends Controller
     public function changePassword(Request $request)
     {
         try {
-            Admin::where('id', auth()->id())->update([
+            User::where('id', auth()->id())->update([
                 'password' => Hash::make($request->password)
             ]);
 

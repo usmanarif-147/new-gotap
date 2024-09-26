@@ -6,6 +6,7 @@ use App\Models\Profile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use App\Http\Controllers\ProfileController;
 
 Route::view('/', 'welcome');
 
@@ -91,7 +92,7 @@ Route::get('/account-deletion/policy', function () {
     return view('pages.account-deletion-policy');
 });
 
-
+Route::post('/changePassword', [ProfileController::class, 'changePassword'])->name('profile.change.password');
 
 Route::get('save_contact/{id}', [VCardController::class, 'saveContact'])->name('save.contact');
 
