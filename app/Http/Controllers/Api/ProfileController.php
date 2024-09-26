@@ -471,16 +471,6 @@ class ProfileController extends Controller
             [
                 'ProfileAnalytics' => [
                     [
-                        'label' => 'World Ranking',
-                        'clicks' => '100%',
-                        'text' => 'You are in top 100% of professionals',
-                    ],
-                    [
-                        'label' => 'Tap Streak',
-                        'clicks' => 0,
-                        'text' => 'You have taped 0',
-                    ],
-                    [
                         'label' => 'Taps',
                         'clicks' => $profileViews,
                         'text' => '',
