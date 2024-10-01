@@ -87,56 +87,58 @@
                 </div>
             </div>
             @if ($profile->type == 'enterprise')
-                <!-- Modal -->
-                <div class="modal fade show" id="staticBackdrop" style="display: block;" data-bs-backdrop="static"
-                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal fade {{ $showModal ? 'show' : '' }}" id="userDetails" tabindex="-1"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Details</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Details</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
+
+
                             <div class="modal-body">
-                                <form wire:submit.prevent="viewerDetail">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">Name</label>
-                                        <input type="text" wire:model="name" class="form-control" required>
-                                        <div class="form-text">Please Enter your good name !</div>
-                                        @error('name')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Email address</label>
-                                        <input type="email" wire:model = "email" class="form-control" required>
-                                        <div class="form-text">We'll never share your email with anyone
-                                            else.</div>
-                                        @error('email')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="phone" class="form-label">Phone</label>
-                                        <input type="phone" wire:model="phone" class="form-control" required>
-                                        <div class="form-text">Example Phone "+921234567890"</div>
-                                        @error('phone')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </form>
+
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input type="text" id="name" class="form-control" required>
+                                    <div class="form-text">Please Enter your good name !</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email address</label>
+                                    <input type="email" id = "email" class="form-control" required>
+                                    <div class="form-text">We'll never share your email with anyone
+                                        else.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Phone</label>
+                                    <input type="phone" id="phone" class="form-control" required>
+                                    <div class="form-text">Example Phone "+921234567890"</div>
+                                </div>
+                                <button type="button" onClick="submitForm()" class="btn btn-primary">Submit</button>
+
                             </div>
                         </div>
                     </div>
                 </div>
             @endif
+
+            <!-- Modal -->
+
+
+
         </section>
     @endif
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
     <script>
         $(document).ready(function() {
+
+            $('#userDetails').show()
+
             let url = '{{ $redicretTo }}';
             if (url) {
                 location.href = url;
@@ -149,9 +151,18 @@
                 window.location.href = url;
             }
         });
-        window.addEventListener('closeModal', event => {
-            $('#staticBackdrop').hide();
-        });
+
+        function submitForm() {
+            let name = $('#name').val();
+            let email = $('#email').val();
+            let phone = $('#phone').val();
+
+            @this.set('name', name);
+            @this.set('email', email);
+            @this.set('phone', phone);
+
+            Livewire.emit('submitForm');
+        }
     </script>
 
 </div>

@@ -42,50 +42,50 @@ Route::get('/terms-and-conditions', function () {
 })->name('terms');
 
 
-Route::get('/optimize', function () {
-    Artisan::call('optimize:clear');
-    dd("done");
-});
+// Route::get('/optimize', function () {
+//     Artisan::call('optimize:clear');
+//     dd("done");
+// });
 
-Route::get('/key', function () {
-    Artisan::call('key:generate');
-    dd("key generated");
-});
+// Route::get('/key', function () {
+//     Artisan::call('key:generate');
+//     dd("key generated");
+// });
 
-Route::get('/storage-link', function () {
-    Artisan::call('storage:link');
-    dd("storage linked");
-});
+// Route::get('/storage-link', function () {
+//     Artisan::call('storage:link');
+//     dd("storage linked");
+// });
 
-Route::get('/user-new-group', function () {
-    $users = User::where('role', 'user')->pluck('id');
-    for ($i = 0; $i < $users->count(); $i++) {
+// Route::get('/user-new-group', function () {
+//     $users = User::where('role', 'user')->pluck('id');
+//     for ($i = 0; $i < $users->count(); $i++) {
 
-        Group::create([
-            'user_id' => $users[$i],
-            'title' => 'leads'
-        ]);
-    }
-    dd('Add new groups');
-});
+//         Group::create([
+//             'user_id' => $users[$i],
+//             'title' => 'leads'
+//         ]);
+//     }
+//     dd('Add new groups');
+// });
 
-Route::get('/middleware', function () {
-    Artisan::call('make:middleware Localization');
-    dd("localization done");
-});
+// Route::get('/middleware', function () {
+//     Artisan::call('make:middleware Localization');
+//     dd("localization done");
+// });
 
-Route::get('/set-private-val', function () {
-    User::where('private', 1)->update([
-        'private' => 0
-    ]);
-});
+// Route::get('/set-private-val', function () {
+//     User::where('private', 1)->update([
+//         'private' => 0
+//     ]);
+// });
 
 
 // Profile using card_id
-Route::view('/card_id/{uuid}', 'profile');
+Route::view('/card_id/{uuid}', 'view-profile-by-card');
 
 // Profile using username
-Route::view('/{username}', 'profile');
+Route::view('/{username}', 'view-profile-by-username');
 
 // delete url
 Route::get('/account-deletion/policy', function () {
