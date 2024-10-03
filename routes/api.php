@@ -29,6 +29,7 @@ Route::get('/getCards', function () {
 Route::get('/getAllProfiles', function () {
     return Profile::select(
         'id',
+        'user_id',
         'username',
         'name'
     )
@@ -106,6 +107,8 @@ Route::middleware('localization')->group(function () {
 
             // View User Profile
             Route::post('/viewUserProfile', [ViewProfileController::class, 'viewUserProfile']);  // profile
+            Route::post('/ProfileLeadsEnabled', [ViewProfileController::class, 'profileLeadsEnabled']);
+            Route::get('/ProfileLeads', [ViewProfileController::class, 'profileLeads']);
 
             // Connects
             Route::post('/connect', [ConnectController::class, 'connect']);

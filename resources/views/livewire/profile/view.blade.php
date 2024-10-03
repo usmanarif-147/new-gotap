@@ -86,7 +86,8 @@
                     </div>
                 </div>
             </div>
-            @if ($profile->type == 'enterprise')
+            @if (!$profilecheck)
+                {{-- @if (!auth()->user()) --}}
                 <!-- Modal -->
                 <div class="modal fade show" id="staticBackdrop" style="display: block;" data-bs-backdrop="static"
                     data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -130,6 +131,7 @@
                         </div>
                     </div>
                 </div>
+                {{-- @endif --}}
             @endif
         </section>
     @endif

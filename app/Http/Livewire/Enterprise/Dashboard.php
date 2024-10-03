@@ -15,7 +15,9 @@ class Dashboard extends Component
         $profiles = Profile::where('enterprise_id', Auth::user()->id)->orderBy('tiks', 'DESC')->take(10)->get();
         $this->chartData = $this->prepareChartData($profiles);
         $this->totalProfiles = Profile::where('enterprise_id', Auth::user()->id)->count();
-        $this->activeCards = Profile::join('profile_cards', 'profiles.id', 'profile_cards.profile_id')->count();
+        $this->activeCards = Profile::join('profile_cards', 'profiles.id', 'profile_cards.profile_id')
+            ->where('profiles.enterprise_id', Auth::user()->id)
+            ->count();
     }
 
     private function prepareChartData($profiles)

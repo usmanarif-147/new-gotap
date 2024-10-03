@@ -15,7 +15,7 @@ class View extends Component
     public $identifier = null;
 
     public $redicretTo = null;
-    public $profile, $platforms = [];
+    public $profile, $platforms = [], $profileCheck = false;
 
     public $name, $email, $phone;
 
@@ -26,16 +26,6 @@ class View extends Component
 
     public function getProfileData()
     {
-        // if ($this->identifier == 'uuid') {
-        //     $this->profile = Card::join('profile_cards', 'cards.id', 'profile_cards.card_id')
-        //         ->join('profiles', 'profiles.id', 'profile_cards.profile_id')
-        //         ->where('cards.uuid', request()->segment(2))
-        //         ->select('profiles.*', 'profile_cards.status as card_status')
-        //         ->first();
-        //     if (!$this->profile || !$this->profile->card_status) {
-        //         return abort(404);
-        //     }
-        // } else {
         $this->profile = Profile::select(
             'id',
             'username',
@@ -56,7 +46,6 @@ class View extends Component
         if (!$this->profile) {
             return abort(404);
         }
-        // }
         if ($this->profile->user_id != null) {
             User::where('id', $this->profile->user_id)->increment('tiks');
         }
@@ -133,22 +122,28 @@ class View extends Component
 
     public function viewerDetail()
     {
-        if ($this->profile->user_id == null) {
-            $userId = null;
-        } else {
-            $userId = $this->profile->user_id;
-        }
         $data = ['name' => $this->name, 'email' => $this->email, 'phone' => $this->phone];
         DB::table('leads')->insert([
-            'profile_id' => $this->profile->id,
-            'user_id' => $userId,
             'enterprise_id' => $this->profile->enterprise_id,
+            'employee_id' => $this->profile->user_id,
+            'viewing_id' => $this->profile->id,
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
         $this->dispatchBrowserEvent('closeModal');
 
+    }
+
+    public function userdetail()
+    {
+        $user = auth()->user();
+        if ($user) {
+            $this->profileCheck = Profile::where('user_id', $user->id)->orwhere('enterprise_id', $user->id)->exists();
+        }
+        return $this->profile;
     }
 
 
@@ -156,9 +151,11 @@ class View extends Component
     public function render()
     {
         $this->getProfileData();
+        $this->userdetail();
         return view('livewire.profile.view', [
             'profile' => $this->profile,
-            'platforms' => $this->platforms
+            'platforms' => $this->platforms,
+            'profilecheck' => $this->profileCheck,
         ]);
     }
 }

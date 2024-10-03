@@ -86,7 +86,7 @@
                     </div>
                 </div>
             </div>
-            @if ($profile->type == 'enterprise')
+            @if (!$profilecheck)
                 <div class="modal fade {{ $showModal ? 'show' : '' }}" id="userDetails" tabindex="-1"
                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">

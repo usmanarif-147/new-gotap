@@ -14,17 +14,14 @@ return new class extends Migration {
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-                ->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('employee_id')
+                ->nullable()->constrained('users');
             $table->foreignId('enterprise_id')
-                ->nullable()->constrained('users')
-                ->onDelete('cascade');
-            $table->foreignId('profile_id')
-                ->nullable()->constrained('profiles')
-                ->onDelete('cascade');
-            $table->foreignId('card_id')
-                ->nullable()->constrained('cards')
-                ->onDelete('cascade');
+                ->nullable()->constrained('users');
+            $table->foreignId('viewing_id')
+                ->nullable()->constrained('profiles');
+            $table->foreignId('viewer_id')
+                ->nullable()->constrained('profiles');
             $table->string('name', 255)->nullable();
             $table->string('email', 255)->nullable();
             $table->string('phone', 255)->nullable();

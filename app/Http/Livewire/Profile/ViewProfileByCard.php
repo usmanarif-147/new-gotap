@@ -15,7 +15,7 @@ class ViewProfileByCard extends Component
     public $identifier = null;
 
     public $redicretTo = null;
-    public $profile, $platforms = [];
+    public $profile, $platforms = [], $profileCheck = false;
 
     public $name, $email, $phone;
 
@@ -30,12 +30,6 @@ class ViewProfileByCard extends Component
 
     public function getProfileData()
     {
-        // if ($this->identifier == 'uuid') {
-        // $this->profile = Card::join('profile_cards', 'cards.id', 'profile_cards.card_id')
-        //     ->join('profiles', 'profiles.id', 'profile_cards.profile_id')
-        //     ->where('cards.uuid', $this->identifier)
-        //     ->select('profiles.*', 'profile_cards.status as card_status')
-        //     ->first();
         $this->profile = Card::join('profile_cards', 'cards.id', '=', 'profile_cards.card_id')
             ->join('profiles', 'profiles.id', '=', 'profile_cards.profile_id')
             ->where('cards.uuid', $this->identifier)
@@ -125,30 +119,37 @@ class ViewProfileByCard extends Component
             ->where('cards.uuid', $this->identifier)
             ->select('profiles.*', 'profile_cards.status as card_status', 'profile_cards.card_id as card_id')
             ->first();
-        if ($this->profile->user_id == null) {
-            $userId = null;
-        } else {
-            $userId = $this->profile->user_id;
-        }
         $data = ['name' => $this->name, 'email' => $this->email, 'phone' => $this->phone];
         DB::table('leads')->insert([
-            'profile_id' => $this->profile->id,
-            'user_id' => $userId,
-            'card_id' => $this->profile->card_id,
             'enterprise_id' => $this->profile->enterprise_id,
+            'employee_id' => $this->profile->user_id,
+            'viewing_id' => $this->profile->id,
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
         $this->modalShow = 0;
+    }
+
+    public function userdetail()
+    {
+        $user = auth()->user();
+        if ($user) {
+            $this->profileCheck = Profile::where('user_id', $user->id)->orwhere('enterprise_id', $user->id)->exists();
+        }
+        return $this->profile;
     }
 
     public function render()
     {
         $this->getProfileData();
+        $this->userdetail();
         return view('livewire.profile.view-profile-by-card', [
             'profile' => $this->profile,
-            'platforms' => $this->platforms
+            'platforms' => $this->platforms,
+            'profilecheck' => $this->profileCheck,
         ]);
     }
 }

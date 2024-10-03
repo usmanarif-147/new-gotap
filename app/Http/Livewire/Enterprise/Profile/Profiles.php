@@ -329,7 +329,6 @@ class Profiles extends Component
     {
 
         $data = $this->getData();
-        $this->heading = "Profiles";
         $profiles = $data->paginate(10);
 
         $this->total = $profiles->total();
