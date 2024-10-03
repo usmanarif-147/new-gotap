@@ -45,16 +45,13 @@ class ProfileAnalyticsChart extends Component
         $platforms = DB::table('profile_platforms')
             ->select(
                 'platforms.id',
-                'platforms.title',
-                'platforms.icon',
-                'profile_platforms.path',
                 'profile_platforms.label',
                 'profile_platforms.clicks',
             )
             ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
-            ->where('user_id', $profile->id)
+            ->where('profile_id', $profile->id)
             ->where('profile_platforms.created_at', '>=', $startDate)
-            ->orderBy(('profile_platforms.platform_order'))
+            ->orderBy('profile_platforms.platform_order')
             ->get();
 
         $analyticsData = [

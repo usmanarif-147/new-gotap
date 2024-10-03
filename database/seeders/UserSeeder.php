@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-        for ($i = 0; $i < 25; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $user = User::create([
                 'name' => $faker->name,
                 'email' => $faker->email,
@@ -31,6 +31,7 @@ class UserSeeder extends Seeder
                 'phone' => $faker->phoneNumber,
                 'type' => 'social',
                 'is_default' => 1,
+                'is_leads_enabled' => 1,
                 'active' => 1,
                 'private' => 0
             ]);

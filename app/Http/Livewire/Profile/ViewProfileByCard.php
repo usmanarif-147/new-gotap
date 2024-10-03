@@ -2,15 +2,15 @@
 
 namespace App\Http\Livewire\Profile;
 
+use Livewire\Component;
 use App\Models\Card;
 use App\Models\Platform;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Livewire\Component;
 
-class View extends Component
+class ViewProfileByCard extends Component
 {
     public $identifier = null;
 
@@ -19,31 +19,23 @@ class View extends Component
 
     public $name, $email, $phone;
 
+    public $showModal = 1;
+
+    protected $listeners = ['submitForm'];
+
     public function mount()
     {
-        $this->identifier = request()->username;
+        $this->identifier = request()->segment(2);
     }
 
     public function getProfileData()
     {
-        $this->profile = Profile::select(
-            'id',
-            'username',
-            'type',
-            'job_title',
-            'work_position',
-            'bio',
-            'company',
-            'photo',
-            'cover_photo',
-            'user_direct',
-            'user_id',
-            'enterprise_id',
-            'private'
-        )
-            ->where('username', $this->identifier)
+        $this->profile = Card::join('profile_cards', 'cards.id', '=', 'profile_cards.card_id')
+            ->join('profiles', 'profiles.id', '=', 'profile_cards.profile_id')
+            ->where('cards.uuid', $this->identifier)
+            ->select('profiles.*', 'profile_cards.status as card_status')
             ->first();
-        if (!$this->profile) {
+        if (!$this->profile || !$this->profile->card_status) {
             return abort(404);
         }
         if ($this->profile->user_id != null) {
@@ -120,8 +112,13 @@ class View extends Component
         }
     }
 
-    public function viewerDetail()
+    public function submitForm()
     {
+        $this->profile = Card::join('profile_cards', 'cards.id', '=', 'profile_cards.card_id')
+            ->join('profiles', 'profiles.id', '=', 'profile_cards.profile_id')
+            ->where('cards.uuid', $this->identifier)
+            ->select('profiles.*', 'profile_cards.status as card_status', 'profile_cards.card_id as card_id')
+            ->first();
         $data = ['name' => $this->name, 'email' => $this->email, 'phone' => $this->phone];
         DB::table('leads')->insert([
             'enterprise_id' => $this->profile->enterprise_id,
@@ -133,8 +130,7 @@ class View extends Component
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-        $this->dispatchBrowserEvent('closeModal');
-
+        $this->modalShow = 0;
     }
 
     public function userdetail()
@@ -146,13 +142,11 @@ class View extends Component
         return $this->profile;
     }
 
-
-
     public function render()
     {
         $this->getProfileData();
         $this->userdetail();
-        return view('livewire.profile.view', [
+        return view('livewire.profile.view-profile-by-card', [
             'profile' => $this->profile,
             'platforms' => $this->platforms,
             'profilecheck' => $this->profileCheck,
