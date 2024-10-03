@@ -62,7 +62,7 @@ class ViewProfileController extends Controller
 
         if (!$isLoggedInUserProfile) {
             Profile::where('id', $res['profile']->id)->increment('tiks');
-            // $checkLeadsEnabled = $res['profile']->is_leads_enabled;
+            $checkLeadsEnabled = $res['profile']->is_leads_enabled;
             $profile = Profile::where('user_id', auth()->id())->where('is_default', 1)->first();
             User::where('id', $res['profile']->enterprise_id)->increment('tiks');
             User::where('id', $res['profile']->user_id)->increment('tiks');
@@ -79,27 +79,31 @@ class ViewProfileController extends Controller
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
+            } else {
+                if ($checkLeadsEnabled) {
+                    if (!$is_connected) {
+                        $checkEntry = DB::table('leads')->where('employee_id', $res['profile']->user_id)
+                            ->where('viewing_id', $res['profile']->id)->where('viewer_id', $profile->id)->first();
+                        if ($checkEntry) {
+                            DB::table('leads')->update([
+                                'created_at' => now(),
+                            ]);
+                        } else {
+                            DB::table('leads')->insert([
+                                'enterprise_id' => $res['profile']->enterprise_id,
+                                'employee_id' => $res['profile']->user_id,
+                                'viewing_id' => $res['profile']->id,
+                                'viewer_id' => $profile->id,
+                                'name' => $profile->name,
+                                'email' => $profile->email,
+                                'phone' => $profile->phone,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]);
+                        }
+                    }
+                }
             }
-
-            // if ($checkLeadsEnabled) {
-            //     $connectedProfile = DB::table('connects')
-            //         ->where('connecting_id', $res['profile']->user_id)
-            //         ->where('connected_id', getActiveProfile()->id)
-            //         ->first();
-
-            //     if (!$connectedProfile) {
-            //         DB::table('leads')->insert([
-            //             'viewing_user_id' => $res['profile']->user_id,
-            //             'viewing_profile_id' => $res['profile']->id,
-            //             'viewer_profile_id' => $profile->id,
-            //             'name' => $profile->name,
-            //             'email' => $profile->email,
-            //             'phone' => $profile->phone,
-            //             'created_at' => now(),
-            //             'updated_at' => now(),
-            //         ]);
-            //     }
-            // }
         }
 
         $profile = Profile::where('id', $res['profile']->id)->first();
@@ -120,6 +124,7 @@ class ViewProfileController extends Controller
         ]);
         return response()->json([
             'message' => 'Leads ' . $status . ' Succsessfully',
+            'is_lead_enabled' => getActiveProfile()->is_leads_enabled,
         ]);
     }
 
@@ -140,6 +145,7 @@ class ViewProfileController extends Controller
             )
             ->leftJoin('profiles', 'leads.viewer_id', '=', 'profiles.id')
             ->where('leads.employee_id', auth()->id())
+            ->where('leads.viewing_id', getActiveProfile()->id)
             ->get();
 
         return response()->json([
