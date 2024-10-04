@@ -233,6 +233,7 @@ class ProfileController extends Controller
                     'company' => $request->company,
                     'address' => $request->address,
                     'bio' => $request->bio,
+                    'is_leads_enabled' => $request->is_leads_enabled,
                     'cover_photo' => $cover_photo,
                     'photo' => $photo,
                 ]);

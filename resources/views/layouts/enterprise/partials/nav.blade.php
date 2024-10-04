@@ -30,7 +30,8 @@
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                        <img src="{{ asset('avatar.png') }}" alt class="w-px-40 h-auto rounded-circle" id="userImage" />
+                        <img src="{{ asset(auth()->user()->enterprise_logo ? Storage::url(auth()->user()->enterprise_logo) : 'avatar.png') }}"
+                            alt class="rounded-circle" id="userImage" />
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">

@@ -21,6 +21,9 @@ Route::middleware('enterprise')->group(function () {
     //manage profile
     Route::view('enterprise/profile/{id}/manage', 'enterprise.profile.manageprofile')->name('enterprise.profile.manage');
 
+    //edit Enterprise
+    Route::view('enterprise/edit', 'enterprise.edit-enterprise')->name('enterprise.edit');
+
     Route::get('enterprise/confirm-password', [ConfirmablePasswordController::class, 'showEnterprise'])
         ->name('enterprise.password.confirm');
 
