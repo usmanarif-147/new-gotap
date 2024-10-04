@@ -120,7 +120,7 @@
                                     <div class="mb-3">
                                         <label for="phone" class="form-label">Phone</label>
                                         <input type="phone" wire:model="phone" class="form-control" required>
-                                        <div class="form-text">Enter your phone</div>
+                                        <div class="form-text">Enter phone number</div>
                                         @error('phone')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror

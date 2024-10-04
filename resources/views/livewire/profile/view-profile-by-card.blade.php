@@ -114,7 +114,7 @@
                                 <div class="mb-3">
                                     <label for="phone" class="form-label">Phone</label>
                                     <input type="phone" id="phone" class="form-control" required>
-                                    <div class="form-text">Enter your phone</div>
+                                    <div class="form-text">Enter phone number</div>
                                 </div>
                                 <button type="button" onClick="submitForm()" class="btn btn-primary">Submit</button>
 
