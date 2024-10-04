@@ -15,21 +15,21 @@ class AccountOpeningForm extends Component
     public function rules()
     {
         return [
-            'name'              => ['required'],
-            'email'             => ['required', 'unique:users'],
-            'phone'             => ['required'],
-            'enterprise_type'   => ['required']
+            'name' => ['required'],
+            'email' => ['required', 'unique:users'],
+            'phone' => ['required', 'unique:users'],
+            'enterprise_type' => ['required']
         ];
     }
 
     public function messages()
     {
         return [
-            'name.required'              =>  'Name is required',
-            'email.required'             =>  'Email is required',
-            'email.unique'               =>  'Your account Already Exists',
-            'phone.required'             =>  'Phone number is required',
-            'enterprise_type.required'   =>  'Enterprise Type is required',
+            'name.required' => 'Name is required',
+            'email.required' => 'Email is required',
+            'email.unique' => 'Your account Already Exists',
+            'phone.required' => 'Phone number is required',
+            'enterprise_type.required' => 'Enterprise Type is required',
         ];
     }
 

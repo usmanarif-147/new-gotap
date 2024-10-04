@@ -139,7 +139,7 @@
                                         @if ($profile->user_id != null)
                                             <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
                                                 data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
-                                                title="User Dactivate"
+                                                title="User Disconnect"
                                                 wire:click="confirmUserDactivate({{ $profile->id }},{{ $profile->user_id }})">
                                                 <i class='bx bx-user-x'></i>
                                             </button>

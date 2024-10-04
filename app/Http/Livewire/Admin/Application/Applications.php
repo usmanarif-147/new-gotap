@@ -77,13 +77,14 @@ class Applications extends Component
     public function accept()
     {
         $application = Application::findOrFail($this->applicationId);
+        // dd($application);
         try {
             DB::beginTransaction();
             $user = User::create([
                 'name' => $application->name,
                 'email' => $application->email,
-                'phone' => $application->email,
-                'enterprise_type' => $application->name,
+                'phone' => $application->phone,
+                'enterprise_type' => $application->enterprise_type,
                 'role' => 'enterpriser',
                 'status' => 1,
                 'verified' => 1,

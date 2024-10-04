@@ -273,8 +273,8 @@ class Profiles extends Component
         $this->profileId = $id;
         $this->userId = $user_id;
         $this->c_modal_heading = 'Are You Sure';
-        $this->c_modal_body = 'You want to Dactivate User from profile!';
-        $this->c_modal_btn_text = 'Dactivate';
+        $this->c_modal_body = 'You want to Disconnect User from profile!';
+        $this->c_modal_btn_text = 'Disconnect';
         $this->c_modal_btn_color = 'btn-danger';
         $this->c_modal_method = 'dLinkUser';
         $this->dispatchBrowserEvent('confirm-modal');
