@@ -41,17 +41,15 @@
                                         <div class="img-holder">
                                             <img src="{{ asset($lead->viewing_photo && Storage::disk('public')->exists($lead->viewing_photo) ? Storage::url($lead->viewing_photo) : 'user.png') }}"
                                                 alt="Viewer Photo">
-                                            {{-- <img
-                                                src="{{ asset($lead->viewing_photo ? Storage::url($lead->viewing_photo) : 'user.png') }}"> --}}
-                                            {{ $lead->viewing_username ? $lead->viewing_username : 'N/A' }}
                                         </div>
+                                        {{ $lead->viewing_username ? $lead->viewing_username : 'N/A' }}
                                     </td>
                                     <td>
                                         <div class="img-holder">
                                             <img src="{{ asset($lead->viewer_photo && Storage::disk('public')->exists($lead->viewer_photo) ? Storage::url($lead->viewer_photo) : 'user.png') }}"
                                                 alt="Viewer Photo">
-                                            {{ $lead->viewer_username ? $lead->viewer_username : 'N/A' }}
                                         </div>
+                                        {{ $lead->viewer_username ? $lead->viewer_username : 'N/A' }}
                                     </td>
                                     <td>
                                         {{ $lead->name ? $lead->name : 'N/A' }}

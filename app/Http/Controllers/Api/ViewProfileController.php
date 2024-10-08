@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Profile\UpdateProfileLeadRequest;
 use App\Http\Requests\Api\Profile\ViewProfileRequest;
 use App\Http\Resources\Api\UserProfileResource;
 use App\Models\Card;
@@ -136,6 +137,7 @@ class ViewProfileController extends Controller
                 'leads.name',
                 'leads.email',
                 'leads.phone',
+                'leads.note',
                 'profiles.work_position',
                 'profiles.job_title',
                 'profiles.company',
@@ -151,6 +153,42 @@ class ViewProfileController extends Controller
         return response()->json([
             'message' => 'Profile Leads',
             'leads' => $leads,
+        ]);
+    }
+
+    public function updateProfileLead(UpdateProfileLeadRequest $request)
+    {
+        $lead = DB::table('leads')->find($request->id);
+        if (!$lead) {
+            return response()->json([
+                'message' => 'Lead not Found',
+            ], 404);
+        }
+        DB::table('leads')
+            ->where('id', $request->id)->update([
+                    'name' => $request->name,
+                    'note' => $request->note,
+                ]);
+        $updatedLead = DB::table('leads')
+            ->select(
+                'profiles.id as profile_id',
+                'leads.name',
+                'leads.email',
+                'leads.phone',
+                'leads.note',
+                'profiles.work_position',
+                'profiles.job_title',
+                'profiles.company',
+                'profiles.address',
+                'profiles.photo',
+                'leads.created_at as created_date'
+            )
+            ->leftJoin('profiles', 'leads.viewer_id', '=', 'profiles.id')
+            ->where('leads.id', $request->id)
+            ->first();
+        return response()->json([
+            'message' => 'Lead Update Successfully!',
+            'lead' => $updatedLead,
         ]);
     }
 }

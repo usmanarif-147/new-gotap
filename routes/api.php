@@ -107,8 +107,10 @@ Route::middleware('localization')->group(function () {
 
             // View User Profile
             Route::post('/viewUserProfile', [ViewProfileController::class, 'viewUserProfile']);  // profile
+            //profile Leads
             Route::post('/ProfileLeadsEnabled', [ViewProfileController::class, 'profileLeadsEnabled']);
             Route::get('/ProfileLeads', [ViewProfileController::class, 'profileLeads']);
+            Route::post('/UpdateProfileLead', [ViewProfileController::class, 'updateProfileLead']);
 
             // Connects
             Route::post('/connect', [ConnectController::class, 'connect']);
