@@ -1,61 +1,109 @@
-<div>
-    {{-- <div>
-        <div class="d-flex justify-content-between">
-            <h2 class="card-header">
-                <a href="{{ route('enterprise.profiles') }}"> Profiles </a> / {{ $heading }}
-            </h2>
-        </div>
-    </div> --}}
+@section('style')
+    <style>
+        /* Camera icon for cover photo */
+        .camera-icon-cover {
+            position: absolute;
+            bottom: 5%;
+            right: 5%;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border-radius: 30%;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 10;
+        }
 
+        .camera-icon-cover i {
+            font-size: 20px;
+            pointer-events: none;
+        }
+
+        .cover-photo img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+
+        /* Camera icon for profile photo */
+        .camera-icon-profile {
+            position: absolute;
+            top: 80%;
+            left: 13%;
+            transform: translate(-50%, -50%);
+            background-color: rgb(0, 0, 0);
+            color: white;
+            border-radius: 30%;
+            padding: 2px;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .camera-icon-profile i {
+            font-size: 20px;
+        }
+
+        .profile-photo {
+            position: relative;
+        }
+
+        .profile-photo img {
+            border: 5px solid #fff;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+@endsection
+<div>
     <div class="row">
         <div class="col-xl">
             <div class="card mb-4">
                 <form wire:submit.prevent="saveProfile">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <div class="d-flex align-items-start align-items-sm-center gap-4">
-                                        @if ($photo && !is_string($photo))
-                                            <img src="{{ $photo->temporaryUrl() }}" alt="user-avatar"
-                                                class="d-block rounded" height="200" width="170">
-                                        @else
-                                            <img src="{{ asset('frame_2.webp') }}" alt="user-avatar"
-                                                class="d-block rounded" height="200" width="170">
-                                        @endif
-                                        <div wire:loading wire:target="photo" wire:key="photo">
-                                            <i class="fa fa-spinner fa-spin mt-2 ml-2"></i>
-                                        </div>
-
-                                        <div class="icon-upload btn" style="background: #0EA7C1; color:white">
-                                            <span>Upload Photo</span>
-                                            <input type="file" class="icon-input" wire:model="photo"
-                                                accept="image/png, image/jpeg, image/jpg, image/webp">
-                                        </div>
+                            <!-- Cover Photo -->
+                            <div class="cover-photo position-relative" style="height: 300px;">
+                                @if ($cover_photo && !is_string($cover_photo))
+                                    <img src="{{ $cover_photo->temporaryUrl() }}" alt="cover-photo"
+                                        style="height: 300px; width: 100%; object-fit: cover;">
+                                @else
+                                    <div style="height: 300px; width: 100%; background-color: #f5f5f5;">
+                                        <!-- Default Cover Photo -->
                                     </div>
-                                </div>
+                                @endif
+
+                                <!-- Cover photo input and camera icon -->
+                                <input type="file" id="cover_photo" wire:model="cover_photo"
+                                    accept="image/png, image/jpeg, image/jpg, image/webp" class="d-none">
+                                <label for="cover_photo" class="camera-icon-cover">
+                                    <i class="bx bxs-camera"></i>
+                                </label>
                             </div>
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <div class="d-flex align-items-start align-items-sm-center gap-4">
-                                        @if ($cover_photo && !is_string($cover_photo))
-                                            <img src="{{ $cover_photo->temporaryUrl() }}" alt="user-avatar"
-                                                class="d-block rounded" height="200" width="170">
-                                        @else
-                                            <img src="{{ asset('frame_2.webp') }}" alt="user-avatar"
-                                                class="d-block rounded" height="200" width="170">
-                                        @endif
-                                        <div wire:loading wire:target="cover_photo" wire:key="cover_photo">
-                                            <i class="fa fa-spinner fa-spin mt-2 ml-2"></i>
-                                        </div>
 
-                                        <div class="icon-upload btn" style="background: #0EA7C1; color:white">
-                                            <span>Upload Cover Photo</span>
-                                            <input type="file" class="icon-input" wire:model="cover_photo"
-                                                accept="image/png, image/jpeg, image/jpg, image/webp">
-                                        </div>
-                                    </div>
+
+                            <div class="profile-photo position-relative"
+                                style="position: relative; top: -75px; left:10px;">
+                                @if ($photo && !is_string($photo))
+                                    <img src="{{ $photo->temporaryUrl() }}" alt="user-avatar"
+                                        class="rounded-circle border"
+                                        style="width: 150px; height: 150px; object-fit: cover;">
+                                @else
+                                    <img src="{{ asset('frame_2.webp') }}" alt="user-avatar"
+                                        class="rounded-circle border"
+                                        style="width: 150px; height: 150px; object-fit: cover;">
+                                @endif
+                                <div wire:loading wire:target="photo" wire:key="photo">
+                                    <i class="fa fa-spinner fa-spin mt-2 ml-2"></i>
                                 </div>
+                                <input type="file" id="profile_photo" wire:model="photo"
+                                    accept="image/png, image/jpeg, image/jpg, image/webp" class="d-none">
+                                <label for="profile_photo" class="camera-icon-profile">
+                                    <i class="bx bxs-camera"></i>
+                                </label>
                             </div>
                         </div>
 

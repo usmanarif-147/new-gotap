@@ -2,8 +2,9 @@
     <div class="row mb-5">
 
         <x-custom.dashboard-card background="bg-label-info" icon="bx bx-user-pin" title="Profiles" :total="$totalProfiles" />
-        <x-custom.dashboard-card background="bg-label-secondary" icon="bx bx-credit-card-alt" title="Active Cards"
+        <x-custom.dashboard-card background="bg-label-primary" icon="bx bx-credit-card-alt" title="Active Cards"
             :total="$activeCards" />
+        <x-custom.dashboard-card background="bg-label-warning" icon="bx bxs-group" title="Total Leads" :total="$leads" />
 
         <div class="col-lg-12 col-md-12 col-12 mb-4">
             <div class="card h-100">
