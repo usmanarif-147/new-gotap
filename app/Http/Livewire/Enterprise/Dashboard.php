@@ -2,13 +2,14 @@
 
 namespace App\Http\Livewire\Enterprise;
 
+use DB;
 use Livewire\Component;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Auth;
 
 class Dashboard extends Component
 {
-    public $chartData, $totalProfiles, $activeCards;
+    public $chartData, $totalProfiles, $activeCards, $leads;
 
     public function mount()
     {
@@ -17,6 +18,11 @@ class Dashboard extends Component
         $this->totalProfiles = Profile::where('enterprise_id', Auth::user()->id)->count();
         $this->activeCards = Profile::join('profile_cards', 'profiles.id', 'profile_cards.profile_id')
             ->where('profiles.enterprise_id', Auth::user()->id)
+            ->count();
+        $this->leads = DB::table('leads')
+            ->leftJoin('profiles as viewingProfile', 'leads.viewing_id', '=', 'viewingProfile.id')
+            ->leftJoin('profiles as viewerProfile', 'leads.viewer_id', '=', 'viewerProfile.id')
+            ->where('viewingProfile.enterprise_id', auth()->id())
             ->count();
     }
 

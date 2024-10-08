@@ -44,7 +44,7 @@
                             <div class="col-6">
                                 {{-- <h4 class="fw-bold"> Analytics </h4> --}}
                                 <x-custom.detail-section label="Profile" :value="$profile->username" />
-                                <x-custom.detail-section label="Cards" :value="$profile->email" />
+                                <x-custom.detail-section label="Card" :value="$card_status" />
                                 <x-custom.detail-section label="Views" :value="$profile->tiks" />
                                 <x-custom.detail-section label="Platforms" :value="$total_platforms" />
                             </div>

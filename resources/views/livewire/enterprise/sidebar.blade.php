@@ -25,33 +25,11 @@
                 <div>Dashboard</div>
             </a>
         </li>
-        {{-- <li class="menu-item">
-            <a href="#submenu1" data-bs-toggle="collapse" aria-expanded="false" aria-controls="submenu1"
-                class="menu-link d-flex align-items-center">
-                <i class="menu-icon tf-icons bx bx-user-pin"></i>
-                <div class="ms-2">Profiles</div>
-                <i class="bx bx-chevron-down ms-auto"></i> <!-- Chevron icon for dropdown indicator -->
-            </a>
-            <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                <li class="menu-item {{ request()->routeIs('enterprise.profile.create') ? 'active' : '' }}">
-                    <a href="{{ route('enterprise.profile.create') }}" class="menu-link d-flex align-items-center">
-                        <i class="menu-icon tf-icons bx bx-plus-circle"></i>
-                        <div class="ms-2">Create Profile</div>
-                    </a>
-                </li>
-                <li class="menu-item {{ request()->routeIs('enterprise.profiles') ? 'active' : '' }}">
-                    <a href="{{ route('enterprise.profiles') }}" class="menu-link d-flex align-items-center">
-                        <i class="menu-icon tf-icons bx bx-list-ul"></i>
-                        <div class="ms-2">Manage Profiles</div>
-                    </a>
-                </li>
-            </ul>
-        </li> --}}
 
         <li class="menu-item {{ request()->routeIs('enterprise.profiles') ? 'active' : '' }}">
             <a href="{{ route('enterprise.profiles') }}" class="menu-link">
                 <i class='menu-icon tf-icons bx bxs-user-detail'></i>
-                <div>Manage Profiles</div>
+                <div>Team Profiles</div>
             </a>
         </li>
         <li class="menu-item {{ request()->routeIs('enterprise.leads') ? 'active' : '' }}">
