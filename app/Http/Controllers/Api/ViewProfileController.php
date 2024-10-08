@@ -133,6 +133,7 @@ class ViewProfileController extends Controller
     {
         $leads = DB::table('leads')
             ->select(
+                'leads.id',
                 'profiles.id as profile_id',
                 'leads.name',
                 'leads.email',
