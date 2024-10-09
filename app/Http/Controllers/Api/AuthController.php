@@ -102,7 +102,8 @@ class AuthController extends Controller
             return response()->json(
                 [
                     'message' => trans('backend.email_not_registered'),
-                ]
+                ],
+                401
             );
         }
 
@@ -110,14 +111,15 @@ class AuthController extends Controller
             return response()->json(
                 [
                     'message' => trans('backend.account_delete_or_deactivate'),
-                ]
+                ],
+                401
             );
         }
 
         if (!auth()->attempt($request->only('email', 'password'))) {
             return response()->json([
                 'message' => trans('backend.password_incorrect')
-            ]);
+            ], 401);
         }
 
         $token = $user->createToken(getDeviceId() ?: $user->email)->plainTextToken;
