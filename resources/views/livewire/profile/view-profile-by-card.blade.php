@@ -87,41 +87,44 @@
                 </div>
             </div>
             @if (!$profilecheck)
-                <div class="modal fade {{ $showModal ? 'show' : '' }}" id="userDetails" tabindex="-1"
-                    aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Details</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-
-
-                            <div class="modal-body">
-
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Name</label>
-                                    <input type="text" id="name" class="form-control" required>
-                                    <div class="form-text">Please Enter your good name !</div>
+                @if ($profile->is_leads_enabled == 1)
+                    <div class="modal fade {{ $showModal ? 'show' : '' }}" id="userDetails" tabindex="-1"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Details</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email address</label>
-                                    <input type="email" id = "email" class="form-control" required>
-                                    <div class="form-text">We'll never share your email with anyone
-                                        else.</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="phone" class="form-label">Phone</label>
-                                    <input type="phone" id="phone" class="form-control" required>
-                                    <div class="form-text">Enter phone number</div>
-                                </div>
-                                <button type="button" onClick="submitForm()" class="btn btn-primary">Submit</button>
 
+
+                                <div class="modal-body">
+
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" id="name" class="form-control" required>
+                                        <div class="form-text">Please Enter your good name !</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email address</label>
+                                        <input type="email" id = "email" class="form-control" required>
+                                        <div class="form-text">We'll never share your email with anyone
+                                            else.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Phone</label>
+                                        <input type="phone" id="phone" class="form-control" required>
+                                        <div class="form-text">Enter phone number</div>
+                                    </div>
+                                    <button type="button" onClick="submitForm()"
+                                        class="btn btn-primary">Submit</button>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
             @endif
 
             <!-- Modal -->

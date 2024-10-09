@@ -29,6 +29,7 @@ class Edit extends Component
     $bio,
     $phone,
     $photo,
+    $is_leads_enabled,
     $cover_photo;
 
     public function mount($id)
@@ -45,6 +46,7 @@ class Edit extends Component
         $this->address = $profile->address;
         $this->bio = $profile->bio;
         $this->phone = $profile->phone;
+        $this->is_leads_enabled = $profile->is_leads_enabled;
         if ($profile->photo) {
             $this->old_photo = $profile->photo;
         }
@@ -74,6 +76,7 @@ class Edit extends Component
             'company' => ['nullable', 'string'],
             'address' => ['nullable'],
             'bio' => ['nullable'],
+            'is_leads_enabled' => 'required|boolean',
             'cover_photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ];
@@ -119,7 +122,6 @@ class Edit extends Component
     public function updateProfile()
     {
         $data = $this->validate();
-
         $data['enterprise_id'] = auth()->id();
         $data['photo'] = $this->old_photo;
         $data['cover_photo'] = $this->old_cover_photo;

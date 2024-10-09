@@ -180,6 +180,19 @@
                                         placeholder="Enter bio">
                                 </div>
                             </div>
+                            <div class="col-6 mt-2">
+                                <div class="mb-3 row">
+                                    <div class="col-8">
+                                        <label>Lead Capture Mode</label>
+                                        <p style="color: lightgray">Turn this on the collect the other person's info
+                                            before they access yours</p>
+                                    </div>
+                                    <div class="col-4 form-check form-switch align-content-center">
+                                        <input class="form-check-input" type="checkbox" wire:model="is_leads_enabled"
+                                            {{ $is_leads_enabled == 1 ? 'checked' : '' }}>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer">
