@@ -39,6 +39,7 @@ class View extends Component
             'user_direct',
             'user_id',
             'enterprise_id',
+            'is_leads_enabled',
             'private'
         )
             ->where('username', $this->identifier)
