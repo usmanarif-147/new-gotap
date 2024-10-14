@@ -92,7 +92,8 @@
         <div class="content">
             <h1>Hello, {{ $admin->name }}</h1>
 
-            <a href="{{ route('enterprise.password.reset', [$admin->token]) }}">
+            {{-- <a href="{{ route('enterprise.password.reset', [$admin->token]) }}"> --}}
+            <a href="{{ request()->getSchemeAndHttpHost() . '/enterprise/reset-password/' . $admin->token }}">
                 Reset Password
             </a>
         </div>

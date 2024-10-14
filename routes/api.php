@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CardController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\GroupController;
+use App\Http\Controllers\Api\PassController;
 use App\Http\Controllers\Api\PhoneContactController;
 use App\Http\Controllers\Api\PlatformController;
 use App\Http\Controllers\Api\ProfileController;
@@ -56,9 +57,9 @@ Route::middleware('localization')->group(function () {
     Route::post('/recoverAccount', [AuthController::class, 'recoverAccount']);
 
     Route::post('/otpVerification', [AuthController::class, 'otpVerify']);
+    Route::get('/generate-pass/{user_id}', [PassController::class, 'generatePass']);
 
     Route::middleware('auth:sanctum')->group(function () {
-
         Route::middleware('user.status')->group(function () {
 
             // User Profile
