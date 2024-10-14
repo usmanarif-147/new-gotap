@@ -42,10 +42,10 @@ Route::get('/terms-and-conditions', function () {
 })->name('terms');
 
 
-// Route::get('/optimize', function () {
-//     Artisan::call('optimize:clear');
-//     dd("done");
-// });
+Route::get('/optimize', function () {
+    Artisan::call('optimize:clear');
+    dd("done");
+});
 
 // Route::get('/key', function () {
 //     Artisan::call('key:generate');
