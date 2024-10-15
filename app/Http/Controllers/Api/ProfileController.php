@@ -233,6 +233,7 @@ class ProfileController extends Controller
                     'company' => $request->company,
                     'address' => $request->address,
                     'bio' => $request->bio,
+                    'is_leads_enabled' => $request->is_leads_enabled,
                     'cover_photo' => $cover_photo,
                     'photo' => $photo,
                 ]);
@@ -446,5 +447,53 @@ class ProfileController extends Controller
             Group::where('id', $group->group_id)->decrement('total_profiles');
         }
         DB::table('user_groups')->where('profile_id', $profileId)->delete();
+    }
+
+    public function profileAnalytics()
+    {
+        $profile = getActiveProfile();
+        $profileViews = $profile->tiks;
+        $platforms = DB::table('profile_platforms')
+            ->select(
+                'platforms.id',
+                'platforms.title',
+                'platforms.icon',
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.clicks',
+            )
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
+            ->where('profile_id', $profile->id)
+            ->orderBy('profile_platforms.clicks')
+            ->get();
+
+
+        return response()->json(
+            [
+                'ProfileAnalytics' => [
+                    [
+                        'label' => 'Taps',
+                        'clicks' => $profileViews,
+                        'text' => '',
+                    ],
+                    [
+                        'label' => 'Link Taps',
+                        'clicks' => $platforms->sum('clicks'),
+                        'text' => '',
+                    ],
+                    [
+                        'label' => 'New Connections',
+                        'clicks' => DB::table('connects')->where('connecting_id', auth()->id())->count(),
+                        'text' => '',
+                    ],
+                    [
+                        'label' => 'Tap Through Rate',
+                        'clicks' => 0,
+                        'text' => '',
+                    ]
+                ],
+                'platforms' => $platforms
+            ]
+        );
     }
 }

@@ -56,7 +56,6 @@
                  'password': $('#password').val()
              },
              success: function(response) {
-                 console.log(response);
                  $('#changePassword').modal('hide');
                  $('#password').val('')
                  swal({

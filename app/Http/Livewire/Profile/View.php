@@ -15,48 +15,41 @@ class View extends Component
     public $identifier = null;
 
     public $redicretTo = null;
-    public $profile, $platforms = [];
+    public $profile, $platforms = [], $profileCheck = false;
+
+    public $name, $email, $phone;
 
     public function mount()
     {
-        $this->identifier = request()->segment(1) == 'card_id' ? 'uuid' : request()->username;
+        $this->identifier = request()->username;
     }
 
     public function getProfileData()
     {
-
-        if ($this->identifier == 'uuid') {
-            $this->profile = Card::join('profile_cards', 'cards.id', 'profile_cards.card_id')
-                ->join('profiles', 'profiles.id', 'profile_cards.profile_id')
-                ->where('cards.uuid', request()->segment(2))
-                ->select('profiles.*', 'profile_cards.status as card_status')
-                ->first();
-
-            if (!$this->profile || !$this->profile->card_status) {
-                return abort(404);
-            }
-        } else {
-            $this->profile = Profile::select(
-                'id',
-                'username',
-                'job_title',
-                'work_position',
-                'bio',
-                'company',
-                'photo',
-                'cover_photo',
-                'user_direct',
-                'private'
-            )
-                ->where('username', $this->identifier)
-                ->first();
-
-            if (!$this->profile) {
-                return abort(404);
-            }
+        $this->profile = Profile::select(
+            'id',
+            'username',
+            'type',
+            'job_title',
+            'work_position',
+            'bio',
+            'company',
+            'photo',
+            'cover_photo',
+            'user_direct',
+            'user_id',
+            'enterprise_id',
+            'is_leads_enabled',
+            'private'
+        )
+            ->where('username', $this->identifier)
+            ->first();
+        if (!$this->profile) {
+            return abort(404);
         }
-
-        User::where('id', $this->profile->user_id)->increment('tiks');
+        if ($this->profile->user_id != null) {
+            User::where('id', $this->profile->user_id)->increment('tiks');
+        }
         Profile::where('id', $this->profile->id)->increment('tiks');
 
 
@@ -128,14 +121,42 @@ class View extends Component
         }
     }
 
+    public function viewerDetail()
+    {
+        $data = ['name' => $this->name, 'email' => $this->email, 'phone' => $this->phone];
+        DB::table('leads')->insert([
+            'enterprise_id' => $this->profile->enterprise_id,
+            'employee_id' => $this->profile->user_id,
+            'viewing_id' => $this->profile->id,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $this->dispatchBrowserEvent('closeModal');
+
+    }
+
+    public function userdetail()
+    {
+        $user = auth()->user();
+        if ($user) {
+            $this->profileCheck = Profile::where('user_id', $user->id)->orwhere('enterprise_id', $user->id)->exists();
+        }
+        return $this->profile;
+    }
+
 
 
     public function render()
     {
         $this->getProfileData();
+        $this->userdetail();
         return view('livewire.profile.view', [
             'profile' => $this->profile,
-            'platforms' => $this->platforms
+            'platforms' => $this->platforms,
+            'profilecheck' => $this->profileCheck,
         ]);
     }
 }

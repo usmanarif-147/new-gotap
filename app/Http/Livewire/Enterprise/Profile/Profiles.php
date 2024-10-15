@@ -18,7 +18,7 @@ class Profiles extends Component
     use WithFileUploads, WithPagination;
     protected $paginationTheme = 'bootstrap';
 
-    public $profileId;
+    public $profileId, $userId;
 
     public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
 
@@ -104,6 +104,7 @@ class Profiles extends Component
             'profiles.username',
             'profiles.photo',
             'profiles.phone',
+            'profiles.user_id',
             'profile_cards.card_id',
             'profile_cards.status as cardStatus',
             'cards.uuid as card_uuid'
@@ -267,11 +268,67 @@ class Profiles extends Component
         DB::table('user_groups')->where('profile_id', $profileId)->delete();
     }
 
+    public function confirmUserDactivate($id, $user_id)
+    {
+        $this->profileId = $id;
+        $this->userId = $user_id;
+        $this->c_modal_heading = 'Are You Sure';
+        $this->c_modal_body = 'You want to Disconnect User from profile!';
+        $this->c_modal_btn_text = 'Disconnect';
+        $this->c_modal_btn_color = 'btn-danger';
+        $this->c_modal_method = 'dLinkUser';
+        $this->dispatchBrowserEvent('confirm-modal');
+    }
+
+    public function dLinkUser()
+    {
+        $profile = Profile::where('id', $this->profileId)
+            ->where('user_id', $this->userId)
+            ->first();
+        if ($profile) {
+            $profileCard = ProfileCard::where('profile_id', $this->profileId)
+                ->where('user_id', $this->userId)->first();
+            if ($profileCard) {
+                $platforms = DB::table('profile_platforms')->where('profile_id', $this->profileId)
+                    ->where('user_id', $this->userId)
+                    ->get();
+                foreach ($platforms as $k => $v) {
+                    DB::table('profile_platforms')->whereId($v->id)->update([
+                        'user_id' => null
+                    ]);
+                }
+                $profileCard->update([
+                    'user_id' => null
+                ]);
+                $profile->update([
+                    'user_id' => null
+                ]);
+            } else {
+                $this->dispatchBrowserEvent('swal:modal', [
+                    'type' => 'danger',
+                    'message' => 'Card not found!',
+                ]);
+                $this->closeModal();
+            }
+        } else {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'danger',
+                'message' => 'Profile Not Found!',
+            ]);
+            $this->closeModal();
+        }
+        $this->dispatchBrowserEvent('swal:modal', [
+            'type' => 'success',
+            'message' => 'User Dactivate Successfully from this profile!',
+        ]);
+        $this->closeModal();
+        $this->emit('profiles-refresh-enterprisers');
+    }
+
     public function render()
     {
 
         $data = $this->getData();
-        $this->heading = "Profiles";
         $profiles = $data->paginate(10);
 
         $this->total = $profiles->total();

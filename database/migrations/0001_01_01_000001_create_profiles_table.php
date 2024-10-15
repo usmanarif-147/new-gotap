@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -31,6 +30,7 @@ return new class extends Migration
             $table->string('bio', 255)->nullable();
             $table->string('phone', 255)->nullable();
             $table->string('photo', 255)->nullable();
+            $table->tinyInteger('is_leads_enabled')->default(0);
             $table->string('cover_photo', 255)->nullable();
             $table->tinyInteger('is_default')->default(0);
             $table->tinyInteger('active')->default(0);

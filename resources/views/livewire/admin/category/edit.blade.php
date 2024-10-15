@@ -1,11 +1,4 @@
 <div>
-    <div>
-        <div class="d-flex justify-content-between">
-            <h2 class="card-header">
-                <a href="{{ route('admin.categories') }}"> Categories </a> / {{ $heading }}
-            </h2>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-xl">

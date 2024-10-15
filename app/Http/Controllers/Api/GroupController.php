@@ -71,11 +71,11 @@ class GroupController extends Controller
         return response()->json(
             [
                 'data' =>
-                [
-                    'group' => new GroupResource($group),
-                    'group_profiles' => $groupProfiles,
-                    'group_contacts' => ContactResource::collection($groupContacts)
-                ]
+                    [
+                        'group' => new GroupResource($group),
+                        'group_profiles' => $groupProfiles,
+                        'group_contacts' => ContactResource::collection($groupContacts)
+                    ]
             ]
         );
     }

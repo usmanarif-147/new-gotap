@@ -39,7 +39,7 @@ Route::middleware('admin')->group(function () {
     Route::view('/downloadCardsCSV', [Cards::class, 'downloadCsv'])->name('export');
 
     // profile
-    Route::post('/changePassword', [ProfileController::class, 'changePassword'])->name('profile.change.password');
+    // Route::post('/changePassword', [ProfileController::class, 'changePassword'])->name('profile.change.password');
 
     //change password
     Route::get('/change-passwords', [NotifychangepasswordController::class, 'resetAllPasswords']);
