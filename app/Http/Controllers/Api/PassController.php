@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use App\Models\User;
 use PKPass\PKPass;
@@ -12,7 +13,7 @@ class PassController extends Controller
   public function generatePass($id)
   {
 
-    $user = User::findOrFail($id);
+    $profile = Profile::findOrFail($id);
 
     $pass = new PKPass(config('wallet.pkpass.certificate_path'), config('wallet.pkpass.certificate_password'));
 
@@ -22,8 +23,8 @@ class PassController extends Controller
             "formatVersion": 1,
             "organizationName": "Gotaps",
             "teamIdentifier": "' . config('wallet.pkpass.teamIdentifier') . '",
-            "serialNumber": "' . $user->id . '",
-            "backgroundColor": "rgb(22,105,122)",
+            "serialNumber": "' . $profile->id . '",
+            "backgroundColor": "#fff",
             "logoText": "Gotaps",
             "description": "Gotaps pass",
 
@@ -32,26 +33,26 @@ class PassController extends Controller
                     {
                     "key" : "staffNumber",
                       "label" : "Username",
-                      "value" : "' . $user->username . '"
+                      "value" : "' . $profile->username . '"
                     }
                 ],
               "primaryFields" : [
                 {
                   "key" : "staffName",
                   "label" : "Name",
-                  "value" : "' . ($user->first_name . ' ' . $user->last_name) . '"
+                  "value" : "' . ($profile->name) . '"
                 }
               ],
               "secondaryFields" : [
                 {
                   "key" : "telephoneExt",
                   "label" : "Company",
-                  "value" : "' . ($user->company ?? 'N/A') . '"
+                  "value" : "' . ($profile->company ?? 'N/A') . '"
                 },
                 {
                   "key" : "jobTitle",
                   "label" : "Job Title",
-                  "value" : "' . ($user->job_title ?? 'N/A') . '"
+                  "value" : "' . ($profile->job_title ?? 'N/A') . '"
                 }
               ],
               "auxiliaryFields" : [
@@ -66,9 +67,9 @@ class PassController extends Controller
 
             "barcode": {
                 "format": "PKBarcodeFormatQR",
-                "message": "' . str_replace('api.', '', request()->getSchemeAndHttpHost()) . '/p/' . ($user->username ?: $user->id) . '",
+                "message": "' . str_replace('api.', '', request()->getSchemeAndHttpHost()) . '/p/' . ($profile->username ?: $profile->id) . '",
                 "messageEncoding": "iso-8859-1",
-                "altText": "' . $user->username . '"
+                "altText": "' . $profile->username . '"
             }
             }');
 
@@ -79,8 +80,8 @@ class PassController extends Controller
     $pass->addFile('assets/icon.png');
     $pass->addFile('assets/logo.png');
 
-    if ($user->photo && file_exists(public_path('storage/' . $user->photo))) {
-      copy(public_path('storage/' . $user->photo), public_path('assets/thumbnail.png'));
+    if ($profile->photo && file_exists(public_path('storage/' . $profile->photo))) {
+      copy(public_path('storage/' . $profile->photo), public_path('assets/thumbnail.png'));
     } else {
       copy(public_path('avatar.png'), public_path('assets/thumbnail.png'));
     }
