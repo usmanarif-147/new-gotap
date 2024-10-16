@@ -9,23 +9,23 @@ use PKPass\PKPass;
 
 class PassController extends Controller
 {
-    public function generatePass($id)
-    {
+  public function generatePass($id)
+  {
 
-        $user = User::findOrFail($id);
+    $user = User::findOrFail($id);
 
-        $pass = new PKPass(config('wallet.pkpass.certificate_path'), config('wallet.pkpass.certificate_password'));
+    $pass = new PKPass(config('wallet.pkpass.certificate_path'), config('wallet.pkpass.certificate_password'));
 
-        // Pass content
-        $pass->setData('{
+    // Pass content
+    $pass->setData('{
             "passTypeIdentifier": "' . config('wallet.pkpass.passTypeIdentifier') . '",
             "formatVersion": 1,
-            "organizationName": "daap",
+            "organizationName": "Gotaps",
             "teamIdentifier": "' . config('wallet.pkpass.teamIdentifier') . '",
             "serialNumber": "' . $user->id . '",
             "backgroundColor": "rgb(22,105,122)",
-            "logoText": "daap",
-            "description": "daap pass",
+            "logoText": "Gotaps",
+            "description": "Gotaps pass",
 
             "generic" : {
                 "headerFields" : [
@@ -75,19 +75,19 @@ class PassController extends Controller
 
 
 
-        // Add files to the pass package
-        $pass->addFile('assets/icon.png');
-        $pass->addFile('assets/logo.png');
+    // Add files to the pass package
+    $pass->addFile('assets/icon.png');
+    $pass->addFile('assets/logo.png');
 
-        if ($user->photo && file_exists(public_path('storage/' . $user->photo))) {
-            copy(public_path('storage/' . $user->photo), public_path('assets/thumbnail.png'));
-        } else {
-            copy(public_path('avatar.png'), public_path('assets/thumbnail.png'));
-        }
-
-        $pass->addFile('assets/thumbnail.png');
-
-        // Create and output the pass
-        $passFilePath = $pass->create(true);
+    if ($user->photo && file_exists(public_path('storage/' . $user->photo))) {
+      copy(public_path('storage/' . $user->photo), public_path('assets/thumbnail.png'));
+    } else {
+      copy(public_path('avatar.png'), public_path('assets/thumbnail.png'));
     }
+
+    $pass->addFile('assets/thumbnail.png');
+
+    // Create and output the pass
+    $passFilePath = $pass->create(true);
+  }
 }
