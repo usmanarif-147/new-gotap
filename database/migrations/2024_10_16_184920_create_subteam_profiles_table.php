@@ -12,12 +12,10 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('subteams', function (Blueprint $table) {
+        Schema::create('subteam_profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('enterprise_id')->constrained('users');
-            $table->string('name', 255)->nullable();
-            $table->string('description', 255)->nullable();
-            $table->string('logo', 255)->nullable();
+            $table->foreignId('subteam_id')->constrained('subteams');
+            $table->foreignId('profile_id')->constrained('profiles');
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('subteams');
+        Schema::dropIfExists('subteam_profiles');
     }
 };

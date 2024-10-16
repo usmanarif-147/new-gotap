@@ -13,6 +13,8 @@ class SubTeams extends Component
 {
     use WithPagination, WithFileUploads;
 
+    protected $paginationTheme = 'bootstrap';
+
     public $search = '';
 
     public $subteamData;
@@ -59,7 +61,12 @@ class SubTeams extends Component
             $data['logo'] = Storage::disk('public')->put('/uploads/photos', $this->logo);
         }
 
-        EnterpriseSubTeams::create($data);
+        EnterpriseSubTeams::create([
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'logo' => $data['logo'],
+            'enterprise_id' => auth()->id(),
+        ]);
         $this->reset(['logo', 'name', 'description']);
         $this->dispatchBrowserEvent('close-modal');
         $this->dispatchBrowserEvent('swal:modal', [
@@ -138,19 +145,27 @@ class SubTeams extends Component
 
     public function getData()
     {
-        $filteredData = DB::table('subteams')->select(
-            'subteams.id',
-            'subteams.name',
-            'subteams.description',
-            'subteams.logo',
-        )
+        $filteredData = DB::table('subteams')
+            ->select(
+                'subteams.id',
+                'subteams.name',
+                'subteams.description',
+                'subteams.logo',
+                'subteams.enterprise_id',
+                DB::raw('COUNT(subteam_profiles.profile_id) as profile_count'),
+            )
+            ->leftJoin('subteam_profiles', 'subteams.id', '=', 'subteam_profiles.subteam_id')
             ->when($this->search, function ($query) {
                 $query->where(function ($query) {
                     $query->where('subteams.name', 'like', "%$this->search%");
                 });
             })
+            ->where('subteams.enterprise_id', auth()->id())
+            ->groupBy('subteams.id', 'subteams.name', 'subteams.description', 'subteams.logo', 'subteams.enterprise_id')
             ->orderBy('subteams.created_at', 'desc');
+
         return $filteredData;
+
     }
     public function render()
     {
