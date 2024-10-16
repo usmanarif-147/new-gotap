@@ -100,11 +100,17 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td style="width:30%;">
-                                        <div class="">
-                                            <i class="bx bx-user"></i>
-                                            2
-                                        </div>
+                                    <td style="width:45%" class="text-center">
+                                        @if ($subteam->profile_count)
+                                            <button class="bg-light border border-secondary rounded">
+                                                <i class="bx bx-user"></i>
+                                                <span class="pl-5">{{ $subteam->profile_count }}</span>
+                                            </button>
+                                        @else
+                                            <button class="bg-light border border-secondary rounded">
+                                                <span>Add Profiles</span>
+                                            </button>
+                                        @endif
                                     </td>
                                     <td style="width: 10%;">
                                         <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
@@ -263,7 +269,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" wire:click="save">Save Changes</button>
+                    <button type="submit" class="btn btn-primary" wire:click="updateSubteam">Save Changes</button>
                 </div>
             </div>
         </div>

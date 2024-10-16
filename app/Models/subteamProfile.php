@@ -5,14 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class subteams extends Model
+class subteamProfile extends Model
 {
     use HasFactory;
-
     protected $fillable = [
-        'name',
-        'description',
-        'logo',
-        'enterprise_id',
+        'profile_id',
+        'subteam_id',
     ];
 }

@@ -10,6 +10,8 @@ class Leads extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
     public $search = '';
 
     public $total;
