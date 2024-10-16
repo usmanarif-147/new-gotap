@@ -16,28 +16,6 @@ class Leads extends Component
 
     public function getData()
     {
-        // $filteredData = DB::table('leads')->select(
-        //     'leads.id',
-        //     'leads.name',
-        //     'leads.email',
-        //     'leads.phone',
-        //     'leads.viewing_id',
-        //     'leads.viewer_id',
-        //     'leads.created_at',
-        //     'profiles.username',
-        // )
-        //     ->leftJoin('profiles', 'leads.viewing_id', 'profiles.id')
-        //     ->when($this->search, function ($query) {
-        //         $query->where(function ($query) {
-        //             $query->where('leads.name', 'like', "%$this->search%")
-        //                 ->orWhere('leads.email', 'like', "%$this->search%")
-        //                 ->orWhere('leads.phone', 'like', "%$this->search%")
-        //                 ->orWhere('profiles.username', 'like', "%$this->search%");
-        //         });
-        //     })
-        //     ->where('profiles.enterprise_id', auth()->id())
-        //     ->orderBy('leads.created_at', 'desc');
-
         $filteredData = DB::table('leads')->select(
             'leads.id',
             'leads.name',

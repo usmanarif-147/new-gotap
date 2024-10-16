@@ -6,6 +6,7 @@ use DB;
 use Livewire\Component;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Auth;
+use Storage;
 
 class Dashboard extends Component
 {
@@ -28,10 +29,17 @@ class Dashboard extends Component
 
     private function prepareChartData($profiles)
     {
-        $data = [];
+        $fallbackImageUrl = asset('avatar.png');
+
+        $data = [
+            'labels' => [],
+            'photos' => [],
+            'data' => []
+        ];
 
         foreach ($profiles as $profile) {
             $data['labels'][] = $profile->username;
+            $data['photos'][] = $profile->photo ? asset(Storage::url($profile->photo)) : $fallbackImageUrl; // Fallback if no photo
             $data['data'][] = $profile->tiks;
         }
         return $data;

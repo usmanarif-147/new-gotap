@@ -17,12 +17,49 @@
     </div>
 
     @section('script')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             document.addEventListener('livewire:load', function() {
-                const ctx = document.getElementById('profilePlatformChart').getContext('2d');
+                const canvas = document.getElementById('profilePlatformChart');
+                const ctx = canvas.getContext('2d');
+
                 const chartData = @json($chartData);
 
+                // Custom plugin to draw images next to labels
+                const imagePlugin = {
+                    id: 'imagePlugin',
+                    afterDatasetsDraw: function(chart) {
+                        const ctx = chart.ctx;
+                        const meta = chart.getDatasetMeta(0);
+
+                        const imgSize = 30;
+                        chartData.photos.forEach(function(photoUrl, index) {
+                            const dataPoint = meta.data[index];
+                            const img = new Image();
+                            img.src = photoUrl;
+                            img.onload = function() {
+                                const position = dataPoint
+                                    .tooltipPosition();
+                                const x = position.x - (imgSize - 5);
+                                const y = chart.chartArea.bottom - 20;
+
+                                // Create a circular clipping path
+                                ctx.save();
+                                ctx.beginPath();
+                                ctx.arc(x + imgSize / 2, y + imgSize / 2, imgSize / 2, 0, Math.PI *
+                                    2);
+                                ctx.closePath();
+                                ctx.clip(); // Clip to the circular area
+
+                                // Draw the image
+                                ctx.drawImage(img, x, y, imgSize, imgSize);
+                                ctx.restore(); // Restore the context
+                            };
+                        });
+                    }
+                };
+
+                // Create the chart
                 new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -39,9 +76,15 @@
                         scales: {
                             y: {
                                 beginAtZero: true
+                            },
+                            x: {
+                                ticks: {
+                                    autoSkip: false // Ensure all labels are displayed
+                                }
                             }
                         }
-                    }
+                    },
+                    plugins: [imagePlugin] // Add the custom image plugin
                 });
             });
         </script>

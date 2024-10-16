@@ -15,6 +15,9 @@ Route::middleware('enterprise')->group(function () {
     Route::view('enterprise/profile/create', 'enterprise.profile.create')->name('enterprise.profile.create');
     Route::view('enterprise/profile/{id}/edit', 'enterprise.profile.edit')->name('enterprise.profile.edit');
 
+    //SubTeams
+    Route::view('enterprise/subTeams', 'enterprise.profile.subteams')->name('enterprise.profile.subteams');
+
     //leads
     Route::view('enterprise/leads', 'enterprise.profile.leads')->name('enterprise.leads');
 

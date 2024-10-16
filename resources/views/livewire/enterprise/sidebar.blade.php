@@ -1,4 +1,21 @@
 <div>
+    <style>
+        .submenu {
+            list-style: none;
+        }
+
+        .bg-active {
+            background-color: #deccfe;
+            border-radius: 8px;
+            display: inline-block;
+            width: auto;
+        }
+
+        .menu-item .active a {
+            color: #703ccc;
+            font-weight: bold;
+        }
+    </style>
     <div class="app-brand demo mb-2 d-flex justify-content-center align-items-center">
         <a href="/enterprise/dashboard" class="app-brand-link">
             <span class="app-brand-logo demo" style="background:white">
@@ -25,13 +42,40 @@
                 <div>Dashboard</div>
             </a>
         </li>
-
-        <li class="menu-item {{ request()->routeIs('enterprise.profiles') ? 'active' : '' }}">
-            <a href="{{ route('enterprise.profiles') }}" class="menu-link">
-                <i class='menu-icon tf-icons bx bxs-user-detail'></i>
-                <div>Team Profiles</div>
+        <li class="menu-item">
+            <a class="menu-link {{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') ? '' : 'collapsed' }}"
+                data-bs-toggle="collapse" href="#TeamSubmenu" role="button"
+                aria-expanded="{{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') ? 'true' : 'false' }}"
+                aria-controls="TeamSubmenu">
+                <i class="menu-icon tf-icons bx bxs-group"></i>
+                <div class="me-5">Team</div>
+                <i
+                    class='arrow bx {{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') ? 'bx-down-arrow-alt' : 'bx-up-arrow-alt' }}'></i>
             </a>
+            <ul class="collapse submenu {{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') ? 'show' : '' }}"
+                id="TeamSubmenu">
+                <li class="{{ request()->routeIs('enterprise.profiles') ? 'active bg-active' : '' }}">
+                    <a href="{{ route('enterprise.profiles') }}" class="dropdown-item d-flex align-items-center">
+                        <i class='tf-icons bx bxs-user-detail me-3'></i>
+                        <div>Profiles</div>
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('enterprise.profile.subteams') ? 'active bg-active' : '' }}">
+                    <a href="{{ route('enterprise.profile.subteams') }}"
+                        class="dropdown-item d-flex align-items-center">
+                        <i class='tf-icons bx bxs-user-detail me-3'></i>
+                        <div>Sub Teams</div>
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('enterprise.profile.create') ? 'active bg-active' : '' }}">
+                    <a href="{{ route('enterprise.profile.create') }}" class="dropdown-item d-flex align-items-center">
+                        <i class='tf-icons bx bxs-user-detail me-3'></i>
+                        <div>Create Profile</div>
+                    </a>
+                </li>
+            </ul>
         </li>
+
         <li class="menu-item {{ request()->routeIs('enterprise.leads') ? 'active' : '' }}">
             <a href="{{ route('enterprise.leads') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-group"></i>
@@ -51,4 +95,14 @@
             </a>
         </li>
     </ul>
+    <script>
+        // Handle arrow rotation on submenu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const settingsLink = document.querySelector('[href="#TeamSubmenu"]');
+            settingsLink.addEventListener('click', function() {
+                const arrow = settingsLink.querySelector('.arrow');
+                arrow.classList.toggle('rotate-180'); // Toggle rotation class
+            });
+        });
+    </script>
 </div>
