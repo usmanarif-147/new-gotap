@@ -24,7 +24,7 @@ class PassController extends Controller
             "organizationName": "Gotaps",
             "teamIdentifier": "' . config('wallet.pkpass.teamIdentifier') . '",
             "serialNumber": "' . $profile->id . '",
-            "backgroundColor": "#fff",
+            "backgroundColor": "rgb(255, 255, 255)",
             "logoText": "Gotaps",
             "description": "Gotaps pass",
 
