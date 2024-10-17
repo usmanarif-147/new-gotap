@@ -89,45 +89,56 @@
             @if (!$profilecheck)
                 @if ($profile->is_leads_enabled == 1)
                     <!-- Modal -->
-                    <div class="modal fade show" id="staticBackdrop" style="display: block;" data-bs-backdrop="static"
-                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Details</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                    <div class="modal fade show" id="userDetails" style="display: block;" data-bs-backdrop="static"
+                        tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 30%;">
+                            <div class="modal-content position-relative" style="border-radius: 15px;">
+                                <!-- Profile Image (Half Outside) -->
+                                <div class="profile-image-container position-absolute"
+                                    style="top: -50px; left: 50%; transform: translateX(-50%);">
+                                    <img src="{{ asset($profile->photo && Storage::disk('public')->exists($profile->photo) ? Storage::url($profile->photo) : 'user.png') }}"
+                                        alt="Profile Image" class="rounded-circle"
+                                        style="width: 100px; height: 100px; object-fit: cover; border: 4px solid white;">
                                 </div>
-                                <div class="modal-body">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header d-flex flex-column align-items-center" style="margin-top: 20%">
+                                    <h1 class="modal-title fs-5 text-center" id="exampleModalLabel">
+                                        Share Your Info with {{ $profile->name ? $profile->name : $profile->username }}
+                                    </h1>
+                                </div>
+
+                                <!-- Modal Body -->
+                                <div class="modal-body w-75 m-auto">
+                                    <!-- Form -->
                                     <form wire:submit.prevent="viewerDetail">
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Name</label>
-                                            <input type="text" wire:model="name" class="form-control" required>
-                                            <div class="form-text">Please Enter your good name !</div>
-                                            @error('name')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <input type="text" id="name" wire:model="name" class="form-control"
+                                                required>
+                                            <div class="form-text">Please enter your name.</div>
                                         </div>
+
                                         <div class="mb-3">
                                             <label for="email" class="form-label">Email address</label>
-                                            <input type="email" wire:model = "email" class="form-control" required>
-                                            <div class="form-text">We'll never share your email with anyone
-                                                else.</div>
-                                            @error('email')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <input type="email" id="email" wire:model="email" class="form-control"
+                                                required>
+                                            <div class="form-text">We’ll never share your email with anyone else.</div>
                                         </div>
+
                                         <div class="mb-3">
                                             <label for="phone" class="form-label">Phone</label>
-                                            <input type="phone" wire:model="phone" class="form-control" required>
-                                            <div class="form-text">Enter phone number</div>
-                                            @error('phone')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <input type="text" id="phone" wire:model="phone"
+                                                class="form-control" required>
+                                            <div class="form-text">Enter your phone number.</div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
                                     </form>
+                                </div>
+
+                                <!-- Modal Footer -->
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger w-75 m-auto rounded-pill"
+                                        wire:click="viewerDetail">Save Detail</button>
                                 </div>
                             </div>
                         </div>
@@ -153,7 +164,7 @@
             }
         });
         window.addEventListener('closeModal', event => {
-            $('#staticBackdrop').hide();
+            $('#userDetails').hide();
         });
     </script>
 

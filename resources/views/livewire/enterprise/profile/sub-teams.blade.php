@@ -45,7 +45,6 @@
 
         .toast-container {
             z-index: 1055;
-            /* Make sure it's above other elements */
         }
     </style>
     <div>
@@ -102,12 +101,18 @@
                                     </td>
                                     <td style="width:45%" class="text-center">
                                         @if ($subteam->profile_count)
-                                            <button class="bg-light border border-secondary rounded">
+                                            <button class="bg-light border border-secondary rounded-pill"
+                                                data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top"
+                                                data-bs-html="true" title="Add Profiles"
+                                                wire:click="addSubteamProfiles({{ $subteam->id }})">
                                                 <i class="bx bx-user"></i>
                                                 <span class="pl-5">{{ $subteam->profile_count }}</span>
                                             </button>
                                         @else
-                                            <button class="bg-light border border-secondary rounded">
+                                            <button class="bg-light border border-secondary rounded-pill"
+                                                data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top"
+                                                data-bs-html="true" title="Add Profiles"
+                                                wire:click="addSubteamProfiles({{ $subteam->id }})">
                                                 <span>Add Profiles</span>
                                             </button>
                                         @endif
@@ -274,6 +279,108 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div wire:ignore.self class="modal fade" id="manageSubteamModal" tabindex="-1"
+        aria-labelledby="manageSubteamModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Manage Subteam Profiles</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- Search bar for filtering profiles -->
+                            <div class="col-md-12 mb-3">
+                                <input type="text" class="form-control" placeholder="Search profiles..."
+                                    wire:model="searchTerm">
+                            </div>
+
+                            <!-- Profiles in Subteam -->
+                            <div class="col-md-6">
+                                <h6>Profiles in Subteam</h6>
+                                <hr>
+                                <div class="profile-list" style="max-height: 300px; overflow-y: auto;">
+                                    <ul class="list-group">
+                                        @forelse($profilesInSubteam as $profile)
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div class="d-flex align-items-center" style="width: 75%;">
+                                                    <!-- Profile Image -->
+                                                    <img src="{{ asset($profile->photo && Storage::disk('public')->exists($profile->photo) ? Storage::url($profile->photo) : 'user.png') }}"
+                                                        alt="Profile Image" class="rounded-circle me-2"
+                                                        width="40" height="40">
+                                                    <!-- Profile Name with ellipsis for long text -->
+                                                    <span class="profile-name text-truncate"
+                                                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        {{ $profile->name ? $profile->name : $profile->username }}
+                                                    </span>
+                                                </div>
+                                                <button wire:click="removeFromSubteam({{ $profile->id }})"
+                                                    class="btn btn-danger btn-sm" wire:loading.attr="disabled">
+                                                    Remove
+                                                </button>
+                                                <!-- Loader for removal -->
+                                                <div wire:loading wire:target="removeFromSubteam({{ $profile->id }})"
+                                                    class="spinner-border spinner-border-sm text-danger"
+                                                    role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </li>
+                                        @empty
+                                            <li class="list-group-item">No profiles in this subteam.</li>
+                                        @endforelse
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Profiles not in Subteam -->
+                            <div class="col-md-6">
+                                <h6>Profiles not in Subteam</h6>
+                                <hr>
+                                <div class="profile-list" style="max-height: 300px; overflow-y: auto;">
+                                    <ul class="list-group">
+                                        @forelse($profilesNotInSubteam as $profile)
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div class="d-flex align-items-center" style="width: 75%;">
+                                                    <!-- Profile Image -->
+                                                    <img src="{{ asset($profile->photo && Storage::disk('public')->exists($profile->photo) ? Storage::url($profile->photo) : 'user.png') }}"
+                                                        alt="Profile Image" class="rounded-circle me-2"
+                                                        width="40" height="40">
+                                                    <!-- Profile Name with ellipsis for long text -->
+                                                    <span class="profile-name text-truncate"
+                                                        style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        {{ $profile->name ? $profile->name : $profile->username }}
+                                                    </span>
+                                                </div>
+                                                <button wire:click="addToSubteam({{ $profile->id }})"
+                                                    class="btn btn-primary btn-sm" wire:loading.attr="disabled">
+                                                    Add
+                                                </button>
+                                                <!-- Loader for addition -->
+                                                <div wire:loading wire:target="addToSubteam({{ $profile->id }})"
+                                                    class="spinner-border spinner-border-sm text-primary"
+                                                    role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </li>
+                                        @empty
+                                            <li class="list-group-item">All profiles are already in the subteam.</li>
+                                        @endforelse
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     @include('livewire.admin.confirm-modal')
 
     <script>
@@ -287,6 +394,9 @@
         });
         window.addEventListener('showEditModal', event => {
             $('#editsubteamModal').modal('show');
+        });
+        window.addEventListener('showProfilesModal', event => {
+            $('#manageSubteamModal').modal('show');
         });
     </script>
     <script>
