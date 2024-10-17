@@ -15,4 +15,10 @@ class subteams extends Model
         'logo',
         'enterprise_id',
     ];
+
+    public function profiles()
+    {
+        // Many-to-many relationship between Subteam and Profile
+        return $this->belongsToMany(Profile::class, 'subteam_profiles', 'subteam_id', 'profile_id');
+    }
 }

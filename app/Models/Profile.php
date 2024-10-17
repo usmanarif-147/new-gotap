@@ -44,4 +44,9 @@ class Profile extends Model
             ->orderBy('platform_order');
     }
 
+    public function subteams()
+    {
+        return $this->belongsToMany(subteams::class, 'subteam_profiles', 'profile_id', 'subteam_id');
+    }
+
 }

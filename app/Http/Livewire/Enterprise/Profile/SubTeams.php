@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Enterprise\Profile;
 
+use App\Models\Profile;
 use Livewire\Component;
 use Livewire\WithPagination;
 use DB;
@@ -17,6 +18,11 @@ class SubTeams extends Component
 
     public $search = '';
 
+    public $searchTerm = '';
+
+    public $profilesInSubteam = [];
+    public $profilesNotInSubteam = [];
+
     public $subteamData;
 
     public $total;
@@ -24,7 +30,7 @@ class SubTeams extends Component
     public $name;
     public $description;
 
-    public $subTeamId;
+    public $subTeamId, $idSubTeam;
 
     public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
 
@@ -141,6 +147,46 @@ class SubTeams extends Component
             'type' => 'success',
             'message' => 'SubTeam deleted successfully!',
         ]);
+    }
+
+    public function addSubteamProfiles($id)
+    {
+        $this->idSubTeam = $id;
+        $this->loadProfiles();
+        $this->dispatchBrowserEvent('showProfilesModal');
+    }
+
+    public function loadProfiles()
+    {
+        $subteam = EnterpriseSubTeams::findOrFail($this->idSubTeam);
+
+        // Load profiles in subteam
+        $this->profilesInSubteam = $subteam->profiles()->where('username', 'like', "%$this->searchTerm%")->get();
+
+        // Load profiles not in subteam
+        $this->profilesNotInSubteam = Profile::whereNotIn('id', $this->profilesInSubteam->pluck('id'))
+            ->where('enterprise_id', auth()->id())
+            ->where('username', 'like', "%$this->searchTerm%")
+            ->get();
+    }
+
+    public function updatedSearchTerm()
+    {
+        $this->loadProfiles();
+    }
+
+    public function addToSubteam($profileId)
+    {
+        $subteam = EnterpriseSubTeams::findOrFail($this->idSubTeam);
+        $subteam->profiles()->attach($profileId);
+        $this->loadProfiles(); // Reload profiles
+    }
+
+    public function removeFromSubteam($profileId)
+    {
+        $subteam = EnterpriseSubTeams::findOrFail($this->idSubTeam);
+        $subteam->profiles()->detach($profileId);
+        $this->loadProfiles(); // Reload profiles
     }
 
     public function getData()

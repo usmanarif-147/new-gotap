@@ -1,4 +1,12 @@
 <div>
+    <style>
+        .profile-image-container {
+            display: flex;
+            justify-content: center;
+            /* margin-bottom: 10px; */
+            /* z-index: 100; */
+        }
+    </style>
     @if (!$redicretTo)
         <section>
             <div class="container">
@@ -88,38 +96,56 @@
             </div>
             @if (!$profilecheck)
                 @if ($profile->is_leads_enabled == 1)
+                    <!-- Modal -->
                     <div class="modal fade {{ $showModal ? 'show' : '' }}" id="userDetails" tabindex="-1"
                         aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Details</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                        <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 30%;">
+                            <div class="modal-content position-relative" style="border-radius: 15px;">
+                                <!-- Profile Image (Half Outside) -->
+                                <div class="profile-image-container position-absolute"
+                                    style="top: -50px; left: 50%; transform: translateX(-50%);">
+                                    <img src="{{ asset($profile->photo && Storage::disk('public')->exists($profile->photo) ? Storage::url($profile->photo) : 'user.png') }}"
+                                        alt="Profile Image" class="rounded-circle"
+                                        style="width: 100px; height: 100px; object-fit: cover; border: 4px solid white;">
                                 </div>
 
+                                <!-- Modal Header -->
+                                <div class="modal-header d-flex flex-column align-items-center" style="margin-top: 20%">
+                                    <h1 class="modal-title fs-5 text-center" id="exampleModalLabel">
+                                        Share Your Info with {{ $profile->name ? $profile->name : $profile->username }}
+                                    </h1>
+                                    {{-- <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button> --}}
+                                </div>
 
-                                <div class="modal-body">
+                                <!-- Modal Body -->
+                                <div class="modal-body w-75 m-auto">
+                                    <!-- Form -->
+                                    <form id="userDetailsForm">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Name</label>
+                                            <input type="text" id="name" class="form-control" required>
+                                            <div class="form-text">Please enter your name.</div>
+                                        </div>
 
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label">Name</label>
-                                        <input type="text" id="name" class="form-control" required>
-                                        <div class="form-text">Please Enter your good name !</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label">Email address</label>
-                                        <input type="email" id = "email" class="form-control" required>
-                                        <div class="form-text">We'll never share your email with anyone
-                                            else.</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="phone" class="form-label">Phone</label>
-                                        <input type="phone" id="phone" class="form-control" required>
-                                        <div class="form-text">Enter phone number</div>
-                                    </div>
-                                    <button type="button" onClick="submitForm()"
-                                        class="btn btn-primary">Submit</button>
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email address</label>
+                                            <input type="email" id="email" class="form-control" required>
+                                            <div class="form-text">We’ll never share your email with anyone else.</div>
+                                        </div>
 
+                                        <div class="mb-3">
+                                            <label for="phone" class="form-label">Phone</label>
+                                            <input type="text" id="phone" class="form-control" required>
+                                            <div class="form-text">Enter your phone number.</div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- Modal Footer -->
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger w-75 m-auto rounded-pill"
+                                        onClick="submitForm()">Save Detail</button>
                                 </div>
                             </div>
                         </div>
