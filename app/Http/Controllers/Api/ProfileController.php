@@ -474,22 +474,22 @@ class ProfileController extends Controller
                     [
                         'label' => 'Taps',
                         'clicks' => $profileViews,
-                        'text' => '',
+                        'text' => 'The total number of times your GOtaps digital business card is viewed. This can be via a GOtaps device, your GOtaps QR code, or even a tap of your link in a bio',
                     ],
                     [
                         'label' => 'Link Taps',
                         'clicks' => $platforms->sum('clicks'),
-                        'text' => '',
+                        'text' => 'The total number of times one of your links was tapped. Sharing with GOtaps Direct also counts as a tap for that single link shared directly.',
                     ],
                     [
                         'label' => 'New Connections',
                         'clicks' => DB::table('connects')->where('connecting_id', auth()->id())->count(),
-                        'text' => '',
+                        'text' => 'The total number of new connections that you gained by scanning a business card, having someone tap "Save Contact" on your profile, or by meeting another GOtaps user',
                     ],
                     [
                         'label' => 'Tap Through Rate',
                         'clicks' => 0,
-                        'text' => '',
+                        'text' => 'Your ratio of taps to views. Out of the total views you had on your digital business card, how many of those people actually tapped a link. This is important for maximizing your conversions and engagement.',
                     ]
                 ],
                 'platforms' => $platforms
