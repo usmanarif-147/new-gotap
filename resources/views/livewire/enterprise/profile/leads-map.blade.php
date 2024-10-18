@@ -13,14 +13,19 @@
     </style>
 
     <div class="container-fluid">
-        <div class="row">
+        <div class="row" style="background-color: white;border-radius:15px;">
             <!-- Map Section -->
             <div class="col-md-8">
-                <div id="map" style="height: 500px; width: 100%; border-radius: 10px;"></div>
+                <div id="map" style="height: 500px; width: 100%; border-radius: 15px 0 0 15px;"></div>
             </div>
 
             <!-- Leads Section -->
             <div class="col-md-4">
+                <div class="text-center mt-4 mb-3">
+                    <p style="font-size: 14px;font-weight: bold;color:black;">
+                        Showing all {{ count($leads) }} leads
+                    </p>
+                </div>
                 <div class="leads-scrollable">
                     @if (count($leads) > 0)
                         @foreach ($leads as $lead)
@@ -71,7 +76,6 @@
         // Add OpenStreetMap tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
         // Initialize marker cluster group
@@ -114,12 +118,17 @@
         });
         map.fitBounds(bounds);
 
-        // Event listener for lead cards
         document.querySelectorAll('.lead-card').forEach(function(card) {
             card.addEventListener('click', function() {
                 var lat = this.getAttribute('data-lat');
                 var lng = this.getAttribute('data-lng');
                 var latLng = L.latLng(lat, lng);
+                document.querySelectorAll('.lead-card').forEach(function(c) {
+                    c.style.border = '';
+                });
+
+                // Add black border to the clicked card
+                this.style.border = '2px solid black';
 
                 // Pan and zoom the map to the selected lead's location
                 map.setView(latLng, 12); // Adjust the zoom level as needed
@@ -132,6 +141,13 @@
                 });
             });
         });
+
+        const leafletControl = document.querySelector('.leaflet-bottom.leaflet-right');
+
+        // Check if the element exists and then hide it
+        if (leafletControl) {
+            leafletControl.style.display = 'none';
+        }
     </script>
 
 </div>
