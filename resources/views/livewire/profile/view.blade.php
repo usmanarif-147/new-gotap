@@ -91,7 +91,7 @@
                     <!-- Modal -->
                     <div class="modal fade show" id="userDetails" style="display: block;" data-bs-backdrop="static"
                         tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 30%;">
+                        <div class="modal-dialog modal-dialog-centered modal-sm">
                             <div class="modal-content position-relative" style="border-radius: 15px;">
                                 <!-- Profile Image (Half Outside) -->
                                 <div class="profile-image-container position-absolute"

@@ -99,9 +99,8 @@
                     <!-- Modal -->
                     <div class="modal fade {{ $showModal ? 'show' : '' }}" id="userDetails" tabindex="-1"
                         aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 30%;">
+                        <div class="modal-dialog modal-dialog-centered modal-sm">
                             <div class="modal-content position-relative" style="border-radius: 15px;">
-                                <!-- Profile Image (Half Outside) -->
                                 <div class="profile-image-container position-absolute"
                                     style="top: -50px; left: 50%; transform: translateX(-50%);">
                                     <img src="{{ asset($profile->photo && Storage::disk('public')->exists($profile->photo) ? Storage::url($profile->photo) : 'user.png') }}"
@@ -114,8 +113,6 @@
                                     <h1 class="modal-title fs-5 text-center" id="exampleModalLabel">
                                         Share Your Info with {{ $profile->name ? $profile->name : $profile->username }}
                                     </h1>
-                                    {{-- <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button> --}}
                                 </div>
 
                                 <!-- Modal Body -->

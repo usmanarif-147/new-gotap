@@ -9,7 +9,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
-use Http;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class View extends Component
 {
@@ -125,7 +126,22 @@ class View extends Component
     public function viewerDetail()
     {
         $ip = request()->ip();
-        $location = $this->getUserLocation($ip);
+        $locationData = $this->getUserLocation($ip);
+        if ($locationData) {
+            $country = $locationData['geoplugin_countryName'];
+            $ip_address = $locationData['geoplugin_request'];
+            $state = $locationData['geoplugin_region'];
+            $city = $locationData['geoplugin_city'];
+            $latitude = $locationData['geoplugin_latitude'];
+            $longitude = $locationData['geoplugin_longitude'];
+        } else {
+            $country = null;
+            $ip_address = null;
+            $state = null;
+            $city = null;
+            $latitude = null;
+            $longitude = null;
+        }
         $data = ['name' => $this->name, 'email' => $this->email, 'phone' => $this->phone];
         DB::table('leads')->insert([
             'enterprise_id' => $this->profile->enterprise_id,
@@ -134,12 +150,12 @@ class View extends Component
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
-            'ip_address' => $ip,
-            'country' => $location['country'],
-            'state' => $location['region'],
-            'city' => $location['city'],
-            'latitude' => explode(',', $location['loc'])[0],
-            'longitude' => explode(',', $location['loc'])[1],
+            'ip_address' => $ip_address,
+            'country' => $country,
+            'state' => $state,
+            'city' => $city,
+            'latitude' => $latitude,
+            'longitude' => $longitude,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -147,13 +163,26 @@ class View extends Component
 
     }
 
-    public function getUserLocation($ip = null)
+    private function getUserLocation($ip = null)
     {
-        // if ($ip == '127.0.0.1' || $ip == null) {
-        //     $ip = '103.205.179.249';
-        // }
-        $response = Http::get("http://ipinfo.io/{$ip}/json");
-        return $response->json();
+        $client = new Client();
+
+        try {
+            // Make the API call to GeoPlugin
+            $response = $client->get("http://www.geoplugin.net/json.gp?ip={$ip}");
+
+            // Decode the JSON response
+            $locationData = json_decode($response->getBody(), true);
+
+            if (isset($locationData['geoplugin_countryName'])) {
+                return $locationData; // Return the array data directly
+            } else {
+                return 0;
+            }
+
+        } catch (RequestException $e) {
+            return 0;
+        }
     }
 
     public function userdetail()
