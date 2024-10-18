@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Profile;
 
+use Http;
 use Livewire\Component;
 use App\Models\Card;
 use App\Models\Platform;
@@ -114,6 +115,8 @@ class ViewProfileByCard extends Component
 
     public function submitForm()
     {
+        $ip = request()->ip();
+        $location = $this->getUserLocation($ip);
         $this->profile = Card::join('profile_cards', 'cards.id', '=', 'profile_cards.card_id')
             ->join('profiles', 'profiles.id', '=', 'profile_cards.profile_id')
             ->where('cards.uuid', $this->identifier)
@@ -127,10 +130,26 @@ class ViewProfileByCard extends Component
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
+            'ip_address' => $ip,
+            'country' => $location['country'],
+            'state' => $location['region'],
+            'city' => $location['city'],
+            'latitude' => explode(',', $location['loc'])[0],
+            'longitude' => explode(',', $location['loc'])[1],
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         $this->modalShow = 0;
+    }
+
+    public function getUserLocation($ip = null)
+    {
+        // if ($ip == '127.0.0.1' || $ip == null) {
+        //     $ip = '103.205.179.249';
+        // }
+
+        $response = Http::get("http://ipinfo.io/{$ip}/json");
+        return $response->json();
     }
 
     public function userdetail()

@@ -136,10 +136,20 @@
                                 </div>
 
                                 <!-- Modal Footer -->
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger w-75 m-auto rounded-pill"
-                                        wire:click="viewerDetail">Save Detail</button>
+                                <div class="modal-footer d-flex flex-column align-items-center">
+                                    <!-- Save Button: Shown initially -->
+                                    <button type="submit" class="btn btn-danger w-75 rounded-pill"
+                                        wire:click="viewerDetail" wire:loading.attr="disabled">
+                                        Save Detail
+                                    </button>
+
+                                    <!-- Loader for save operation -->
+                                    <div wire:loading wire:target="viewerDetail" class="spinner-border text-light"
+                                        role="status">
+                                        <span class="visually-hidden">Saving...</span>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
