@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use Http;
 
 class View extends Component
 {
@@ -123,6 +124,8 @@ class View extends Component
 
     public function viewerDetail()
     {
+        $ip = request()->ip();
+        $location = $this->getUserLocation($ip);
         $data = ['name' => $this->name, 'email' => $this->email, 'phone' => $this->phone];
         DB::table('leads')->insert([
             'enterprise_id' => $this->profile->enterprise_id,
@@ -131,11 +134,26 @@ class View extends Component
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
+            'ip_address' => $ip,
+            'country' => $location['country'],
+            'state' => $location['region'],
+            'city' => $location['city'],
+            'latitude' => explode(',', $location['loc'])[0],
+            'longitude' => explode(',', $location['loc'])[1],
             'created_at' => now(),
             'updated_at' => now(),
         ]);
         $this->dispatchBrowserEvent('closeModal');
 
+    }
+
+    public function getUserLocation($ip = null)
+    {
+        // if ($ip == '127.0.0.1' || $ip == null) {
+        //     $ip = '103.205.179.249';
+        // }
+        $response = Http::get("http://ipinfo.io/{$ip}/json");
+        return $response->json();
     }
 
     public function userdetail()

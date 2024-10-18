@@ -16,36 +16,36 @@ class Create extends Component
     public $heading;
 
     public
-        $name,
-        $email,
-        $username,
-        $work_position,
-        $job_title,
-        $company,
-        $address,
-        $bio,
-        $phone,
-        $photo,
-        $cover_photo,
-        $active,
-        $user_direct,
-        $tiks,
-        $private;
+    $name,
+    $email,
+    $username,
+    $work_position,
+    $job_title,
+    $company,
+    $address,
+    $bio,
+    $phone,
+    $photo,
+    $cover_photo,
+    $active,
+    $user_direct,
+    $tiks,
+    $private;
 
     protected function rules()
     {
         return [
-            'name'              => ['nullable', 'min:5', 'max:15'],
-            'email'             => ['nullable', 'email'],
-            'phone'             => ['nullable', 'min:5', 'max:15'],
-            'username'          => ['required', 'min:3', 'max:20', 'regex:/^[A-Za-z][A-Za-z0-9_.]{5,25}$/', Rule::unique(Profile::class)],
-            'work_position'     => ['nullable', 'min:3', 'max:20'],
-            'job_title'         => ['nullable', 'string'],
-            'company'           => ['nullable', 'string'],
-            'address'           => ['nullable'],
-            'bio'               => ['nullable'],
-            'cover_photo'       => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
-            'photo'             => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'name' => ['nullable', 'min:5', 'max:15'],
+            'email' => ['nullable', 'email'],
+            'phone' => ['nullable', 'min:5', 'max:15'],
+            'username' => ['required', 'min:3', 'max:20', 'regex:/^[A-Za-z][A-Za-z0-9_.]{5,25}$/', Rule::unique(Profile::class)],
+            'work_position' => ['nullable', 'min:3', 'max:20'],
+            'job_title' => ['nullable', 'string'],
+            'company' => ['nullable', 'string'],
+            'address' => ['nullable'],
+            'bio' => ['nullable'],
+            'cover_photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ];
     }
 
@@ -101,6 +101,19 @@ class Create extends Component
         }
 
         Profile::create($data);
+        $this->reset([
+            'name',
+            'email',
+            'phone',
+            'username',
+            'work_position',
+            'job_title',
+            'company',
+            'address',
+            'bio',
+            'photo',
+            'cover_photo'
+        ]);
 
         $this->dispatchBrowserEvent('swal:modal', [
             'type' => 'success',

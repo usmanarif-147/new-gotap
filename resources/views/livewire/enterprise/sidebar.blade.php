@@ -75,12 +75,31 @@
                 </li>
             </ul>
         </li>
-
-        <li class="menu-item {{ request()->routeIs('enterprise.leads') ? 'active' : '' }}">
-            <a href="{{ route('enterprise.leads') }}" class="menu-link">
+        <li class="menu-item">
+            <a class="menu-link {{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') ? '' : 'collapsed' }}"
+                data-bs-toggle="collapse" href="#LeadsSubmenu" role="button"
+                aria-expanded="{{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') ? 'true' : 'false' }}"
+                aria-controls="LeadsSubmenu">
                 <i class="menu-icon tf-icons bx bxs-group"></i>
-                <div>Leads</div>
+                <div class="me-5">Leads</div>
+                <i
+                    class='arrow bx {{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') ? 'bx-down-arrow-alt' : 'bx-up-arrow-alt' }}'></i>
             </a>
+            <ul class="collapse submenu {{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') ? 'show' : '' }}"
+                id="LeadsSubmenu">
+                <li class="{{ request()->routeIs('enterprise.leads') ? 'active bg-active' : '' }}">
+                    <a href="{{ route('enterprise.leads') }}" class="dropdown-item d-flex align-items-center">
+                        <i class='tf-icons bx bxs-group me-3'></i>
+                        <div>Leads</div>
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('enterprise.leads-map') ? 'active bg-active' : '' }}">
+                    <a href="{{ route('enterprise.leads-map') }}" class="dropdown-item d-flex align-items-center">
+                        <i class='tf-icons bx bxs-map me-3'></i>
+                        <div>Map</div>
+                    </a>
+                </li>
+            </ul>
         </li>
         <li class="menu-item {{ request()->routeIs('enterprise.edit') ? 'active' : '' }}">
             <a href="{{ route('enterprise.edit') }}" class="menu-link">
@@ -99,6 +118,13 @@
         // Handle arrow rotation on submenu toggle
         document.addEventListener('DOMContentLoaded', function() {
             const settingsLink = document.querySelector('[href="#TeamSubmenu"]');
+            settingsLink.addEventListener('click', function() {
+                const arrow = settingsLink.querySelector('.arrow');
+                arrow.classList.toggle('rotate-180'); // Toggle rotation class
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const settingsLink = document.querySelector('[href="#leadsSubmenu"]');
             settingsLink.addEventListener('click', function() {
                 const arrow = settingsLink.querySelector('.arrow');
                 arrow.classList.toggle('rotate-180'); // Toggle rotation class

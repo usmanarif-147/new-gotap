@@ -20,6 +20,8 @@ Route::middleware('enterprise')->group(function () {
 
     //leads
     Route::view('enterprise/leads', 'enterprise.profile.leads')->name('enterprise.leads');
+    //map
+    Route::view('enterprise/leads/map', 'enterprise.profile.leads-map')->name('enterprise.leads-map');
 
     //manage profile
     Route::view('enterprise/profile/{id}/manage', 'enterprise.profile.manageprofile')->name('enterprise.profile.manage');

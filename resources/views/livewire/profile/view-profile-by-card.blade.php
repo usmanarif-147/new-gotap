@@ -144,8 +144,12 @@
 
                                 <!-- Modal Footer -->
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-danger w-75 m-auto rounded-pill"
-                                        onClick="submitForm()">Save Detail</button>
+                                    <div id="loader" class="spinner-border text-light d-none" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                    <button type="submit" id="submitButton"
+                                        class="btn btn-danger w-75 m-auto rounded-pill" onClick="submitForm()">Save
+                                        Detail</button>
                                 </div>
                             </div>
                         </div>
@@ -182,6 +186,8 @@
         });
 
         function submitForm() {
+            document.getElementById('loader').classList.remove('d-none');
+            document.getElementById('submitButton').disabled = true;
             let name = $('#name').val();
             let email = $('#email').val();
             let phone = $('#phone').val();
@@ -190,7 +196,11 @@
             @this.set('email', email);
             @this.set('phone', phone);
 
-            Livewire.emit('submitForm');
+            setTimeout(function() {
+                Livewire.emit('submitForm');
+                document.getElementById('loader').classList.add('d-none');
+                document.getElementById('submitButton').disabled = false;
+            }, 2000);
         }
     </script>
 
