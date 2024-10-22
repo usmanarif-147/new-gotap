@@ -122,17 +122,6 @@
         window.addEventListener('close-modal', event => {
             $('#confirmModal').modal('hide')
         });
-
-        // window.addEventListener('triggerVCardDownload', event => {
-        //     const downloadUrl = @this.downloadUrl;
-        //     const fileName = downloadUrl.split('/').pop();
-        //     const downloadAnchor = document.createElement('a');
-        //     downloadAnchor.href = downloadUrl;
-        //     downloadAnchor.download = fileName;
-        //     document.body.appendChild(downloadAnchor);
-        //     downloadAnchor.click();
-        //     document.body.removeChild(downloadAnchor);
-        // });
     </script>
 
 </div>

@@ -3,8 +3,6 @@
 namespace App\Http\Livewire\Enterprise\Profile;
 
 use DB;
-use JeroenDesloovere\VCard\VCard;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
 class LeadsMap extends Component
@@ -39,7 +37,6 @@ class LeadsMap extends Component
         $this->c_modal_method = '';
         $this->dispatchBrowserEvent('close-modal');
     }
-    // public function downloadVCard($id)
     // {
     //     $lead = DB::table('leads')->find($id);
     //     // Create a new vCard
