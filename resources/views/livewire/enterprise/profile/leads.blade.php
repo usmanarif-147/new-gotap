@@ -80,11 +80,11 @@
                                             title="delete" wire:click="confirmModal({{ $lead->id }})">
                                             <i class='bx bx-trash'></i>
                                         </button>
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="tooltip"
-                                            data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
-                                            title="download" wire:click="downloadVCard({{ $lead->id }})">
+                                        <a href="{{ route('lead.download', $lead->id) }}" class="btn btn-primary btn-sm"
+                                            data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top"
+                                            data-bs-html="true" title="download">
                                             <i class='bx bx-download'></i>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -123,16 +123,16 @@
             $('#confirmModal').modal('hide')
         });
 
-        window.addEventListener('triggerVCardDownload', event => {
-            const downloadUrl = @this.downloadUrl;
-            const fileName = downloadUrl.split('/').pop();
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.href = downloadUrl;
-            downloadAnchor.download = fileName;
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            document.body.removeChild(downloadAnchor);
-        });
+        // window.addEventListener('triggerVCardDownload', event => {
+        //     const downloadUrl = @this.downloadUrl;
+        //     const fileName = downloadUrl.split('/').pop();
+        //     const downloadAnchor = document.createElement('a');
+        //     downloadAnchor.href = downloadUrl;
+        //     downloadAnchor.download = fileName;
+        //     document.body.appendChild(downloadAnchor);
+        //     downloadAnchor.click();
+        //     document.body.removeChild(downloadAnchor);
+        // });
     </script>
 
 </div>

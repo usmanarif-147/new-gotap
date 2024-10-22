@@ -142,7 +142,7 @@
                                 </a>
 
                                 <!-- Download Contact Icon -->
-                                <a href="javascript:void(0);" onclick="downloadVCard({{ $user->id }})" title="Download Contact"
+                                <a href="{{ route('lead.download', $user->id) }}"  title="Download Contact"
                                     style="text-decoration: none; color: inherit;">
                                         <i class="bx bx-download" style="font-size: 18px;"></i>
                                 </a>
@@ -238,32 +238,32 @@
             }, 200);
         });
 
-        function downloadVCard(userId) {
-            Livewire.emit('downloadVCard', userId);
-        }
-        window.addEventListener('triggerVCardDownload', event => {
-            const downloadUrl = @this.downloadUrl;
-            const fileName = downloadUrl.split('/').pop();
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.href = downloadUrl;
-            downloadAnchor.download = fileName;
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            document.body.removeChild(downloadAnchor);
-            updateMapAfterDownload();
-        });
+        // function downloadVCard(userId) {
+        //     Livewire.emit('downloadVCard', userId);
+        // }
+        // window.addEventListener('triggerVCardDownload', event => {
+        //     const downloadUrl = @this.downloadUrl;
+        //     const fileName = downloadUrl.split('/').pop();
+        //     const downloadAnchor = document.createElement('a');
+        //     downloadAnchor.href = downloadUrl;
+        //     downloadAnchor.download = fileName;
+        //     document.body.appendChild(downloadAnchor);
+        //     downloadAnchor.click();
+        //     document.body.removeChild(downloadAnchor);
+        //     updateMapAfterDownload();
+        // });
 
-        function updateMapAfterDownload() {
-            // Here you can update the map, e.g., refit bounds or re-center
-            map.setView([20.0, 5.0], 4); // Reset view or pan to a specific location
+        // function updateMapAfterDownload() {
+        //     // Here you can update the map, e.g., refit bounds or re-center
+        //     map.setView([20.0, 5.0], 4); // Reset view or pan to a specific location
 
-            // If you want to fit the bounds of all markers again
-            var bounds = L.latLngBounds();
-            markers.eachLayer(function(layer) {
-                bounds.extend(layer.getLatLng());
-            });
-            map.fitBounds(bounds); // Optionally, fit the map to bounds after the download
-        }
+        //     // If you want to fit the bounds of all markers again
+        //     var bounds = L.latLngBounds();
+        //     markers.eachLayer(function(layer) {
+        //         bounds.extend(layer.getLatLng());
+        //     });
+        //     map.fitBounds(bounds); // Optionally, fit the map to bounds after the download
+        // }
     </script>
 
 </div>
