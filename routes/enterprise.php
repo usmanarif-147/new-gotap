@@ -20,6 +20,7 @@ Route::middleware('enterprise')->group(function () {
 
     //leads
     Route::view('enterprise/leads', 'enterprise.profile.leads')->name('enterprise.leads');
+    Route::view('enterprise/leads/{id}/view', 'enterprise.profile.view-lead')->name('enterprise.leads.view');
     //map
     Route::view('enterprise/leads/map', 'enterprise.profile.leads-map')->name('enterprise.leads-map');
 

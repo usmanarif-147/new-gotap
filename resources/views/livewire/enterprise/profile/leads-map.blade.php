@@ -16,7 +16,7 @@
         <div class="row" style="background-color: white;border-radius:15px;">
             <!-- Map Section -->
             <div class="col-md-8">
-                <div id="map" style="height: 500px; width: 100%; border-radius: 15px 0 0 15px;"></div>
+                <div id="map" wire:ignore style="height: 500px; width: 100%; border-radius: 15px 0 0 15px;"></div>
             </div>
 
             <!-- Leads Section -->
@@ -65,6 +65,7 @@
             </div>
         </div>
     </div>
+    @include('livewire.admin.confirm-modal')
     <script>
         // Initialize the map
         var map = L.map('map', {
@@ -75,11 +76,32 @@
 
         // Add OpenStreetMap tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
+            maxZoom: 20,
         }).addTo(map);
 
         // Initialize marker cluster group
         var markers = L.markerClusterGroup();
+
+        var customTextControl = L.control({
+            position: 'topright'
+        });
+
+        customTextControl.onAdd = function(map) {
+            var div = L.DomUtil.create('div', 'custom-text-control'); // Create a div for the custom control
+            div.innerHTML =
+                'Leads only show on the map if location was allowed upon connecting'; // Add your custom text here
+            div.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // Optional: background for readability
+            div.style.padding = '5px'; // Optional: padding for styling
+            div.style.borderRadius = '15px'; // Optional: round the corners
+            div.style.color = 'black';
+            return div;
+        };
+
+        // Add the custom text control to the map
+        customTextControl.addTo(map);
+
+        // Create an object to store markers by user ID
+        var markerDictionary = {};
 
         @foreach ($leads as $user)
             @if ($user->latitude && $user->longitude)
@@ -99,12 +121,46 @@
                         icon: customIcon
                     })
                     .bindPopup(`
-                    <div style="text-align: center;">
-                        <b>{{ $user->name }}</b><br>{{ $user->city }}, {{ $user->state }}
-                    </div>
-                `);
+                        <div style="width: 200px; text-align: center; border: 1px solid #ddd; border-radius: 10px; padding: 10px;">
+                            <!-- Profile Section -->
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong>{{ $user->name }}</strong>
+                                <img src="{{ asset($user->viewing_photo && Storage::disk('public')->exists($user->viewing_photo) ? Storage::url($user->viewing_photo) : 'user.png') }}"
+                                    alt="Profile Photo"
+                                    style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
+                            </div>
 
+                            <!-- Divider Line -->
+                            <hr style="border: 1px solid #ddd; margin: 10px 0;">
+
+                            <!-- Icons Section -->
+                            <div style="display: flex; justify-content: space-around;">
+                                <!-- View Profile Icon -->
+                                <a href="{{ route('enterprise.leads.view', $user->id) }}" title="View Profile"
+                                style="text-decoration: none; color: inherit;">
+                                    <i class="bx bx-show" style="font-size: 18px;"></i>
+                                </a>
+
+                                <!-- Download Contact Icon -->
+                                <a href="javascript:void(0);" onclick="downloadVCard({{ $user->id }})" title="Download Contact"
+                                    style="text-decoration: none; color: inherit;">
+                                        <i class="bx bx-download" style="font-size: 18px;"></i>
+                                </a>
+
+                                <!-- Delete Contact Icon -->
+                                <a href="javascript:void(0);" onclick="deleteContact({{ $user->id }})" title="Delete Contact"
+                                style="text-decoration: none; color: red;">
+                                    <i class="bx bx-trash" style="font-size: 18px;"></i>
+                                </a>
+                            </div>
+                        </div>
+                    `);
+
+                // Add marker to the cluster group
                 markers.addLayer(marker);
+
+                // Store marker in the dictionary by user ID
+                markerDictionary[{{ $user->id }}] = marker;
             @endif
         @endforeach
 
@@ -142,11 +198,71 @@
             });
         });
 
-        const leafletControl = document.querySelector('.leaflet-bottom.leaflet-right');
+        // Livewire event to handle marker removal
+        document.addEventListener('livewire:load', function() {
+            Livewire.on('contactDeleted', (userId) => {
+                // Remove the marker from the map
+                if (markerDictionary[userId]) {
+                    markers.removeLayer(markerDictionary[
+                        userId]); // Remove the marker from the cluster group
+                    delete markerDictionary[userId]; // Remove from the dictionary
+                    console.log(`Marker removed for userId: ${userId}`);
+                } else {
+                    console.log(`No marker found for userId: ${userId}`);
+                }
+            });
+        });
 
-        // Check if the element exists and then hide it
+        // Function to delete a contact (emit Livewire event)
+        function deleteContact(userId) {
+            Livewire.emit('confirmModal', userId); // Trigger Livewire event to delete the contact
+        }
+    </script>
+
+    <script>
+        const leafletControl = document.querySelector('.leaflet-bottom.leaflet-right');
         if (leafletControl) {
             leafletControl.style.display = 'none';
+        }
+        window.addEventListener('confirm-modal', event => {
+            $('#confirmModal').modal('show');
+            setTimeout(function() {
+                map.invalidateSize();
+            }, 200);
+        });
+
+        window.addEventListener('close-modal', event => {
+            $('#confirmModal').modal('hide');
+            setTimeout(function() {
+                map.invalidateSize();
+            }, 200);
+        });
+
+        function downloadVCard(userId) {
+            Livewire.emit('downloadVCard', userId);
+        }
+        window.addEventListener('triggerVCardDownload', event => {
+            const downloadUrl = @this.downloadUrl;
+            const fileName = downloadUrl.split('/').pop();
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.href = downloadUrl;
+            downloadAnchor.download = fileName;
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            document.body.removeChild(downloadAnchor);
+            updateMapAfterDownload();
+        });
+
+        function updateMapAfterDownload() {
+            // Here you can update the map, e.g., refit bounds or re-center
+            map.setView([20.0, 5.0], 4); // Reset view or pan to a specific location
+
+            // If you want to fit the bounds of all markers again
+            var bounds = L.latLngBounds();
+            markers.eachLayer(function(layer) {
+                bounds.extend(layer.getLatLng());
+            });
+            map.fitBounds(bounds); // Optionally, fit the map to bounds after the download
         }
     </script>
 
