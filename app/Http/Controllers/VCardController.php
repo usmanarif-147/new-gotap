@@ -42,7 +42,7 @@ class VCardController extends Controller
 
         return Response::make($vcard->getOutput(), 200, [
             'Content-Type' => 'text/vcard',
-            'Content-Disposition' => "attachment; filename={$filename}.vcf",
+            'Content-Disposition' => "attachment; filename={$filename}",
         ]);
 
         // Save the vCard to a temporary location

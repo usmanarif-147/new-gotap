@@ -237,33 +237,6 @@
                 map.invalidateSize();
             }, 200);
         });
-
-        // function downloadVCard(userId) {
-        //     Livewire.emit('downloadVCard', userId);
-        // }
-        // window.addEventListener('triggerVCardDownload', event => {
-        //     const downloadUrl = @this.downloadUrl;
-        //     const fileName = downloadUrl.split('/').pop();
-        //     const downloadAnchor = document.createElement('a');
-        //     downloadAnchor.href = downloadUrl;
-        //     downloadAnchor.download = fileName;
-        //     document.body.appendChild(downloadAnchor);
-        //     downloadAnchor.click();
-        //     document.body.removeChild(downloadAnchor);
-        //     updateMapAfterDownload();
-        // });
-
-        // function updateMapAfterDownload() {
-        //     // Here you can update the map, e.g., refit bounds or re-center
-        //     map.setView([20.0, 5.0], 4); // Reset view or pan to a specific location
-
-        //     // If you want to fit the bounds of all markers again
-        //     var bounds = L.latLngBounds();
-        //     markers.eachLayer(function(layer) {
-        //         bounds.extend(layer.getLatLng());
-        //     });
-        //     map.fitBounds(bounds); // Optionally, fit the map to bounds after the download
-        // }
     </script>
 
 </div>
