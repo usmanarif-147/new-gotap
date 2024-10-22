@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VCardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
@@ -21,6 +22,8 @@ Route::middleware('enterprise')->group(function () {
     //leads
     Route::view('enterprise/leads', 'enterprise.profile.leads')->name('enterprise.leads');
     Route::view('enterprise/leads/{id}/view', 'enterprise.profile.view-lead')->name('enterprise.leads.view');
+    Route::get('/lead/download/{id}', [VCardController::class, 'downloadVCard'])->name('lead.download');
+
     //map
     Route::view('enterprise/leads/map', 'enterprise.profile.leads-map')->name('enterprise.leads-map');
 
