@@ -118,14 +118,14 @@
         // Handle arrow rotation on submenu toggle
         document.addEventListener('DOMContentLoaded', function() {
             const settingsLink = document.querySelector('[href="#TeamSubmenu"]');
-            settingsLink.addEventListener('click', function() {
+            settingsLink?.addEventListener('click', function() {
                 const arrow = settingsLink.querySelector('.arrow');
                 arrow.classList.toggle('rotate-180'); // Toggle rotation class
             });
         });
         document.addEventListener('DOMContentLoaded', function() {
             const settingsLink = document.querySelector('[href="#leadsSubmenu"]');
-            settingsLink.addEventListener('click', function() {
+            settingsLink?.addEventListener('click', function() {
                 const arrow = settingsLink.querySelector('.arrow');
                 arrow.classList.toggle('rotate-180'); // Toggle rotation class
             });

@@ -161,7 +161,7 @@ class ViewProfileByCard extends Component
     private function getUserLocation($ip = null)
     {
         // if ($ip == '127.0.0.1' || $ip == null) {
-        //     $ip = '182.186.430.230';
+        //     $ip = '39.49.151.186';
         // }
         $client = new Client();
 
