@@ -26,7 +26,7 @@
                                         @if ($platforms['saved'] == 0)
                                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#platformModal"
-                                                wire:click="addPlatform({{ $platforms['id'] }},'{{ $platforms['path'] }}','{{ $platforms['label'] }}','{{ $platforms['direct'] }}','{{ $platforms['title'] }}')">Add</button>
+                                                wire:click="addPlatform({{ $platforms['id'] }},'{{ $platforms['path'] }}','{{ $platforms['label'] }}','{{ $platforms['direct'] }}','{{ $platforms['title'] }}','{{ $platforms['input'] }}')">Add</button>
                                         @endif
                                     </div>
                                 </div>
@@ -60,7 +60,7 @@
                                     <div class="col-sm-6">
                                         <button type="button" class="btn btn-primary btn-sm mb-2"
                                             data-bs-toggle="modal" data-bs-target="#platformModal"
-                                            wire:click="editPlatform({{ $platforms['id'] }},'{{ $platforms['path'] }}','{{ $platforms['label'] }}','{{ $platforms['direct'] }}','{{ $platforms['title'] }}')">Update</button>
+                                            wire:click="editPlatform({{ $platforms['id'] }},'{{ $platforms['path'] }}','{{ $platforms['label'] }}','{{ $platforms['direct'] }}','{{ $platforms['title'] }}','{{ $platforms['input'] }}')">Update</button>
                                     </div>
                                     <div class="col-sm-6">
                                         <button type="button" class="btn btn-danger btn-sm"
@@ -90,8 +90,31 @@
                 <div class="modal-body">
                     <form>
                         <div class="mb-3">
-                            <label for="path" class="form-label">Url</label>
-                            <input type="text" class="form-control" id="path" wire:model="path">
+                            <label for="path" class="form-label">
+                                @if ($input === 'url')
+                                    URL
+                                @elseif($input === 'email')
+                                    Email
+                                @elseif($input === 'phone')
+                                    Phone
+                                @elseif($input === 'username')
+                                    Username
+                                @else
+                                    Other
+                                @endif
+                            </label>
+                            @if ($input === 'url')
+                                <input type="url" class="form-control" id="path" wire:model="path">
+                            @elseif($input === 'email')
+                                <input type="email" class="form-control" id="path" wire:model="path">
+                            @elseif($input === 'phone')
+                                <input type="tel" class="form-control" id="path" wire:model="path">
+                            @elseif($input === 'username')
+                                <input type="text" class="form-control" id="path" wire:model="path">
+                            @else
+                                <input type="text" class="form-control" id="path" wire:model="path"
+                                    placeholder="Enter details">
+                            @endif
                             @error('path')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
