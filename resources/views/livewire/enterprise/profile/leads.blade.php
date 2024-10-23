@@ -66,7 +66,7 @@
                                     </td>
                                     <td>
                                         <span
-                                            class="d-block">{{ $lead->created_at ? date('Y-m-d', strtotime($lead->created_at)) : 'N/A' }}</span>
+                                            class="d-block">{{ $lead->created_at ? humanDateFormat($lead->created_at) : 'N/A' }}</span>
                                     </td>
                                     <td>
                                         <a href="{{ route('enterprise.leads.view', $lead->id) }}"
@@ -85,6 +85,12 @@
                                             data-bs-html="true" title="download">
                                             <i class='bx bx-download'></i>
                                         </a>
+                                        <button class="btn btn-dark btn-sm" data-bs-toggle="tooltip"
+                                            data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
+                                            title="{{ $lead->note ? 'Edit Note' : 'Add Note' }}"
+                                            wire:click="showNoteModal({{ $lead->id }})">
+                                            <i class='{{ $lead->note ? 'bx bxs-edit' : 'bx bxs-comment-add' }}'></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -106,6 +112,35 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div wire:ignore.self class="modal fade" id="leadNoteModal" tabindex="-1" aria-labelledby="leadNoteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="leadNoteModalLabel">Add / Edit Note</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form wire:submit.prevent="noteSave({{ $leadId }})">
+                        <div class="mb-3">
+                            <label for="note" class="form-label">Note</label>
+                            <textarea class="form-control" id="note" rows="3" wire:model="note"></textarea>
+                            @error('note')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Note</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     @include('livewire.admin.confirm-modal')
 
     <script>
@@ -119,8 +154,44 @@
             $('#confirmModal').modal('show')
         });
 
+        window.addEventListener('show-note-modal', event => {
+            $('#leadNoteModal').modal('show')
+        });
+
         window.addEventListener('close-modal', event => {
             $('#confirmModal').modal('hide')
+        });
+
+        window.addEventListener('noteSaved', event => {
+            $('#leadNoteModal').modal('hide')
+        });
+
+        document.addEventListener('livewire:load', function() {
+            // Initialize tooltips when Livewire loads for the first time
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Reinitialize tooltips after every Livewire update
+            Livewire.hook('message.processed', (message, component) => {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll(
+                    '[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                    new bootstrap.Tooltip(tooltipTriggerEl); // Reinitialize Bootstrap tooltips
+                });
+            });
+
+            // Hide the tooltip when a button is clicked
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(element) {
+                element.addEventListener('click', function() {
+                    var tooltipInstance = bootstrap.Tooltip.getInstance(
+                    element); // Get the tooltip instance
+                    if (tooltipInstance) {
+                        tooltipInstance.hide(); // Hide the tooltip when the button is clicked
+                    }
+                });
+            });
         });
     </script>
 

@@ -21,7 +21,39 @@ class Leads extends Component
 
     public $total, $leadId;
 
+    public $note;
+
     public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
+
+    public function showNoteModal($id)
+    {
+        $this->leadId = $id;
+        $lead = DB::table('leads')->where('id', $id)->first();
+        $this->note = $lead->note;
+        $this->dispatchBrowserEvent('show-note-modal');
+    }
+    public function noteSave($id)
+    {
+        $lead = DB::table('leads')->where('id', $id)->first();
+        if ($lead) {
+            if ($lead->note === null) {
+                // If no note exists, insert the new note
+                DB::table('leads')
+                    ->where('id', $id)
+                    ->update(['note' => $this->note]);
+            } else {
+                // Update the existing note
+                DB::table('leads')
+                    ->where('id', $id)
+                    ->update(['note' => $this->note]);
+            }
+        }
+        $this->dispatchBrowserEvent('noteSaved');
+        $this->dispatchBrowserEvent('swal:modal', [
+            'type' => 'success',
+            'message' => 'Lead Note Updated successfully!',
+        ]);
+    }
 
     public function confirmModal($id)
     {
@@ -61,6 +93,7 @@ class Leads extends Component
             'leads.name',
             'leads.email',
             'leads.phone',
+            'leads.note',
             'leads.viewing_id',
             'leads.viewer_id',
             'leads.created_at',
