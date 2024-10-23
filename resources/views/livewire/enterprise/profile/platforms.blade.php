@@ -37,40 +37,36 @@
             @endforeach
         </div>
     @elseif ($tab_change == 3)
-        <div wire:sortable="updateOrder" style="margin: 0 25%;">
+        <div wire:sortable="updateOrder" class="row">
             @forelse ($sort_platform as $platforms)
-                <div wire:sortable.item="{{ $platforms['id'] }}" wire:key="platform-{{ $platforms['id'] }}">
-                    <div class="mb-2">
-                        <div class="card my-4">
-                            <div class="card-body">
+                <div wire:sortable.item="{{ $platforms['id'] }}" wire:key="platform-{{ $platforms['id'] }}"
+                    class="col-md-4 mb-2">
+                    <div class="card my-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div wire:sortable.handle class="col-md-2 py-3" style="height: 50px;width:50px">
+                                    <img src="{{ asset('dots.png') }}" height="100%" width="100%" alt=""
+                                        class="cursor-pointer">
+                                </div>
+                                <div class="col-md-2 py-2" style="height: 75px;width:75px">
+                                    <img src="{{ asset($platforms['icon'] ? Storage::url($platforms['icon']) : 'pbg.png') }}"
+                                        class="img-fluid rounded" height="100%" width="100%">
+                                </div>
+                                <div class="col-md-6 p-3">
+                                    <h5 class="card-text pt-1">{{ $platforms['title'] }}
+                                    </h5>
+                                </div>
                                 <div class="row">
-                                    <div wire:sortable.handle class="col-md-2 py-3" style="height: 50px;width:50px">
-                                        <img src="{{ asset('dots.png') }}" height="100%" width="100%" alt=""
-                                            class="cursor-pointer">
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-primary btn-sm mb-2"
+                                            data-bs-toggle="modal" data-bs-target="#platformModal"
+                                            wire:click="editPlatform({{ $platforms['id'] }},'{{ $platforms['path'] }}','{{ $platforms['label'] }}','{{ $platforms['direct'] }}','{{ $platforms['title'] }}')">Update</button>
                                     </div>
-                                    <div class="col-md-2 py-2" style="height: 75px;width:75px">
-                                        <img src="{{ asset($platforms['icon'] ? Storage::url($platforms['icon']) : 'pbg.png') }}"
-                                            class="img-fluid rounded" height="100%" width="100%">
-                                    </div>
-                                    <div class="col-md-4 p-3">
-                                        <h5 class="card-text pt-1">{{ $platforms['title'] }}
-                                        </h5>
-                                    </div>
-                                    <div class="col-md-4 p-3">
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <button type="button" class="btn btn-primary btn-sm mb-2"
-                                                    data-bs-toggle="modal" data-bs-target="#platformModal"
-                                                    wire:click="editPlatform({{ $platforms['id'] }},'{{ $platforms['path'] }}','{{ $platforms['label'] }}','{{ $platforms['direct'] }}','{{ $platforms['title'] }}')">Update</button>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    wire:click="deletePlatform({{ $platforms['id'] }})">Delete</button>
-                                            </div>
-                                        </div>
+                                    <div class="col-sm-6">
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            wire:click="deletePlatform({{ $platforms['id'] }})">Delete</button>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
