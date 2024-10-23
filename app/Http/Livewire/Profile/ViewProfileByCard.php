@@ -106,7 +106,7 @@ class ViewProfileByCard extends Component
                 ->increment('clicks');
 
             // Log the URL to verify it
-            Log::info('Redirecting to: ' . $url);
+            // Log::info('Redirecting to: ' . $url);
 
             $this->dispatchBrowserEvent('redirect', [
                 'url' => $url

@@ -12,14 +12,27 @@ class VCardController extends Controller
 {
     public function saveContact($id)
     {
-        $profile = Profile::where('id', $id)->first();
+        $profile = Profile::find($id);
         $vcard = new VCard();
-
-        $vcard->addName('', $profile->name);
+        $vcard->addName($profile->name);
         $vcard->addEmail($profile->email);
-        $vcard->addPhoneNumber($profile->phone, 'WORK');
-        $vcard->addCompany($profile->company);
-        $vcard->addJobtitle($profile->job_title);
+        $vcard->addPhoneNumber($profile->phone);
+        if ($profile->company) {
+            $vcard->addCompany($profile->company);
+        }
+        if ($profile->job_title) {
+            $vcard->addJobtitle($profile->job_title);
+        }
+        if ($profile->work_position) {
+            $vcard->addRole($profile->work_position);
+        }
+        if ($profile->address) {
+            $vcard->addAddress(null, null, '', '', null, $profile->address, null);
+        }
+        $photoPath = $profile->photo && Storage::disk('public')->exists($profile->photo)
+            ? public_path('storage/' . $profile->photo)
+            : public_path('user.png');
+        $vcard->addPhoto($photoPath);
 
 
         return response()->make(
