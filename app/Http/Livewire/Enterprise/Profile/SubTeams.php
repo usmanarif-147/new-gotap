@@ -141,6 +141,7 @@ class SubTeams extends Component
         if ($subteam->logo) {
             Storage::disk('public')->delete($subteam->logo);
         }
+        $subteam->profiles()->detach();
         $subteam->delete();
         $this->closeModal();
         $this->dispatchBrowserEvent('swal:modal', [

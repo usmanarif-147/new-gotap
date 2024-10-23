@@ -38,6 +38,18 @@
                             <h6 class="text-black">Phone:</h6>
                             <p>{{ $lead->phone }}</p>
                         </div>
+                        @if ($lead->country)
+                            <div class="lead-detail">
+                                <h6 class="text-black">Country:</h6>
+                                <p>{{ $lead->country }}</p>
+                            </div>
+                        @endif
+                        @if ($lead->state)
+                            <div class="lead-detail">
+                                <h6 class="text-black">State:</h6>
+                                <p>{{ $lead->state }}</p>
+                            </div>
+                        @endif
                     </div>
                     <div class="col-md-6">
                         <div class="lead-detail">
@@ -46,9 +58,23 @@
                         </div>
                         <div class="lead-detail">
                             <h6 class="text-black">Date:</h6>
-                            <p>{{ date('Y-m-d', strtotime($lead->created_at)) }}</p>
+                            <p>{{ humanDateFormat($lead->created_at) }}</p>
                         </div>
+                        @if ($lead->city)
+                            <div class="lead-detail">
+                                <h6 class="text-black">City:</h6>
+                                <p>{{ $lead->city }}</p>
+                            </div>
+                        @endif
                     </div>
+                    @if ($lead->note)
+                        <div class="col-md">
+                            <div class="lead-detail">
+                                <h6 class="text-black">Note:</h6>
+                                <p>{{ $lead->note }}</p>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

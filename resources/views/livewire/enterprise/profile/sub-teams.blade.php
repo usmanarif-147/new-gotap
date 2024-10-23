@@ -398,6 +398,33 @@
         window.addEventListener('showProfilesModal', event => {
             $('#manageSubteamModal').modal('show');
         });
+        document.addEventListener('livewire:load', function() {
+            // Initialize tooltips when Livewire loads for the first time
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Reinitialize tooltips after every Livewire update
+            Livewire.hook('message.processed', (message, component) => {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll(
+                    '[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                    new bootstrap.Tooltip(tooltipTriggerEl); // Reinitialize Bootstrap tooltips
+                });
+            });
+
+            // Hide the tooltip when a button is clicked
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(element) {
+                element.addEventListener('click', function() {
+                    var tooltipInstance = bootstrap.Tooltip.getInstance(
+                        element); // Get the tooltip instance
+                    if (tooltipInstance) {
+                        tooltipInstance.hide(); // Hide the tooltip when the button is clicked
+                    }
+                });
+            });
+        });
     </script>
     <script>
         window.addEventListener('swal:modal', event => {
