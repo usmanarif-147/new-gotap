@@ -235,12 +235,21 @@ class Platforms extends Component
 
     public function categoryWithPlatforms($searchTerm = null)
     {
-        $categories = Category::whereExists(function ($query) {
-            $query->select(DB::raw(1))
-                ->from('platforms')
-                ->whereRaw('platforms.category_id = categories.id')
-                ->where('platforms.status', '=', '1');
+        // $categories = Category::whereExists(function ($query) {
+        //     $query->select(DB::raw(1))
+        //         ->from('platforms')
+        //         ->whereRaw('platforms.category_id = categories.id')
+        //         ->where('platforms.status', '=', '1');
+        // });
+        $categories = Category::whereHas('platforms', function ($query) {
+            $query->where('status', 1);
         });
+        if ($searchTerm) {
+            $categories->whereHas('platforms', function ($query) use ($searchTerm) {
+                $query->where('title', 'like', "%{$searchTerm}%")
+                    ->where('status', 1);
+            });
+        }
         $categories = $categories->get();
 
         $userPlatforms = DB::table('profile_platforms')
