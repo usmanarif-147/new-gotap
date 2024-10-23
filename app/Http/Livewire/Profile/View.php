@@ -108,6 +108,7 @@ class View extends Component
 
     public function increment($platformId, $url)
     {
+        // dd([$platformId, $url]);
         if (!$this->profile->private) {
             DB::table('profile_platforms')
                 ->where('profile_id', $this->profile->id)
@@ -115,8 +116,7 @@ class View extends Component
                 ->increment('clicks');
 
             // Log the URL to verify it
-            Log::info('Redirecting to: ' . $url);
-
+            // Log::info('Redirecting to: ' . $url);
             $this->dispatchBrowserEvent('redirect', [
                 'url' => $url
             ]);

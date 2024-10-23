@@ -53,17 +53,31 @@
                                         @foreach ($chunk as $platform)
                                             <div class="col-4 d-flex justify-content-center"
                                                 style="margin-bottom: 20px">
-                                                <a class="social text-center"
-                                                    href="{{ $platform->base_url . $platform->path }}" target="_blank"
-                                                    style="{{ $profile->private ? 'filter: blur(5px);' : '' }}; text-decoration:none">
-                                                    <img src="{{ asset(isImageExist($platform->icon, 'platform')) }}"
-                                                        class="gallery-image img-fluid"
-                                                        style="max-width: 90px; max-height: 90px; object-fit: cover; display: block; margin: 0 auto;">
-                                                    <label
-                                                        style="display: block; font-size:20px; color:black; font-weight:bold">
-                                                        {{ $platform->title }}
-                                                    </label>
-                                                </a>
+                                                @if ($profile->private)
+                                                    <div class="social text-center"
+                                                        style="filter: blur(5px); text-decoration:none; cursor: not-allowed;">
+                                                        <img src="{{ asset(isImageExist($platform->icon, 'platform')) }}"
+                                                            class="gallery-image img-fluid"
+                                                            style="max-width: 90px; max-height: 90px; object-fit: cover; display: block; margin: 0 auto;">
+                                                        <label
+                                                            style="display: block; font-size:20px; color:black; font-weight:bold">
+                                                            {{ $platform->title }}
+                                                        </label>
+                                                    </div>
+                                                @else
+                                                    <a class="social text-center" href="javascript:void(0);"
+                                                        wire:click.prevent="increment({{ $platform->platform_id }}, '{{ $platform->base_url . $platform->path }}')"
+                                                        style="text-decoration:none;">
+                                                        <img src="{{ asset(isImageExist($platform->icon, 'platform')) }}"
+                                                            class="gallery-image img-fluid"
+                                                            style="max-width: 90px; max-height: 90px; object-fit: cover; display: block; margin: 0 auto;">
+                                                        <label
+                                                            style="display: block; font-size:20px; color:black; font-weight:bold">
+                                                            {{ $platform->title }}
+                                                        </label>
+                                                    </a>
+                                                @endif
+
                                             </div>
                                         @endforeach
                                     @endforeach
@@ -121,8 +135,8 @@
 
                                         <div class="mb-3">
                                             <label for="email" class="form-label">Email address</label>
-                                            <input type="email" id="email" wire:model="email" class="form-control"
-                                                required>
+                                            <input type="email" id="email" wire:model="email"
+                                                class="form-control" required>
                                             <div class="form-text">We’ll never share your email with anyone else.</div>
                                         </div>
 
@@ -170,7 +184,8 @@
         window.addEventListener('redirect', event => {
             let url = event.detail.url;
             if (url) {
-                window.location.href = url;
+                window.open(event.detail.url, '_blank');
+                // window.location.href = url;
             }
         });
         window.addEventListener('closeModal', event => {
