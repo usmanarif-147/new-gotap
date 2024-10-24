@@ -28,6 +28,7 @@ class Profile extends Model
         'active',
         'user_direct',
         'tiks',
+        'taps',
         'is_leads_enabled',
         'private'
     ];

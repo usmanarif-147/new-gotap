@@ -453,6 +453,7 @@ class ProfileController extends Controller
     {
         $profile = getActiveProfile();
         $profileViews = $profile->tiks;
+        $totalTaps = $profile->taps;
         $platforms = DB::table('profile_platforms')
             ->select(
                 'platforms.id',
@@ -466,6 +467,8 @@ class ProfileController extends Controller
             ->where('profile_id', $profile->id)
             ->orderBy('profile_platforms.clicks')
             ->get();
+
+        $tapThroughRate = $profileViews > 0 ? round(($totalTaps / $profileViews) * 100) : 0;
 
 
         return response()->json(
@@ -488,7 +491,7 @@ class ProfileController extends Controller
                     ],
                     [
                         'label' => 'Tap Through Rate',
-                        'clicks' => 0,
+                        'clicks' => $tapThroughRate,
                         'text' => 'Your ratio of taps to views. Out of the total views you had on your digital business card, how many of those people actually tapped a link. This is important for maximizing your conversions and engagement.',
                     ]
                 ],
