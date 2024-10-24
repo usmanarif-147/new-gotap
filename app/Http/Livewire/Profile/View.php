@@ -193,7 +193,7 @@ class View extends Component
     {
         $user = auth()->user();
         if ($user) {
-            $this->profileCheck = Profile::where('user_id', $user->id)->orwhere('enterprise_id', $user->id)->exists();
+            $this->profileCheck = Profile::where('user_id', $user->id)->orwhere('enterprise_id', $user->id)->where('id', $this->profile->id)->exists();
         }
         return $this->profile;
     }
