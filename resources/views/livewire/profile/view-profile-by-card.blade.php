@@ -33,8 +33,13 @@
                                         {{ $profile->name ? $profile->name : $profile->username }}
                                     </h1>
                                     <p style=" margin-left:30px; font-size:16px; color:#24171E;" class="user-name">
-                                        {{ $profile->job_title }} at {{ $profile->company }}
-
+                                        @if ($profile->job_title && $profile->company)
+                                            {{ $profile->job_title }} at {{ $profile->company }}
+                                        @elseif ($profile->job_title)
+                                            {{ $profile->job_title }}
+                                        @elseif ($profile->company)
+                                            {{ $profile->company }}
+                                        @endif
                                     </p>
                                     <br>
                                     <h1 style="font-size:20px; width:auto; margin-left:auto; margin-right:auto"
@@ -61,17 +66,6 @@
                                         @foreach ($chunk as $platform)
                                             <div class="col-4 d-flex justify-content-center"
                                                 style="margin-bottom: 20px">
-                                                {{-- <a class="social text-center"
-                                                    href="{{ $platform->base_url . $platform->path }}" target="_blank"
-                                                    style="{{ $profile->private ? 'filter: blur(5px);' : '' }}; text-decoration:none">
-                                                    <img src="{{ asset(isImageExist($platform->icon, 'platform')) }}"
-                                                        class="gallery-image img-fluid"
-                                                        style="max-width: 90px; max-height: 90px; object-fit: cover; display: block; margin: 0 auto;">
-                                                    <label
-                                                        style="display: block; font-size:20px; color:black; font-weight:bold">
-                                                        {{ $platform->title }}
-                                                    </label>
-                                                </a> --}}
                                                 @if ($profile->private)
                                                     <div class="social text-center"
                                                         style="filter: blur(5px); text-decoration:none; cursor: not-allowed;">

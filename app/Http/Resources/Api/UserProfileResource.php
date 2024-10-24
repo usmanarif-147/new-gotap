@@ -28,6 +28,7 @@ class UserProfileResource extends JsonResource
             'is_default' => $this->is_default,
             'user_direct' => $this->user_direct ?? null,
             'tiks' => $this->tiks ?? null,
+            'taps' => $this->taps ?? null,
             'private' => $this->private ?? null,
             'created_at' => defaultDateFormat($this->created_at),
             'platforms' => PlatformResource::collection($this->platforms)

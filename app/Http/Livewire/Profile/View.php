@@ -92,6 +92,10 @@ class View extends Component
         if ($userPlatform) {
             $platform = Platform::where('id', $userPlatform->platform_id)->first();
             if ($platform) {
+                DB::table('profile_platforms')
+                    ->where('profile_id', $this->profile->id)
+                    ->where('platform_id', $userPlatform->platform_id)
+                    ->increment('clicks');
                 if (!str_contains($userPlatform->path, 'https') && !str_contains($userPlatform->path, 'http')) {
                     $this->redicretTo = 'https://' . $userPlatform->path;
                 } else {

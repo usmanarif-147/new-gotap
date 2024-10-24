@@ -43,18 +43,19 @@
             </a>
         </li>
         <li class="menu-item">
-            <a class="menu-link {{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') ? '' : 'collapsed' }}"
+            <a class="menu-link {{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') || request()->routeIs('enterprise.profile.manage') ? '' : 'collapsed' }}"
                 data-bs-toggle="collapse" href="#TeamSubmenu" role="button"
-                aria-expanded="{{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') ? 'true' : 'false' }}"
+                aria-expanded="{{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') || request()->routeIs('enterprise.profile.manage') ? 'true' : 'false' }}"
                 aria-controls="TeamSubmenu">
                 <i class="menu-icon tf-icons bx bxs-group"></i>
                 <div class="me-5">Team</div>
                 <i
-                    class='arrow bx {{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') ? 'bx-down-arrow-alt' : 'bx-up-arrow-alt' }}'></i>
+                    class='arrow bx {{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') || request()->routeIs('enterprise.profile.manage') ? 'bx-down-arrow-alt' : 'bx-up-arrow-alt' }}'></i>
             </a>
-            <ul class="collapse submenu {{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') ? 'show' : '' }}"
+            <ul class="collapse submenu {{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.create') || request()->routeIs('enterprise.profile.subteams') || request()->routeIs('enterprise.profile.manage') ? 'show' : '' }}"
                 id="TeamSubmenu">
-                <li class="{{ request()->routeIs('enterprise.profiles') ? 'active bg-active' : '' }}">
+                <li
+                    class="{{ request()->routeIs('enterprise.profiles') || request()->routeIs('enterprise.profile.manage') ? 'active bg-active' : '' }}">
                     <a href="{{ route('enterprise.profiles') }}" class="dropdown-item d-flex align-items-center">
                         <i class='tf-icons bx bxs-user-detail me-3'></i>
                         <div>Profiles</div>
@@ -76,18 +77,19 @@
             </ul>
         </li>
         <li class="menu-item">
-            <a class="menu-link {{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') ? '' : 'collapsed' }}"
+            <a class="menu-link {{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') || request()->routeIs('enterprise.leads.view') ? '' : 'collapsed' }}"
                 data-bs-toggle="collapse" href="#LeadsSubmenu" role="button"
-                aria-expanded="{{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') ? 'true' : 'false' }}"
+                aria-expanded="{{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') || request()->routeIs('enterprise.leads.view') ? 'true' : 'false' }}"
                 aria-controls="LeadsSubmenu">
                 <i class="menu-icon tf-icons bx bxs-group"></i>
                 <div class="me-5">Leads</div>
                 <i
-                    class='arrow bx {{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') ? 'bx-down-arrow-alt' : 'bx-up-arrow-alt' }}'></i>
+                    class='arrow bx {{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') || request()->routeIs('enterprise.leads.view') ? 'bx-down-arrow-alt' : 'bx-up-arrow-alt' }}'></i>
             </a>
-            <ul class="collapse submenu {{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') ? 'show' : '' }}"
+            <ul class="collapse submenu {{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads-map') || request()->routeIs('enterprise.leads.view') ? 'show' : '' }}"
                 id="LeadsSubmenu">
-                <li class="{{ request()->routeIs('enterprise.leads') ? 'active bg-active' : '' }}">
+                <li
+                    class="{{ request()->routeIs('enterprise.leads') || request()->routeIs('enterprise.leads.view') ? 'active bg-active' : '' }}">
                     <a href="{{ route('enterprise.leads') }}" class="dropdown-item d-flex align-items-center">
                         <i class='tf-icons bx bxs-group me-3'></i>
                         <div>Leads</div>

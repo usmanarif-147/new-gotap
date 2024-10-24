@@ -36,6 +36,7 @@ return new class extends Migration {
             $table->tinyInteger('active')->default(0);
             $table->tinyInteger('user_direct')->default(0);
             $table->integer('tiks')->default(0);
+            $table->integer('taps')->default(0);
             $table->tinyInteger('private')->default(0);
             $table->timestamps();
         });
