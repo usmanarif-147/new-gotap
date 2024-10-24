@@ -475,6 +475,11 @@ class ProfileController extends Controller
             [
                 'ProfileAnalytics' => [
                     [
+                        'label' => 'Taps Streak',
+                        'clicks' => $totalTaps,
+                        'text' => '',
+                    ],
+                    [
                         'label' => 'Taps',
                         'clicks' => $profileViews,
                         'text' => 'The total number of times your GOtaps digital business card is viewed. This can be via a GOtaps device, your GOtaps QR code, or even a tap of your link in a bio',

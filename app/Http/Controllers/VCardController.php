@@ -35,11 +35,12 @@ class VCardController extends Controller
         $vcard->addPhoto($photoPath);
 
 
-        return response()->make(
-            $vcard->getOutput(),
-            200,
-            $vcard->getHeaders(true)
-        );
+        $filename = $profile->name . '_contact.vcf';
+
+        return Response::make($vcard->getOutput(), 200, [
+            'Content-Type' => 'text/vcard',
+            'Content-Disposition' => "attachment; filename={$filename}",
+        ]);
     }
 
     public function downloadVCard($id)
