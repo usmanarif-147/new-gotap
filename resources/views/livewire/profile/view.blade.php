@@ -197,5 +197,31 @@
             $('#userDetails').hide();
         });
     </script>
+    <div id="location-reminder"
+        style="display: none; position: fixed; bottom: 20px; right: 20px; padding: 10px; background: #ffc; border: 1px solid #cc0;">
+        Please enable location access for this page. You may need to update your site settings if prompted.
+    </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let locationReminder = document.getElementById('location-reminder');
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    // Location granted
+                    locationReminder.style.display = 'none';
+                    Livewire.emit('setLocation', position.coords.latitude, position.coords.longitude);
+                },
+                function(error) {
+                    // Location denied
+                    locationReminder.style.display = 'block';
+                    console.error("Location permission denied:", error.message);
+                }, {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                }
+            );
+        });
+    </script>
 </div>
