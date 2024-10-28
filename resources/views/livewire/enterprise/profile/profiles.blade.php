@@ -80,13 +80,17 @@
                                                         value="{{ $profile->card_uuid }}">
                                                     {{-- {{ $profile->uuid }} --}}
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-2 position-relative">
                                                     <a href="javascript:void(0)"
                                                         onclick="copy('{{ $profile->card_id }}')">
                                                         <i class="bx bx-clipboard" data-bs-toggle="tooltip"
                                                             data-bs-offset="0,4" data-bs-placement="top"
                                                             title="Copy Link" aria-hidden="true"></i>
                                                     </a>
+                                                    <div id="copy-notification"
+                                                        style="display: none; position: absolute; top: 0; left: 50px; color: blue;">
+                                                        Copied!
+                                                    </div>
                                                 </div>
                                             </div>
                                         @else
@@ -321,7 +325,14 @@
             // Remove the temporary input
             document.body.removeChild(tempInput);
 
-            alert("copied");
+            // Show the notification
+            let notification = document.getElementById('copy-notification');
+            notification.style.display = 'block';
+
+            // Hide the notification after 2 seconds
+            setTimeout(function() {
+                notification.style.display = 'none';
+            }, 2000); // 2000 ms = 2 seconds
         }
     </script>
 

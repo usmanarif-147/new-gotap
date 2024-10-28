@@ -22,12 +22,21 @@ class ViewProfileByCard extends Component
     public $name, $email, $phone;
 
     public $showModal = 1;
+    public $latitude;
+    public $longitude;
 
-    protected $listeners = ['submitForm'];
+    protected $listeners = ['submitForm', 'setLocation'];
 
     public function mount()
     {
         $this->identifier = request()->segment(2);
+    }
+
+    public function setLocation($latitude, $longitude)
+    {
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
+        $this->modalShow = 1;
     }
 
     public function getProfileData()
@@ -127,15 +136,15 @@ class ViewProfileByCard extends Component
             $ip_address = $locationData['geoplugin_request'];
             $state = $locationData['geoplugin_region'];
             $city = $locationData['geoplugin_city'];
-            $latitude = $locationData['geoplugin_latitude'];
-            $longitude = $locationData['geoplugin_longitude'];
+            $lat = $this->latitude;
+            $long = $this->longitude;
         } else {
             $country = null;
             $ip_address = null;
             $state = null;
             $city = null;
-            $latitude = null;
-            $longitude = null;
+            $lat = null;
+            $long = null;
         }
         $this->profile = Card::join('profile_cards', 'cards.id', '=', 'profile_cards.card_id')
             ->join('profiles', 'profiles.id', '=', 'profile_cards.profile_id')
@@ -154,8 +163,8 @@ class ViewProfileByCard extends Component
             'country' => $country,
             'state' => $state,
             'city' => $city,
-            'latitude' => $latitude,
-            'longitude' => $longitude,
+            'latitude' => $lat,
+            'longitude' => $long,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

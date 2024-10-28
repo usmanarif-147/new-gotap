@@ -181,8 +181,6 @@
     @endif
 
 
-
-
     <script>
         $(document).ready(function() {
 
@@ -218,6 +216,26 @@
                 document.getElementById('submitButton').disabled = false;
             }, 2000);
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let locationReminder = document.getElementById('location-reminder');
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    // Location granted
+                    Livewire.emit('setLocation', position.coords.latitude, position.coords.longitude);
+                },
+                function(error) {
+                    // Location denied
+                    console.error("Location permission denied:", error.message);
+                }, {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                }
+            );
+        });
     </script>
 
 </div>

@@ -21,9 +21,20 @@ class View extends Component
 
     public $name, $email, $phone;
 
+    public $latitude;
+    public $longitude;
+
     public function mount()
     {
         $this->identifier = request()->username;
+    }
+
+    protected $listeners = ['setLocation'];
+
+    public function setLocation($latitude, $longitude)
+    {
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
     }
 
     public function getProfileData()
@@ -136,15 +147,15 @@ class View extends Component
             $ip_address = $locationData['geoplugin_request'];
             $state = $locationData['geoplugin_region'];
             $city = $locationData['geoplugin_city'];
-            $latitude = $locationData['geoplugin_latitude'];
-            $longitude = $locationData['geoplugin_longitude'];
+            $lat = $this->latitude;
+            $long = $this->longitude;
         } else {
             $country = null;
             $ip_address = null;
             $state = null;
             $city = null;
-            $latitude = null;
-            $longitude = null;
+            $lat = null;
+            $long = null;
         }
         $data = ['name' => $this->name, 'email' => $this->email, 'phone' => $this->phone];
         DB::table('leads')->insert([
@@ -158,8 +169,8 @@ class View extends Component
             'country' => $country,
             'state' => $state,
             'city' => $city,
-            'latitude' => $latitude,
-            'longitude' => $longitude,
+            'latitude' => $lat,
+            'longitude' => $long,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
