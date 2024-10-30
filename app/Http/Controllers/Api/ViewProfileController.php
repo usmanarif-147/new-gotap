@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Profile\AddLeadRequest;
 use App\Http\Requests\Api\Profile\UpdateProfileLeadRequest;
 use App\Http\Requests\Api\Profile\ViewProfileRequest;
 use App\Http\Resources\Api\UserProfileResource;
@@ -201,6 +202,29 @@ class ViewProfileController extends Controller
         return response()->json([
             'message' => 'Lead Update Successfully!',
             'lead' => $updatedLead,
+        ]);
+    }
+
+    public function addLead(AddLeadRequest $request)
+    {
+        $Profile = getActiveProfile();
+        if (!$Profile) {
+            return response()->json([
+                'message' => 'Your Profile is not Active',
+            ], 404);
+        }
+        DB::table('leads')->insert([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'note' => $request->note,
+            'viewing_id' => $Profile->id,
+            'employee_id' => auth()->id(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        return response()->json([
+            'message' => 'Lead created Successfully!',
         ]);
     }
 }
