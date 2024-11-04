@@ -1,7 +1,7 @@
 <div>
     @if ($tab_change == 2)
         <div class="row">
-            <div class="col-md-3 offset-9">
+            <div class="col-md-3 ms-auto">
                 <label for=""> Search </label>
                 <input class="form-control me-2" type="text" wire:model.debounce.500ms="searchTerm" placeholder="Search"
                     aria-label="Search">

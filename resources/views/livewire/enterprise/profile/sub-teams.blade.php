@@ -66,7 +66,7 @@
     <div class="card">
         <div class="card-header">
             <div class="row">
-                <div class="col-md-3 offset-9">
+                <div class="col-md-3 ms-auto">
                     <label for=""> Search </label>
                     <input class="form-control me-2" type="search" wire:model.debounce.500ms="search"
                         placeholder="Search By Name" aria-label="Search">
