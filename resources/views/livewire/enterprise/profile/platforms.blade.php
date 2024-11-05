@@ -231,6 +231,21 @@
                 </div>
             </div>
         </div>
+        <script>
+            // Toggle functionality for mobile preview
+            document.getElementById('PreviewBtn').addEventListener('click', function() {
+                const mobilePreviewPlatform = document.getElementById('Preview');
+                const toggleBtnPlatform = document.getElementById('PreviewBtn');
+
+                if (mobilePreviewPlatform.classList.contains('d-none')) {
+                    mobilePreviewPlatform.classList.remove('d-none');
+                    toggleBtnPlatform.textContent = 'Hide Mobile Preview';
+                } else {
+                    mobilePreviewPlatform.classList.add('d-none');
+                    toggleBtnPlatform.textContent = 'Show Mobile Preview';
+                }
+            });
+        </script>
     @elseif ($tab_change == 3)
         <div wire:sortable="updateOrder" class="row">
             @forelse ($sort_platform as $platforms)
@@ -347,21 +362,6 @@
                 title: event.detail.message,
                 icon: event.detail.type,
             });
-        });
-    </script>
-    <script>
-        // Toggle functionality for mobile preview
-        document.getElementById('PreviewBtn').addEventListener('click', function() {
-            const mobilePreviewPlatform = document.getElementById('Preview');
-            const toggleBtnPlatform = document.getElementById('PreviewBtn');
-
-            if (mobilePreviewPlatform.classList.contains('d-none')) {
-                mobilePreviewPlatform.classList.remove('d-none');
-                toggleBtnPlatform.textContent = 'Hide Mobile Preview';
-            } else {
-                mobilePreviewPlatform.classList.add('d-none');
-                toggleBtnPlatform.textContent = 'Show Mobile Preview';
-            }
         });
     </script>
 </div>
