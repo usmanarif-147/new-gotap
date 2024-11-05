@@ -71,49 +71,44 @@
                         <div class="col-md-9">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-8">
+                                    <div class="col-md-12">
                                         <h4 class="fw-bold text-center text-dark"> Profile Details </h4>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-md-6">
                                         <x-custom.detail-section label="Name" :value="$profile->name" />
                                         <x-custom.detail-section label="Email" :value="$profile->email" />
                                         <x-custom.detail-section label="Phone" :value="$profile->phone" />
                                         <x-custom.detail-section label="Registered" :value="$profile->created_at->diffForHumans()" />
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-md-6">
                                         <x-custom.detail-section label="Username" :value="$profile->username" />
                                         <x-custom.detail-section label="Card" :value="$card_status" />
                                         <x-custom.detail-section label="Views" :value="$profile->tiks" />
                                         <x-custom.detail-section label="Platforms" :value="$total_platforms" />
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row text-center">
-                            <div class="col-4">
-                            </div>
-                            <div class="col-4">
-                                <div class="mb-1 row">
-                                    <div class="col-5">
-                                        <label>Direct</label>
+                                    <div class="col-md-6 mt-4">
+                                        <div class="mb-1 row">
+                                            <div class="col-5">
+                                                <label>Direct</label>
+                                            </div>
+                                            <div class="col-7 form-check form-switch">
+                                                <input class="form-check-input"
+                                                    wire:change="isDirect($event.target.checked)" type="checkbox"
+                                                    {{ $profile->user_direct == 1 ? 'checked' : '' }}>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-7 form-check form-switch">
-                                        <input class="form-check-input" wire:change="isDirect($event.target.checked)"
-                                            type="checkbox" {{ $profile->user_direct == 1 ? 'checked' : '' }}>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="mb-1 row">
-                                    <div class="col-5">
-                                        <label>Private Profile</label>
-                                    </div>
-                                    <div class="col-7 form-check form-switch">
-                                        <input class="form-check-input" type="checkbox"
-                                            wire:change="isPrivate($event.target.checked)"
-                                            {{ $profile->private == 1 ? 'checked' : '' }}>
+                                    <div class="col-md-6 mt-4">
+                                        <div class="mb-1 row">
+                                            <div class="col-5">
+                                                <label>Private Profile</label>
+                                            </div>
+                                            <div class="col-7 form-check form-switch">
+                                                <input class="form-check-input" type="checkbox"
+                                                    wire:change="isPrivate($event.target.checked)"
+                                                    {{ $profile->private == 1 ? 'checked' : '' }}>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
