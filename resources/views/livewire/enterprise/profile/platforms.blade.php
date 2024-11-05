@@ -136,14 +136,14 @@
                 </div>
                 <!-- Toggle Button for Mobile Screens (Only Visible on Small Screens) -->
                 <div class="d-xl-none">
-                    <button id="toggleMobilePreviewBtn" class="btn btn-primary fixed-bottom mb-3 mx-auto d-block"
+                    <button id="PreviewBtn" class="btn btn-primary fixed-bottom mb-3 mx-auto d-block"
                         style="max-width: 200px; z-index: 1000;">
                         Show Mobile Preview
                     </button>
                 </div>
 
                 <!-- Mobile Preview for Small Screens (Initially Hidden) -->
-                <div id="mobilePreview" class="col-12 align-content-center d-none"
+                <div id="Preview" class="col-12 align-content-center d-none"
                     style="position: fixed; bottom: 60px; left: 0; right: 0;z-index:9999; max-width: 300px; margin: 0 auto;">
                     <div class="row d-flex justify-content-center" style="background-color: white;">
                         <div class="col-md-12 col-12 p-0"
@@ -351,16 +351,16 @@
     </script>
     <script>
         // Toggle functionality for mobile preview
-        document.getElementById('toggleMobilePreviewBtn').addEventListener('click', function() {
-            const mobilePreview = document.getElementById('mobilePreview');
-            const toggleBtn = document.getElementById('toggleMobilePreviewBtn');
+        document.getElementById('PreviewBtn').addEventListener('click', function() {
+            const mobilePreviewPlatform = document.getElementById('Preview');
+            const toggleBtnPlatform = document.getElementById('PreviewBtn');
 
-            if (mobilePreview.classList.contains('d-none')) {
-                mobilePreview.classList.remove('d-none');
-                toggleBtn.textContent = 'Hide Mobile Preview';
+            if (mobilePreviewPlatform.classList.contains('d-none')) {
+                mobilePreviewPlatform.classList.remove('d-none');
+                toggleBtnPlatform.textContent = 'Hide Mobile Preview';
             } else {
-                mobilePreview.classList.add('d-none');
-                toggleBtn.textContent = 'Show Mobile Preview';
+                mobilePreviewPlatform.classList.add('d-none');
+                toggleBtnPlatform.textContent = 'Show Mobile Preview';
             }
         });
     </script>
