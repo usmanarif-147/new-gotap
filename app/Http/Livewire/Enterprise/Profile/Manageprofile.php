@@ -12,7 +12,7 @@ class Manageprofile extends Component
 
     public $profile_id;
 
-    public $tab_change = 1;
+    public $tab_change = 0;
 
     protected $listeners = ['refresh-profile' => 'profileData'];
     public function profileData($id)
@@ -74,6 +74,11 @@ class Manageprofile extends Component
             'type' => 'success',
             'message' => $string,
         ]);
+    }
+
+    public function viewProfile()
+    {
+        $this->tab_change = 0;
     }
 
     public function editProfile()

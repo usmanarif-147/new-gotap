@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Enterprise\Profile;
 
 use App\Models\Category;
+use App\Models\Profile;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use App\Models\Platform;
@@ -351,12 +352,26 @@ class Platforms extends Component
         $data = $this->categoryWithPlatforms($this->searchTerm);
         return $data;
     }
+
+    public function profileData($id)
+    {
+        if (request()->id) {
+            $this->profile_id = request()->id;
+        } else {
+            $this->profile_id = $id;
+        }
+        $profile = Profile::where('id', $this->profile_id)->first();
+        return $profile;
+    }
     public function render()
     {
+        $id = $this->profile_id;
+        $profile = $this->profileData($id);
         $platforms = $this->search();
         return view('livewire.enterprise.profile.platforms', [
             'platforms' => $platforms['transformedResponse'],
-            'sort_platform' => $platforms['sort']
+            'sort_platform' => $platforms['sort'],
+            'profile' => $profile
         ]);
     }
 }

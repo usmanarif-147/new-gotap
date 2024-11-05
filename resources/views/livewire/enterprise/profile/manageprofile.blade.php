@@ -10,81 +10,27 @@
             width: 100%;
             object-fit: cover;
         }
+
+        .col-5 label {
+            font-weight: bold;
+            color: black;
+        }
+
+        .col-4 label {
+            font-weight: bold;
+            color: black;
+        }
+
+        .col-8 label {
+            font-weight: bold;
+            color: black;
+        }
     </style>
-    {{-- <div>
-        <div class="d-flex justify-content-between">
-            <h2 class="card-header">
-                <a href="{{ route('enterprise.profiles') }}"> Profiles </a> / {{ $heading }}
-            </h2>
-        </div>
-    </div> --}}
-    <div>
-        <div class="card mb-3">
-            <div class="row p-2 align-items-center">
-                <div class="col-md-3 align-content-center">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <div class="user-profile border p-1 shadow rounded-3 mt-5">
-                            <img src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}"
-                                class="img-fluid rounded">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-8">
-                                <h4 class="fw-bold text-center text-dark"> Profile Details </h4>
-                            </div>
-                            <div class="col-6">
-                                <x-custom.detail-section label="Name" :value="$profile->name" />
-                                <x-custom.detail-section label="Email" :value="$profile->email" />
-                                <x-custom.detail-section label="Phone" :value="$profile->phone" />
-                                <x-custom.detail-section label="Registered" :value="$profile->created_at->diffForHumans()" />
-                            </div>
-                            <div class="col-6">
-                                {{-- <h4 class="fw-bold"> Analytics </h4> --}}
-                                <x-custom.detail-section label="Profile" :value="$profile->username" />
-                                <x-custom.detail-section label="Card" :value="$card_status" />
-                                <x-custom.detail-section label="Views" :value="$profile->tiks" />
-                                <x-custom.detail-section label="Platforms" :value="$total_platforms" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-4">
-                        {{-- <h6>Active profile</h6> --}}
-                    </div>
-                    <div class="col-4">
-                        <div class="mb-1 row">
-                            <div class="col-5">
-                                <label>Direct</label>
-                            </div>
-                            <div class="col-7 form-check form-switch">
-                                <input class="form-check-input" wire:change="isDirect($event.target.checked)"
-                                    type="checkbox" {{ $profile->user_direct == 1 ? 'checked' : '' }}>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="mb-1 row">
-                            <div class="col-5">
-                                <label>Private Profile</label>
-                            </div>
-                            <div class="col-7 form-check form-switch">
-                                <input class="form-check-input" type="checkbox"
-                                    wire:change="isPrivate($event.target.checked)"
-                                    {{ $profile->private == 1 ? 'checked' : '' }}>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {{ $tab_change == 0 ? 'active' : '' }}" type="button"
+                wire:click="viewProfile()">Profile</button>
+        </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $tab_change == 1 ? 'active' : '' }}" type="button"
                 wire:click="editProfile()">Edit
@@ -109,6 +55,74 @@
                 wire:click="profileAnalytics()">Analytics</button>
         </li>
     </ul>
+    <div>
+        @if ($tab_change == 0)
+            <div>
+                <div class="card mb-3">
+                    <div class="row p-2 align-items-center">
+                        <div class="col-md-3 align-content-center">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="user-profile border p-1 shadow rounded-3 mt-5">
+                                    <img src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}"
+                                        class="img-fluid rounded">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <h4 class="fw-bold text-center text-dark"> Profile Details </h4>
+                                    </div>
+                                    <div class="col-6">
+                                        <x-custom.detail-section label="Name" :value="$profile->name" />
+                                        <x-custom.detail-section label="Email" :value="$profile->email" />
+                                        <x-custom.detail-section label="Phone" :value="$profile->phone" />
+                                        <x-custom.detail-section label="Registered" :value="$profile->created_at->diffForHumans()" />
+                                    </div>
+                                    <div class="col-6">
+                                        <x-custom.detail-section label="Username" :value="$profile->username" />
+                                        <x-custom.detail-section label="Card" :value="$card_status" />
+                                        <x-custom.detail-section label="Views" :value="$profile->tiks" />
+                                        <x-custom.detail-section label="Platforms" :value="$total_platforms" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4">
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-1 row">
+                                    <div class="col-5">
+                                        <label>Direct</label>
+                                    </div>
+                                    <div class="col-7 form-check form-switch">
+                                        <input class="form-check-input" wire:change="isDirect($event.target.checked)"
+                                            type="checkbox" {{ $profile->user_direct == 1 ? 'checked' : '' }}>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-1 row">
+                                    <div class="col-5">
+                                        <label>Private Profile</label>
+                                    </div>
+                                    <div class="col-7 form-check form-switch">
+                                        <input class="form-check-input" type="checkbox"
+                                            wire:change="isPrivate($event.target.checked)"
+                                            {{ $profile->private == 1 ? 'checked' : '' }}>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
     <div>
         @if ($tab_change == 1)
             <livewire:enterprise.profile.edit :id="$profile_id" />
