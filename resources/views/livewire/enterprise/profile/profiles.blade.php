@@ -27,7 +27,7 @@
                         @endforeach
                     </select>
                 </div> --}}
-                <div class="col-md-3 offset-6">
+                <div class="col-md-3 ms-auto">
                     <label for=""> Sort by </label>
                     <select wire:model="sortBy" class="form-control form-select me-2">
                         <option value="" selected> Select Sort </option>

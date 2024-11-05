@@ -12,7 +12,7 @@
     <div class="card">
         <div class="card-header">
             <div class="row">
-                <div class="col-md-3 offset-9">
+                <div class="col-md-3 ms-auto">
                     <label for=""> Search </label>
                     <input class="form-control me-2" type="search" wire:model.debounce.500ms="search"
                         placeholder="Search" aria-label="Search">
@@ -186,7 +186,7 @@
             document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(element) {
                 element.addEventListener('click', function() {
                     var tooltipInstance = bootstrap.Tooltip.getInstance(
-                    element); // Get the tooltip instance
+                        element); // Get the tooltip instance
                     if (tooltipInstance) {
                         tooltipInstance.hide(); // Hide the tooltip when the button is clicked
                     }
