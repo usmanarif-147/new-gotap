@@ -32,7 +32,7 @@
         <a href="/enterprise/dashboard" class="app-brand-link">
             <span class="app-brand-logo demo" style="background:white">
                 <div>
-                    <img src="{{ asset(auth()->user()->enterprise_logo && Storage::exists(auth()->user()->enterprise_logo) ? Storage::url(auth()->user()->enterprise_logo) : 'logo.png') }}"
+                    <img src="{{ asset(auth()->user()->enterprise_logo && file_exists(public_path('storage/' . auth()->user()->enterprise_logo)) ? Storage::url(auth()->user()->enterprise_logo) : 'logo.png') }}"
                         class="img-fluid" height="50" width="50" alt="Logo here">
 
                 </div>
