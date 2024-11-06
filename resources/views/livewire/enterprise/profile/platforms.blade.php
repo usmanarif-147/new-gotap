@@ -24,7 +24,7 @@
                                         <div class="card-body px-4 py-3 shadow">
                                             <div class="row">
                                                 <div class="col-2 align-content-center" style="height: 75px;width:75px">
-                                                    <img src="{{ asset($platforms['icon'] ? Storage::url($platforms['icon']) : 'pbg.png') }}"
+                                                    <img src="{{ asset($platforms['icon'] && Storage::exists($platforms['icon']) ? Storage::url($platforms['icon']) : 'pbg.png') }}"
                                                         class="img-fluid rounded" height="100%" width="100%">
                                                 </div>
                                                 <div class="col-6 align-content-center">
@@ -48,7 +48,7 @@
                 <div class="col-xl-3 mt-3 d-none d-xl-block ms-xl-5" style="position: sticky;">
                     <div class="row d-flex justify-content-center" style="background-color: white;">
                         <div class="col-md-12 col-12 p-0"
-                            style="box-shadow: 0 0 15px 5px #ccc; border-radius: 20px; overflow: hidden; max-width: 400px;">
+                            style="box-shadow: 0 0 15px 5px #ccc; border-radius: 20px; overflow: hidden; max-width: 400px;height: 80vh; overflow-y: auto;">
                             <div class="row d-flex justify-content-center">
 
                                 <!-- Top Banner -->
@@ -147,7 +147,7 @@
                     style="position: fixed; bottom: 60px; left: 0; right: 0;z-index:9999; max-width: 300px; margin: 0 auto;">
                     <div class="row d-flex justify-content-center" style="background-color: white;">
                         <div class="col-md-12 col-12 p-0"
-                            style="box-shadow: 0 0 15px 5px #ccc; border-radius: 20px; overflow: hidden;">
+                            style="box-shadow: 0 0 15px 5px #ccc; border-radius: 20px; overflow: hidden;height: 50vh; overflow-y: auto;">
                             <!-- Your existing mobile preview content goes here -->
                             <!-- Top Banner -->
                             <a class="col-12 header-navbar TopBanner text-center p-2"
@@ -259,7 +259,7 @@
                                         class="cursor-pointer">
                                 </div>
                                 <div class="col-md-2 py-2" style="height: 75px;width:75px">
-                                    <img src="{{ asset($platforms['icon'] ? Storage::url($platforms['icon']) : 'pbg.png') }}"
+                                    <img src="{{ asset($platforms['icon'] && Storage::exists($platforms['icon']) ? Storage::url($platforms['icon']) : 'pbg.png') }}"
                                         class="img-fluid rounded" height="100%" width="100%">
                                 </div>
                                 <div class="col-md-6 p-3">

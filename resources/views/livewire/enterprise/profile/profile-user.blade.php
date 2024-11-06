@@ -25,7 +25,7 @@
                     <div class="col-md-3 align-content-center">
                         <div class="d-flex justify-content-center align-items-center">
                             <div class="user-profile-picture">
-                                <img src="{{ asset($user->photo ? Storage::url($user->photo) : 'user.png') }}"
+                                <img src="{{ asset($user->photo && Storage::exists($user->photo) ? Storage::url($user->photo) : 'user.png') }}"
                                     class="img-fluid rounded-circle border shadow mt-3" style="object-fit: cover">
                             </div>
                         </div>

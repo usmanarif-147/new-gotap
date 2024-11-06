@@ -73,7 +73,7 @@
                                 @if ($cover_photo && !is_string($cover_photo))
                                     <img src="{{ $cover_photo->temporaryUrl() }}" alt="cover-photo">
                                 @else
-                                    <img src="{{ asset($old_cover_photo ? Storage::url($old_cover_photo) : 'user.png') }}"
+                                    <img src="{{ asset($old_cover_photo && Storage::exists($old_cover_photo) ? Storage::url($old_cover_photo) : 'user.png') }}"
                                         alt="user-avatar">
                                 @endif
 
@@ -91,7 +91,7 @@
                                     <img src="{{ $photo->temporaryUrl() }}" alt="user-avatar"
                                         class="rounded-circle border">
                                 @else
-                                    <img src="{{ asset($old_photo ? Storage::url($old_photo) : 'user.png') }}"
+                                    <img src="{{ asset($old_photo && Storage::exists($old_photo) ? Storage::url($old_photo) : 'user.png') }}"
                                         alt="user-avatar" class="rounded-circle border">
                                 @endif
                                 <div wire:loading wire:target="photo" wire:key="photo">
@@ -266,7 +266,7 @@
                                     <img style="width: 100%; height: 100px; object-fit: cover;"
                                         src="{{ $cover_photo->temporaryUrl() }}" alt="Cover Photo">
                                 @else
-                                    <img src="{{ asset($old_cover_photo ? Storage::url($old_cover_photo) : 'user.png') }}"
+                                    <img src="{{ asset($old_cover_photo && Storage::exists($old_cover_photo) ? Storage::url($old_cover_photo) : 'user.png') }}"
                                         alt="user-avatar" style="object-fit: cover;height: 100px; width: 100%;">
                                 @endif
                                 <!-- Profile Photo -->
@@ -276,7 +276,7 @@
                                         <img src="{{ $photo->temporaryUrl() }}" alt="Profile Photo"
                                             style="width: 100%; height: 100%; object-fit: cover;">
                                     @else
-                                        <img src="{{ asset($old_photo ? Storage::url($old_photo) : 'user.png') }}"
+                                        <img src="{{ asset($old_photo && Storage::exists($old_photo) ? Storage::url($old_photo) : 'user.png') }}"
                                             alt="user-avatar" style="width: 100%; height: 100%; object-fit: cover;">
                                     @endif
                                 </div>
@@ -355,7 +355,7 @@
                                 <img style="width: 100%; height: 100px; object-fit: cover;"
                                     src="{{ $cover_photo->temporaryUrl() }}" alt="Cover Photo">
                             @else
-                                <img src="{{ asset($old_cover_photo ? Storage::url($old_cover_photo) : 'user.png') }}"
+                                <img src="{{ asset($old_cover_photo && Storage::exists($old_cover_photo) ? Storage::url($old_cover_photo) : 'user.png') }}"
                                     alt="user-avatar" style="object-fit: cover;height: 100px; width: 100%;">
                             @endif
                             <!-- Profile Photo -->
@@ -365,7 +365,7 @@
                                     <img src="{{ $photo->temporaryUrl() }}" alt="Profile Photo"
                                         style="width: 100%; height: 100%; object-fit: cover;">
                                 @else
-                                    <img src="{{ asset($old_photo ? Storage::url($old_photo) : 'user.png') }}"
+                                    <img src="{{ asset($old_photo && Storage::exists($old_photo) ? Storage::url($old_photo) : 'user.png') }}"
                                         alt="user-avatar" style="width: 100%; height: 100%; object-fit: cover;">
                                 @endif
                             </div>
