@@ -1,5 +1,17 @@
 <div>
     @if ($tab_change == 2)
+        <style>
+            .scroll-container {
+                overflow-y: auto;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                padding-right: 15px;
+            }
+
+            .scroll-container::-webkit-scrollbar {
+                display: none;
+            }
+        </style>
         <div class="row">
             <div class="col-md-3 ms-auto">
                 <label for=""> Search </label>
@@ -13,7 +25,7 @@
                             Platforms
                         </h5>
                     </div>
-                    <div class="row" style="height: 80vh; overflow-y: auto;">
+                    <div class="row scroll-container" style="height: 80vh;">
                         @foreach ($platforms as $category)
                             <h5 class="fs-4 fw-bolder my-4 text-dark">
                                 {{ $category['name'] }}
@@ -46,17 +58,131 @@
                     </div>
                 </div>
                 <div class="col-xl-3 mt-3 d-none d-xl-block ms-xl-5" style="position: sticky;">
-                    <div class="row d-flex justify-content-center" style="background-color: white;">
-                        <div class="col-md-12 col-12 p-0"
-                            style="box-shadow: 0 0 15px 5px #ccc; border-radius: 20px; overflow: hidden; max-width: 400px;height: 80vh; overflow-y: auto;">
-                            <div class="row d-flex justify-content-center">
+                    <div class="mobile-frame"
+                        style="position: relative; max-width: 500px; border-radius: 40px; border: 2px solid #ccc; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); overflow: hidden; padding: 15px 10px;">
 
-                                <!-- Top Banner -->
-                                <a target="_blank" {{-- href="{{ route('view.profile.username', $username ? $username : 'username') }}" --}}
-                                    class="col-12 header-navbar TopBanner text-center p-2"
-                                    style="background-color: #f1f1f1; font-weight: bold; font-size: 14px;">
-                                    Tap here to view your Gotap profile
-                                </a>
+                        <!-- Top Bar Emulation (Signal, Time, Battery) -->
+                        <div class="top-bar"
+                            style="height: 20px; display: flex; justify-content: space-between; padding: 0 15px; font-size: 12px; color: #333;">
+                            <span>{{ now()->format('g : i a') }}</span>
+                            <div style="display: flex; gap: 5px;">
+                                <i class="bx bx-wifi" style="width: 15px; height: 10px;"></i>
+                                <!-- Wi-Fi icon placeholder -->
+                                <i class="bx bx-battery" style="width: 15px; height: 10px;"></i>
+                                <!-- Battery icon placeholder -->
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center scroll-container"
+                            style="background-color: white;height: 80vh;">
+                            <div class="col-md-12 col-12 p-0"
+                                style="border-radius: 30px; overflow: hidden; max-width: 400px;">
+                                <div class="row d-flex justify-content-center">
+                                    <!-- Cover Photo -->
+                                    <div class="col-12 p-0">
+                                        <div class="cover-photo-wrapper" style="position: relative;">
+                                            <img src="{{ asset($profile->cover_photo ? Storage::url($profile->cover_photo) : 'user.png') }}"
+                                                alt="user-avatar" style="object-fit: cover;height: 100px; width: 100%;">
+                                            <!-- Profile Photo -->
+                                            <div class="profile_img"
+                                                style="position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); border-radius: 50%; overflow: hidden; width: 90px; height: 90px; border: 4px solid white;">
+                                                <img src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}"
+                                                    alt="user-avatar"
+                                                    style="width: 100%; height: 100%; object-fit: cover;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Profile Info -->
+                                    <div class="col-12 text-center" style="margin-top: 60px;">
+                                        <!-- Name or Username -->
+                                        <h3 class="user-name" style="font-size: 22px;">
+                                            {{ $profile->name ?: ($profile->username ?: 'Your Name') }}
+                                        </h3>
+
+                                        <!-- Job Title and Company -->
+                                        <p style="font-size: 14px; color:#24171E; margin-bottom: 10px;">
+                                            @if ($profile->job_title && $profile->company)
+                                                {{ $profile->job_title }} at {{ $profile->company }}
+                                            @elseif ($profile->job_title)
+                                                {{ $profile->job_title }}
+                                            @elseif ($profile->company)
+                                                {{ $profile->company }}
+                                            @endif
+                                        </p>
+
+                                        <!-- Bio -->
+                                        <p style="font-size: 16px; color:#555;">
+                                            {{ $profile->bio ? $profile->bio : 'Your bio will appear here.' }}
+                                        </p>
+                                    </div>
+
+                                    <!-- Save to Contact Button -->
+                                    <div class="col-12 d-flex justify-content-center mt-3 mb-2">
+                                        <button class="btn btn-block rounded-pill px-4 py-2"
+                                            style="background-color: #000; color: #fff; font-size: 14px; max-width: 220px;">
+                                            <b>Save to Contact</b>
+                                        </button>
+                                    </div>
+
+                                    <div class="container">
+                                        <div class="row">
+                                            @foreach ($sort_platform as $platform)
+                                                <div class="col-3 d-flex justify-content-center"
+                                                    style="margin-bottom: 20px">
+                                                    <a class="social text-center" style="text-decoration:none;">
+                                                        <img src="{{ asset(isImageExist($platform['icon'], 'platform')) }}"
+                                                            class="gallery-image img-fluid"
+                                                            style="max-width: 30px; max-height: 30px; object-fit: cover; display: block; margin: 0 auto;">
+                                                        <label
+                                                            style="display: block; font-size:6px; color:black; font-weight:bold">
+                                                            {{ $platform['title'] }}
+                                                        </label>
+                                                    </a>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
+                                    <!-- Create Profile Button -->
+                                    <div class="col-12 d-flex justify-content-center mt-4 mb-3">
+                                        <button class="btn btn-block rounded-pill px-4 py-2"
+                                            style="background-color: white; color: black; font-size: 14px; border: 1px solid #000; max-width: 220px;">
+                                            <b>Create your own profile</b>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Toggle Button for Mobile Screens (Only Visible on Small Screens) -->
+                <div class="d-xl-none">
+                    <button id="PreviewBtn" class="btn btn-primary fixed-bottom mb-3 mx-auto d-block"
+                        style="max-width: 200px; z-index: 1000;">
+                        Show Mobile Preview
+                    </button>
+                </div>
+
+                <!-- Mobile Preview for Small Screens (Initially Hidden) -->
+                <div id="Preview" class="col-12 align-content-center d-none"
+                    style="position: fixed; bottom: 60px; left: 0; right: 0;z-index:9999; max-width: 300px; margin: 0 auto;">
+                    <div class="mobile-frame"
+                        style="position: relative; background-color: white; max-width: 500px; border-radius: 40px; border: 2px solid #ccc; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); overflow: hidden; padding: 15px 10px;">
+
+                        <!-- Top Bar Emulation (Signal, Time, Battery) -->
+                        <div class="top-bar"
+                            style="height: 20px;display: flex; justify-content: space-between; padding: 0 15px; font-size: 12px; color: #333;">
+                            <span>{{ now()->format('g : i a') }}</span>
+                            <div style="display: flex; gap: 5px;">
+                                <i class="bx bx-wifi" style="width: 15px; height: 10px;"></i>
+                                <!-- Wi-Fi icon placeholder -->
+                                <i class="bx bx-battery" style="width: 15px; height: 10px;"></i>
+                                <!-- Battery icon placeholder -->
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center scroll-container"
+                            style="background-color: white;height: 50vh;">
+                            <div class="col-md-12 col-12 p-0" style="border-radius: 30px; overflow: hidden;">
 
                                 <!-- Cover Photo -->
                                 <div class="col-12 p-0">
@@ -67,7 +193,8 @@
                                         <div class="profile_img"
                                             style="position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); border-radius: 50%; overflow: hidden; width: 90px; height: 90px; border: 4px solid white;">
                                             <img src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}"
-                                                alt="user-avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                                                alt="user-avatar"
+                                                style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
                                     </div>
                                 </div>
@@ -97,7 +224,7 @@
                                 </div>
 
                                 <!-- Save to Contact Button -->
-                                <div class="col-12 d-flex justify-content-center mt-3 mb-2">
+                                <div class="col-12 d-flex justify-content-center mt-3 mb-3">
                                     <button class="btn btn-block rounded-pill px-4 py-2"
                                         style="background-color: #000; color: #fff; font-size: 14px; max-width: 220px;">
                                         <b>Save to Contact</b>
@@ -107,14 +234,14 @@
                                 <div class="container">
                                     <div class="row">
                                         @foreach ($sort_platform as $platform)
-                                            <div class="col-3 d-flex justify-content-center"
+                                            <div class="col-4 d-flex justify-content-center"
                                                 style="margin-bottom: 20px">
                                                 <a class="social text-center" style="text-decoration:none;">
                                                     <img src="{{ asset(isImageExist($platform['icon'], 'platform')) }}"
                                                         class="gallery-image img-fluid"
-                                                        style="max-width: 30px; max-height: 30px; object-fit: cover; display: block; margin: 0 auto;">
+                                                        style="max-width: 40px; max-height: 40px; object-fit: cover; display: block; margin: 0 auto;">
                                                     <label
-                                                        style="display: block; font-size:6px; color:black; font-weight:bold">
+                                                        style="display: block; font-size:8px; color:black; font-weight:bold">
                                                         {{ $platform['title'] }}
                                                     </label>
                                                 </a>
@@ -130,101 +257,6 @@
                                         <b>Create your own profile</b>
                                     </button>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Toggle Button for Mobile Screens (Only Visible on Small Screens) -->
-                <div class="d-xl-none">
-                    <button id="PreviewBtn" class="btn btn-primary fixed-bottom mb-3 mx-auto d-block"
-                        style="max-width: 200px; z-index: 1000;">
-                        Show Mobile Preview
-                    </button>
-                </div>
-
-                <!-- Mobile Preview for Small Screens (Initially Hidden) -->
-                <div id="Preview" class="col-12 align-content-center d-none"
-                    style="position: fixed; bottom: 60px; left: 0; right: 0;z-index:9999; max-width: 300px; margin: 0 auto;">
-                    <div class="row d-flex justify-content-center" style="background-color: white;">
-                        <div class="col-md-12 col-12 p-0"
-                            style="box-shadow: 0 0 15px 5px #ccc; border-radius: 20px; overflow: hidden;height: 50vh; overflow-y: auto;">
-                            <!-- Your existing mobile preview content goes here -->
-                            <!-- Top Banner -->
-                            <a class="col-12 header-navbar TopBanner text-center p-2"
-                                style="background-color: #f1f1f1; font-weight: bold; font-size: 14px; width:100%;">
-                                Tap here to view your Gotap profile
-                            </a>
-
-                            <!-- Cover Photo -->
-                            <div class="col-12 p-0">
-                                <div class="cover-photo-wrapper" style="position: relative;">
-                                    <img src="{{ asset($profile->cover_photo ? Storage::url($profile->cover_photo) : 'user.png') }}"
-                                        alt="user-avatar" style="object-fit: cover;height: 100px; width: 100%;">
-                                    <!-- Profile Photo -->
-                                    <div class="profile_img"
-                                        style="position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); border-radius: 50%; overflow: hidden; width: 90px; height: 90px; border: 4px solid white;">
-                                        <img src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}"
-                                            alt="user-avatar" style="width: 100%; height: 100%; object-fit: cover;">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Profile Info -->
-                            <div class="col-12 text-center" style="margin-top: 60px;">
-                                <!-- Name or Username -->
-                                <h3 class="user-name" style="font-size: 22px;">
-                                    {{ $profile->name ?: ($profile->username ?: 'Your Name') }}
-                                </h3>
-
-                                <!-- Job Title and Company -->
-                                <p style="font-size: 14px; color:#24171E; margin-bottom: 10px;">
-                                    @if ($profile->job_title && $profile->company)
-                                        {{ $profile->job_title }} at {{ $profile->company }}
-                                    @elseif ($profile->job_title)
-                                        {{ $profile->job_title }}
-                                    @elseif ($profile->company)
-                                        {{ $profile->company }}
-                                    @endif
-                                </p>
-
-                                <!-- Bio -->
-                                <p style="font-size: 16px; color:#555;">
-                                    {{ $profile->bio ? $profile->bio : 'Your bio will appear here.' }}
-                                </p>
-                            </div>
-
-                            <!-- Save to Contact Button -->
-                            <div class="col-12 d-flex justify-content-center mt-3 mb-3">
-                                <button class="btn btn-block rounded-pill px-4 py-2"
-                                    style="background-color: #000; color: #fff; font-size: 14px; max-width: 220px;">
-                                    <b>Save to Contact</b>
-                                </button>
-                            </div>
-
-                            <div class="container">
-                                <div class="row">
-                                    @foreach ($sort_platform as $platform)
-                                        <div class="col-4 d-flex justify-content-center" style="margin-bottom: 20px">
-                                            <a class="social text-center" style="text-decoration:none;">
-                                                <img src="{{ asset(isImageExist($platform['icon'], 'platform')) }}"
-                                                    class="gallery-image img-fluid"
-                                                    style="max-width: 40px; max-height: 40px; object-fit: cover; display: block; margin: 0 auto;">
-                                                <label
-                                                    style="display: block; font-size:8px; color:black; font-weight:bold">
-                                                    {{ $platform['title'] }}
-                                                </label>
-                                            </a>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            <!-- Create Profile Button -->
-                            <div class="col-12 d-flex justify-content-center mt-4 mb-3">
-                                <button class="btn btn-block rounded-pill px-4 py-2"
-                                    style="background-color: white; color: black; font-size: 14px; border: 1px solid #000; max-width: 220px;">
-                                    <b>Create your own profile</b>
-                                </button>
                             </div>
                         </div>
                     </div>
