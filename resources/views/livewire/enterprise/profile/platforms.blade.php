@@ -126,14 +126,14 @@
                                     <div class="container">
                                         <div class="row">
                                             @foreach ($sort_platform as $platform)
-                                                <div class="col-3 d-flex justify-content-center"
+                                                <div class="col-4 d-flex justify-content-center"
                                                     style="margin-bottom: 20px">
                                                     <a class="social text-center" style="text-decoration:none;">
                                                         <img src="{{ asset(isImageExist($platform['icon'], 'platform')) }}"
                                                             class="gallery-image img-fluid"
-                                                            style="max-width: 30px; max-height: 30px; object-fit: cover; display: block; margin: 0 auto;">
+                                                            style="max-width: 40px; max-height: 40px; object-fit: cover; display: block; margin: 0 auto;">
                                                         <label
-                                                            style="display: block; font-size:6px; color:black; font-weight:bold">
+                                                            style="display: block; font-size:10px; color:black; font-weight:bold">
                                                             {{ $platform['title'] }}
                                                         </label>
                                                     </a>
