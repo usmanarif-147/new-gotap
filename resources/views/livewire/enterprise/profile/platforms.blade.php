@@ -5,7 +5,7 @@
                 overflow-y: auto;
                 scrollbar-width: none;
                 -ms-overflow-style: none;
-                padding-right: 15px;
+                /* padding-right: 15px; */
             }
 
             .scroll-container::-webkit-scrollbar {
@@ -59,7 +59,7 @@
                 </div>
                 <div class="col-xl-3 mt-3 d-none d-xl-block ms-xl-5" style="position: sticky;">
                     <div class="mobile-frame"
-                        style="position: relative; max-width: 500px; border-radius: 40px; border: 2px solid #ccc; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); overflow: hidden; padding: 15px 10px;">
+                        style="position: relative; max-width: 400px; border-radius: 40px; border: 2px solid #ccc; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); overflow: hidden; padding: 15px 10px;">
 
                         <!-- Top Bar Emulation (Signal, Time, Battery) -->
                         <div class="top-bar"
