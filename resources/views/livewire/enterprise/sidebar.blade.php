@@ -32,7 +32,7 @@
         <a href="/enterprise/dashboard" class="app-brand-link">
             <span class="app-brand-logo demo" style="background:white">
                 <div>
-                    <img src="{{ asset(auth()->user()->enterprise_logo ? Storage::url(auth()->user()->enterprise_logo) : 'logo.png') }}"
+                    <img src="{{ asset(auth()->user()->enterprise_logo && Storage::exists(auth()->user()->enterprise_logo) ? Storage::url(auth()->user()->enterprise_logo) : 'logo.png') }}"
                         class="img-fluid" height="50" width="50" alt="Logo here">
 
                 </div>
@@ -96,7 +96,7 @@
                 data-bs-toggle="collapse" href="#LeadsSubmenu" role="button"
                 aria-expanded="{{ Request::routeIs('enterprise.leads', 'enterprise.leads-map', 'enterprise.leads.view') ? 'true' : 'false' }}"
                 aria-controls="LeadsSubmenu">
-                <i class="menu-icon tf-icons bx bxs-group"></i>
+                <i class="menu-icon tf-icons bx bxs-user-detail"></i>
                 <div class="me-5">Leads</div>
                 <i
                     class='arrow bx {{ Request::routeIs('enterprise.leads', 'enterprise.leads-map', 'enterprise.leads.view') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
