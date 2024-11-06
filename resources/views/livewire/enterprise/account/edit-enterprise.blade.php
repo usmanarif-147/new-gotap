@@ -13,7 +13,7 @@
                                                 class="d-block rounded-circle" style="object-fit: cover" height="80"
                                                 style="object-fit: cover" width="80">
                                         @else
-                                            <img src="{{ asset($old_enterprise_logo ? Storage::url($old_enterprise_logo) : 'user.png') }}"
+                                            <img src="{{ asset($old_enterprise_logo && file_exists(public_path('storage/' . $old_enterprise_logo)) ? Storage::url($old_enterprise_logo) : 'user.png') }}"
                                                 alt="user-avatar" class="d-block rounded-circle shadow" height="80"
                                                 style="object-fit: cover" width="80">
                                         @endif

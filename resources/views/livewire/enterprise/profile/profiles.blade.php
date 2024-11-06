@@ -63,7 +63,7 @@
                                     <td>
                                         <div class="img-holder">
                                             <img
-                                                src="{{ asset($profile->photo && Storage::exists($profile->photo) ? Storage::url($profile->photo) : 'user.png') }}">
+                                                src="{{ asset($profile->photo && file_exists(public_path('storage/' . $profile->photo)) ? Storage::url($profile->photo) : 'user.png') }}">
                                         </div>
                                     </td>
                                     <td>

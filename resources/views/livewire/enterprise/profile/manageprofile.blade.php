@@ -63,7 +63,7 @@
                         <div class="col-md-3 align-content-center">
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="user-profile border p-1 shadow rounded-3 mt-5">
-                                    <img src="{{ asset($profile->photo && Storage::exists($profile->photo) ? Storage::url($profile->photo) : 'user.png') }}"
+                                    <img src="{{ asset($profile->photo && file_exists(public_path('storage/' . $profile->photo)) ? Storage::url($profile->photo) : 'user.png') }}"
                                         class="img-fluid rounded">
                                 </div>
                             </div>

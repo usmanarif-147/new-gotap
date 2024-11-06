@@ -74,18 +74,17 @@
                         </div>
                         <div class="row d-flex justify-content-center scroll-container"
                             style="background-color: white;height: 80vh;">
-                            <div class="col-md-12 col-12 p-0"
-                                style="border-radius: 30px; overflow: hidden; max-width: 400px;">
+                            <div class="col-md-12 col-12 p-0" style="overflow: hidden; max-width: 400px;">
                                 <div class="row d-flex justify-content-center">
                                     <!-- Cover Photo -->
                                     <div class="col-12 p-0">
                                         <div class="cover-photo-wrapper" style="position: relative;">
-                                            <img src="{{ asset($profile->cover_photo ? Storage::url($profile->cover_photo) : 'user.png') }}"
+                                            <img src="{{ asset($profile->cover_photo && file_exists(public_path('storage/' . $profile->cover_photo)) ? Storage::url($profile->cover_photo) : 'user.png') }}"
                                                 alt="user-avatar" style="object-fit: cover;height: 100px; width: 100%;">
                                             <!-- Profile Photo -->
                                             <div class="profile_img"
                                                 style="position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); border-radius: 50%; overflow: hidden; width: 90px; height: 90px; border: 4px solid white;">
-                                                <img src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}"
+                                                <img src="{{ asset($profile->photo && file_exists(public_path('storage/' . $profile->photo)) ? Storage::url($profile->photo) : 'user.png') }}"
                                                     alt="user-avatar"
                                                     style="width: 100%; height: 100%; object-fit: cover;">
                                             </div>
@@ -182,17 +181,17 @@
                         </div>
                         <div class="row d-flex justify-content-center scroll-container"
                             style="background-color: white;height: 50vh;">
-                            <div class="col-md-12 col-12 p-0" style="border-radius: 30px; overflow: hidden;">
+                            <div class="col-md-12 col-12 p-0" style="overflow: hidden;">
 
                                 <!-- Cover Photo -->
                                 <div class="col-12 p-0">
                                     <div class="cover-photo-wrapper" style="position: relative;">
-                                        <img src="{{ asset($profile->cover_photo ? Storage::url($profile->cover_photo) : 'user.png') }}"
+                                        <img src="{{ asset($profile->cover_photo && file_exists(public_path('storage/' . $profile->cover_photo)) ? Storage::url($profile->cover_photo) : 'user.png') }}"
                                             alt="user-avatar" style="object-fit: cover;height: 100px; width: 100%;">
                                         <!-- Profile Photo -->
                                         <div class="profile_img"
                                             style="position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); border-radius: 50%; overflow: hidden; width: 90px; height: 90px; border: 4px solid white;">
-                                            <img src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}"
+                                            <img src="{{ asset($profile->photo && file_exists(public_path('storage/' . $profile->photo)) ? Storage::url($profile->photo) : 'user.png') }}"
                                                 alt="user-avatar"
                                                 style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
