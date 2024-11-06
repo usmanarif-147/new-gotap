@@ -61,12 +61,23 @@
             position: relative;
             z-index: 1;
         }
+
+        .scroll-container {
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-right: 15px;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            display: none;
+        }
     </style>
     <div class="row">
         <div class="col-xl-8">
             <div class="card mb-4">
                 <form wire:submit.prevent="updateProfile">
-                    <div class="card-body" style="height: 77vh; overflow-y: auto;">
+                    <div class="card-body scroll-container" style="height: 77vh;">
                         <div class="row">
                             <!-- Cover Photo -->
                             <div class="cover-photo position-relative">
@@ -247,17 +258,122 @@
         </div>
 
         <div class="col-xl-3 d-none d-xl-block ms-xl-3" style="position: sticky;">
-            <div class="row d-flex justify-content-center" style="background-color: white;">
-                <div class="col-md-12 col-12 p-0"
-                    style="box-shadow: 0 0 15px 5px #ccc; border-radius: 20px; overflow: hidden; max-width: 400px;">
-                    <div class="row d-flex justify-content-center">
+            <div class="mobile-frame"
+                style="position: relative; max-width: 500px; border-radius: 40px; border: 2px solid #ccc; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); overflow: hidden; padding: 15px 10px;">
 
-                        <!-- Top Banner -->
-                        <a target="_blank" {{-- href="{{ route('view.profile.username', $username ? $username : 'username') }}" --}}
-                            class="col-12 header-navbar TopBanner text-center p-2"
-                            style="background-color: #f1f1f1; font-weight: bold; font-size: 14px;">
-                            Tap here to view your Gotap profile
-                        </a>
+                <!-- Top Bar Emulation (Signal, Time, Battery) -->
+                <div class="top-bar"
+                    style="height: 20px; display: flex; justify-content: space-between; padding: 0 15px; font-size: 12px; color: #333;">
+                    <span>{{ now()->format('g : i a') }}</span>
+                    <div style="display: flex; gap: 5px;">
+                        <i class="bx bx-wifi" style="width: 15px; height: 10px;"></i>
+                        <!-- Wi-Fi icon placeholder -->
+                        <i class="bx bx-battery" style="width: 15px; height: 10px;"></i>
+                        <!-- Battery icon placeholder -->
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-center" style="background-color: white;">
+                    <div class="col-md-12 col-12 p-0"
+                        style="border-radius: 30px; overflow: hidden; max-width: 400px;">
+                        <div class="row d-flex justify-content-center">
+
+                            <!-- Cover Photo -->
+                            <div class="col-12 p-0">
+                                <div class="cover-photo-wrapper" style="position: relative;">
+                                    @if ($cover_photo && !is_string($cover_photo))
+                                        <img style="width: 100%; height: 100px; object-fit: cover;"
+                                            src="{{ $cover_photo->temporaryUrl() }}" alt="Cover Photo">
+                                    @else
+                                        <img src="{{ asset($old_cover_photo && Storage::exists($old_cover_photo) ? Storage::url($old_cover_photo) : 'user.png') }}"
+                                            alt="user-avatar" style="object-fit: cover;height: 100px; width: 100%;">
+                                    @endif
+                                    <!-- Profile Photo -->
+                                    <div class="profile_img"
+                                        style="position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); border-radius: 50%; overflow: hidden; width: 90px; height: 90px; border: 4px solid white;">
+                                        @if ($photo && !is_string($photo))
+                                            <img src="{{ $photo->temporaryUrl() }}" alt="Profile Photo"
+                                                style="width: 100%; height: 100%; object-fit: cover;">
+                                        @else
+                                            <img src="{{ asset($old_photo && Storage::exists($old_photo) ? Storage::url($old_photo) : 'user.png') }}"
+                                                alt="user-avatar"
+                                                style="width: 100%; height: 100%; object-fit: cover;">
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Profile Info -->
+                            <div class="col-12 text-center" style="margin-top: 60px;">
+                                <!-- Name or Username -->
+                                <h3 class="user-name" style="font-size: 22px;">
+                                    {{ $name ?: ($username ?: 'Your Name') }}
+                                </h3>
+
+                                <!-- Job Title and Company -->
+                                <p style="font-size: 14px; color:#24171E; margin-bottom: 10px;">
+                                    @if ($job_title && $company)
+                                        {{ $job_title }} at {{ $company }}
+                                    @elseif ($job_title)
+                                        {{ $job_title }}
+                                    @elseif ($company)
+                                        {{ $company }}
+                                    @endif
+                                </p>
+
+                                <!-- Bio -->
+                                <p style="font-size: 16px; color:#555;">
+                                    {{ $bio ? $bio : 'Your bio will appear here.' }}
+                                </p>
+                            </div>
+
+                            <!-- Save to Contact Button -->
+                            <div class="col-12 d-flex justify-content-center mt-3">
+                                <button class="btn btn-block rounded-pill px-4 py-2"
+                                    style="background-color: #000; color: #fff; font-size: 14px; max-width: 220px;">
+                                    <b>Save to Contact</b>
+                                </button>
+                            </div>
+
+                            <!-- Create Profile Button -->
+                            <div class="col-12 d-flex justify-content-center mt-4 mb-3">
+                                <button class="btn btn-block rounded-pill px-4 py-2"
+                                    style="background-color: white; color: black; font-size: 14px; border: 1px solid #000; max-width: 220px;">
+                                    <b>Create your own profile</b>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toggle Button for Mobile Screens (Only Visible on Small Screens) -->
+        <div class="d-xl-none">
+            <button id="toggleMobilePreviewBtn" class="btn btn-primary fixed-bottom mb-3 mx-auto d-block"
+                style="max-width: 200px; z-index: 1000;">
+                Show Mobile Preview
+            </button>
+        </div>
+
+        <!-- Mobile Preview for Small Screens (Initially Hidden) -->
+        <div id="mobilePreview" class="col-12 align-content-center d-none"
+            style="position: fixed; bottom: 60px; left: 0; right: 0;z-index:9999; max-width: 300px; margin: 0 auto;">
+            <div class="mobile-frame"
+                style="position: relative; background-color: white; max-width: 500px; border-radius: 40px; border: 2px solid #ccc; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); overflow: hidden; padding: 15px 10px;">
+
+                <!-- Top Bar Emulation (Signal, Time, Battery) -->
+                <div class="top-bar"
+                    style="height: 20px; display: flex; justify-content: space-between; padding: 0 15px; font-size: 12px; color: #333;">
+                    <span>{{ now()->format('g : i a') }}</span>
+                    <div style="display: flex; gap: 5px;">
+                        <i class="bx bx-wifi" style="width: 15px; height: 10px;"></i>
+                        <!-- Wi-Fi icon placeholder -->
+                        <i class="bx bx-battery" style="width: 15px; height: 10px;"></i>
+                        <!-- Battery icon placeholder -->
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-center" style="background-color: white;">
+                    <div class="col-md-12 col-12 p-0" style="border-radius: 30px; overflow: hidden;">
 
                         <!-- Cover Photo -->
                         <div class="col-12 p-0">
@@ -322,94 +438,6 @@
                                 <b>Create your own profile</b>
                             </button>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Toggle Button for Mobile Screens (Only Visible on Small Screens) -->
-        <div class="d-xl-none">
-            <button id="toggleMobilePreviewBtn" class="btn btn-primary fixed-bottom mb-3 mx-auto d-block"
-                style="max-width: 200px; z-index: 1000;">
-                Show Mobile Preview
-            </button>
-        </div>
-
-        <!-- Mobile Preview for Small Screens (Initially Hidden) -->
-        <div id="mobilePreview" class="col-12 align-content-center d-none"
-            style="position: fixed; bottom: 60px; left: 0; right: 0;z-index:9999; max-width: 300px; margin: 0 auto;">
-            <div class="row d-flex justify-content-center" style="background-color: white;">
-                <div class="col-md-12 col-12 p-0"
-                    style="box-shadow: 0 0 15px 5px #ccc; border-radius: 20px; overflow: hidden;">
-                    <!-- Your existing mobile preview content goes here -->
-                    <!-- Top Banner -->
-                    <a target="_blank" {{-- href="{{ route('view.profile.username', $username ? $username : 'username') }}" --}} class="col-12 header-navbar TopBanner text-center p-2"
-                        style="background-color: #f1f1f1; font-weight: bold; font-size: 14px; width:100%;">
-                        Tap here to view your Gotap profile
-                    </a>
-
-                    <!-- Cover Photo -->
-                    <div class="col-12 p-0">
-                        <div class="cover-photo-wrapper" style="position: relative;">
-                            @if ($cover_photo && !is_string($cover_photo))
-                                <img style="width: 100%; height: 100px; object-fit: cover;"
-                                    src="{{ $cover_photo->temporaryUrl() }}" alt="Cover Photo">
-                            @else
-                                <img src="{{ asset($old_cover_photo && Storage::exists($old_cover_photo) ? Storage::url($old_cover_photo) : 'user.png') }}"
-                                    alt="user-avatar" style="object-fit: cover;height: 100px; width: 100%;">
-                            @endif
-                            <!-- Profile Photo -->
-                            <div class="profile_img"
-                                style="position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); border-radius: 50%; overflow: hidden; width: 90px; height: 90px; border: 4px solid white;">
-                                @if ($photo && !is_string($photo))
-                                    <img src="{{ $photo->temporaryUrl() }}" alt="Profile Photo"
-                                        style="width: 100%; height: 100%; object-fit: cover;">
-                                @else
-                                    <img src="{{ asset($old_photo && Storage::exists($old_photo) ? Storage::url($old_photo) : 'user.png') }}"
-                                        alt="user-avatar" style="width: 100%; height: 100%; object-fit: cover;">
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Profile Info -->
-                    <div class="col-12 text-center" style="margin-top: 60px;">
-                        <!-- Name or Username -->
-                        <h3 class="user-name" style="font-size: 22px;">
-                            {{ $name ?: ($username ?: 'Your Name') }}
-                        </h3>
-
-                        <!-- Job Title and Company -->
-                        <p style="font-size: 14px; color:#24171E; margin-bottom: 10px;">
-                            @if ($job_title && $company)
-                                {{ $job_title }} at {{ $company }}
-                            @elseif ($job_title)
-                                {{ $job_title }}
-                            @elseif ($company)
-                                {{ $company }}
-                            @endif
-                        </p>
-
-                        <!-- Bio -->
-                        <p style="font-size: 16px; color:#555;">
-                            {{ $bio ? $bio : 'Your bio will appear here.' }}
-                        </p>
-                    </div>
-
-                    <!-- Save to Contact Button -->
-                    <div class="col-12 d-flex justify-content-center mt-3">
-                        <button class="btn btn-block rounded-pill px-4 py-2"
-                            style="background-color: #000; color: #fff; font-size: 14px; max-width: 220px;">
-                            <b>Save to Contact</b>
-                        </button>
-                    </div>
-
-                    <!-- Create Profile Button -->
-                    <div class="col-12 d-flex justify-content-center mt-4 mb-3">
-                        <button class="btn btn-block rounded-pill px-4 py-2"
-                            style="background-color: white; color: black; font-size: 14px; border: 1px solid #000; max-width: 220px;">
-                            <b>Create your own profile</b>
-                        </button>
                     </div>
                 </div>
             </div>

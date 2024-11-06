@@ -39,7 +39,7 @@ class Dashboard extends Component
 
         foreach ($profiles as $profile) {
             $data['labels'][] = $profile->username;
-            $data['photos'][] = $profile->photo ? asset(Storage::url($profile->photo)) : $fallbackImageUrl; // Fallback if no photo
+            $data['photos'][] = $profile->photo && Storage::exists($profile->photo) ? asset(Storage::url($profile->photo)) : $fallbackImageUrl; // Fallback if no photo
             $data['data'][] = $profile->tiks;
         }
         return $data;
