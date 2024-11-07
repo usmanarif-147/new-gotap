@@ -40,7 +40,7 @@
                                             <!-- Profile Image -->
                                             <div
                                                 style="width: 30px; height: 30px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
-                                                <img src="{{ asset($lead->viewer_photo && Storage::disk('public')->exists($lead->viewer_photo) ? Storage::url($lead->viewer_photo) : 'user.png') }}"
+                                                <img src="{{ asset($lead->viewer_photo && file_exists(public_path('storage/' . $lead->viewer_photo)) ? Storage::url($lead->viewer_photo) : 'user.png') }}"
                                                     alt="Viewer Photo" class="img-fluid"
                                                     style="width: 100%; height: 100%; object-fit: cover;">
                                             </div>
@@ -56,7 +56,7 @@
                                     <td>
                                         <div class="img-holder"
                                             style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden;">
-                                            <img src="{{ asset($lead->viewing_photo && Storage::disk('public')->exists($lead->viewing_photo) ? Storage::url($lead->viewing_photo) : 'user.png') }}"
+                                            <img src="{{ asset($lead->viewing_photo && file_exists(public_path('storage/' . $lead->viewing_photo)) ? Storage::url($lead->viewing_photo) : 'user.png') }}"
                                                 alt="Viewing Photo" class="img-fluid"
                                                 style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>

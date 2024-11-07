@@ -10,7 +10,7 @@ class GroupResource extends JsonResource
     public function toArray($request)
     {
 
-        $data =  [
+        $data = [
             'id' => $this->id,
             'title' => $this->title,
             'total_profiles' => $this->total_profiles,
@@ -22,6 +22,7 @@ class GroupResource extends JsonResource
         if (request()->segment(2) == 'groups') {
             $data['group_contacts'] = $this->getContacts();
             $data['group_profiles'] = $this->getProfiles();
+            $data['group_leads'] = $this->getLeads();
         }
 
         return $data;
@@ -51,6 +52,23 @@ class GroupResource extends JsonResource
         )
             ->join('profiles', 'profiles.id', 'user_groups.profile_id')
             ->where('user_groups.group_id', $this->id)
+            ->get()
+            ->toArray();
+    }
+
+    private function getLeads()
+    {
+        return DB::table('group_leads')->select(
+            'leads.id as lead_id',
+            'leads.name as lead_name',
+            'leads.email as lead_email',
+            'leads.phone as lead_phone',
+            'leads.country as lead_country',
+            'leads.state as lead_state',
+            'leads.city as lead_city',
+        )
+            ->join('leads', 'leads.id', 'group_leads.lead_id')
+            ->where('group_leads.group_id', $this->id)
             ->get()
             ->toArray();
     }
