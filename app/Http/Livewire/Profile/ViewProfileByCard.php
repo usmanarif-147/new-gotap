@@ -8,7 +8,6 @@ use App\Models\Platform;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
@@ -20,23 +19,20 @@ class ViewProfileByCard extends Component
     public $profile, $platforms = [], $profileCheck = false;
 
     public $name, $email, $phone;
-
-    public $showModal = 1;
     public $latitude;
     public $longitude;
 
-    protected $listeners = ['submitForm', 'setLocation'];
-
     public function mount()
     {
-        $this->identifier = request()->segment(2);
+        $this->identifier = request()->uuid;
     }
+
+    protected $listeners = ['setLocation'];
 
     public function setLocation($latitude, $longitude)
     {
         $this->latitude = $latitude;
         $this->longitude = $longitude;
-        $this->modalShow = 1;
     }
 
     public function getProfileData()
@@ -127,7 +123,7 @@ class ViewProfileByCard extends Component
         }
     }
 
-    public function submitForm()
+    public function viewerDetail()
     {
         $ip = request()->ip();
         $locationData = $this->getUserLocation($ip);
@@ -168,7 +164,7 @@ class ViewProfileByCard extends Component
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-        $this->modalShow = 0;
+        $this->dispatchBrowserEvent('closeModal');
     }
 
     private function getUserLocation($ip = null)

@@ -99,6 +99,8 @@ Route::middleware('localization')->group(function () {
             Route::post('/addContactIntoGroup', [GroupController::class, 'addPhoneContactIntoGroup']);
             Route::post('/removeProfileFromGroup', [GroupController::class, 'removeProfileFromGroup']);
             Route::post('/removeContactFromGroup', [GroupController::class, 'removePhoneContactFromGroup']);
+            Route::post('/addLeadIntoGroup', [GroupController::class, 'addLeadIntoGroup']);
+            Route::post('/removeLeadFromGroup', [GroupController::class, 'removeLeadFromGroup']);
 
             // Cards
             Route::get('/cards', [CardController::class, 'index']);

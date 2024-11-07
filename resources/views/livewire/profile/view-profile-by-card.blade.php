@@ -115,11 +115,11 @@
             </div>
             @if (!$profilecheck)
                 @if ($profile->is_leads_enabled == 1)
-                    <!-- Modal -->
-                    <div class="modal fade {{ $showModal ? 'show' : '' }}" id="userDetails" tabindex="-1"
-                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade show" id="userDetails" style="display: block;" data-bs-backdrop="static"
+                        tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-sm">
                             <div class="modal-content position-relative" style="border-radius: 15px;">
+                                <!-- Profile Image (Half Outside) -->
                                 <div class="profile-image-container position-absolute"
                                     style="top: -50px; left: 50%; transform: translateX(-50%);">
                                     <img src="{{ asset($profile->photo && Storage::disk('public')->exists($profile->photo) ? Storage::url($profile->photo) : 'user.png') }}"
@@ -137,36 +137,45 @@
                                 <!-- Modal Body -->
                                 <div class="modal-body w-75 m-auto">
                                     <!-- Form -->
-                                    <form id="userDetailsForm">
+                                    <form wire:submit.prevent="viewerDetail">
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Name</label>
-                                            <input type="text" id="name" class="form-control" required>
+                                            <input type="text" id="name" wire:model="name" class="form-control"
+                                                required>
                                             <div class="form-text">Please enter your name.</div>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="email" class="form-label">Email address</label>
-                                            <input type="email" id="email" class="form-control" required>
+                                            <input type="email" id="email" wire:model="email"
+                                                class="form-control" required>
                                             <div class="form-text">We’ll never share your email with anyone else.</div>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="phone" class="form-label">Phone</label>
-                                            <input type="text" id="phone" class="form-control" required>
+                                            <input type="text" id="phone" wire:model="phone"
+                                                class="form-control" required>
                                             <div class="form-text">Enter your phone number.</div>
                                         </div>
                                     </form>
                                 </div>
 
                                 <!-- Modal Footer -->
-                                <div class="modal-footer">
-                                    <div id="loader" class="spinner-border text-light d-none" role="status">
-                                        <span class="sr-only">Loading...</span>
+                                <div class="modal-footer d-flex flex-column align-items-center">
+                                    <!-- Save Button: Shown initially -->
+                                    <button type="submit" class="btn btn-danger w-75 rounded-pill"
+                                        wire:click="viewerDetail" wire:loading.attr="disabled">
+                                        Save Detail
+                                    </button>
+
+                                    <!-- Loader for save operation -->
+                                    <div wire:loading wire:target="viewerDetail" class="spinner-border text-light"
+                                        role="status">
+                                        <span class="visually-hidden">Saving...</span>
                                     </div>
-                                    <button type="submit" id="submitButton"
-                                        class="btn btn-danger w-75 m-auto rounded-pill" onClick="submitForm()">Save
-                                        Detail</button>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -180,43 +189,52 @@
         </section>
     @endif
 
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
+        // $(document).ready(function() {
 
-            $('#userDetails').show()
+        //     // $('#userDetails').show()
 
-            let url = '{{ $redicretTo }}';
-            if (url) {
-                location.href = url;
-            }
-        })
+        //     let url = '{{ $redicretTo }}';
+        //     if (url) {
+        //         location.href = url;
+        //     }
+        // })
 
-        window.addEventListener('redirect', event => {
-            let url = event.detail.url;
-            if (url) {
-                window.open(event.detail.url, '_blank');
-            }
+        // window.addEventListener('redirect', event => {
+        //     let url = event.detail.url;
+        //     if (url) {
+        //         window.open(event.detail.url, '_blank');
+        //     }
+        // });
+
+        window.addEventListener('closeModal', event => {
+            $('#userDetails').hide();
         });
 
-        function submitForm() {
-            document.getElementById('loader').classList.remove('d-none');
-            document.getElementById('submitButton').disabled = true;
-            let name = $('#name').val();
-            let email = $('#email').val();
-            let phone = $('#phone').val();
+        // function submitForm() {
+        //     document.getElementById('loader').classList.remove('d-none');
+        //     document.getElementById('submitButton').disabled = true;
+        //     let name = $('#name').val();
+        //     let email = $('#email').val();
+        //     let phone = $('#phone').val();
 
-            @this.set('name', name);
-            @this.set('email', email);
-            @this.set('phone', phone);
+        //     @this.set('name', name);
+        //     @this.set('email', email);
+        //     @this.set('phone', phone);
 
-            setTimeout(function() {
-                Livewire.emit('submitForm');
-                document.getElementById('loader').classList.add('d-none');
-                document.getElementById('submitButton').disabled = false;
-            }, 2000);
-        }
+        //     setTimeout(function() {
+        //         Livewire.emit('submitForm');
+        //         document.getElementById('loader').classList.add('d-none');
+        //         document.getElementById('submitButton').disabled = false;
+        //     }, 2000);
+        // }
     </script>
+    <div id="location-reminder"
+        style="display: none; position: fixed; bottom: 20px; right: 20px; padding: 10px; background: #ffc; border: 1px solid #cc0;">
+        Please enable location access for this page. You may need to update your site settings if prompted.
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let locationReminder = document.getElementById('location-reminder');
@@ -224,10 +242,12 @@
             navigator.geolocation.getCurrentPosition(
                 function(position) {
                     // Location granted
+                    locationReminder.style.display = 'none';
                     Livewire.emit('setLocation', position.coords.latitude, position.coords.longitude);
                 },
                 function(error) {
                     // Location denied
+                    locationReminder.style.display = 'block';
                     console.error("Location permission denied:", error.message);
                 }, {
                     enableHighAccuracy: true,
