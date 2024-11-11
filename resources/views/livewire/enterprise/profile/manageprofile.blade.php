@@ -152,6 +152,6 @@
         });
     </script>
     @section('script')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @endsection
 </div>

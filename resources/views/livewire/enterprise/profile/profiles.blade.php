@@ -87,7 +87,7 @@
                                                             data-bs-offset="0,4" data-bs-placement="top"
                                                             title="Copy Link" aria-hidden="true"></i>
                                                     </a>
-                                                    <div id="copy-notification"
+                                                    <div id="copy-notification{{ $profile->card_id }}"
                                                         style="display: none; position: absolute; top: 0; left: 50px; color: blue;">
                                                         Copied!
                                                     </div>
@@ -246,7 +246,9 @@
 
         const nfcScanBtn = document.querySelector('#nfcScanBtn');
 
-        if ('NDEFReader' in window) {} else {
+        if ('NDEFReader' in window) {
+
+        } else {
             nfcScanBtn.disabled = true;
             console.log('NFC is not available on this device');
         }
@@ -326,7 +328,7 @@
             document.body.removeChild(tempInput);
 
             // Show the notification
-            let notification = document.getElementById('copy-notification');
+            let notification = document.getElementById('copy-notification' + id);
             notification.style.display = 'block';
 
             // Hide the notification after 2 seconds

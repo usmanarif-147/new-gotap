@@ -7,7 +7,6 @@ use App\Models\Platform;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -26,7 +25,34 @@ class View extends Component
 
     public function mount()
     {
-        $this->identifier = request()->username;
+        if (request()->username) {
+            $this->identifier = request()->username;
+            $this->profile = Profile::select(
+                'id',
+                'username',
+                'type',
+                'job_title',
+                'work_position',
+                'bio',
+                'company',
+                'photo',
+                'cover_photo',
+                'user_direct',
+                'user_id',
+                'enterprise_id',
+                'is_leads_enabled',
+                'private'
+            )
+                ->where('username', $this->identifier)
+                ->first();
+        } else {
+            $this->identifier = request()->uuid;
+            $this->profile = Card::join('profile_cards', 'cards.id', '=', 'profile_cards.card_id')
+                ->join('profiles', 'profiles.id', '=', 'profile_cards.profile_id')
+                ->where('cards.uuid', $this->identifier)
+                ->select('profiles.*', 'profile_cards.status as card_status')
+                ->first();
+        }
     }
 
     protected $listeners = ['setLocation'];
@@ -39,24 +65,6 @@ class View extends Component
 
     public function getProfileData()
     {
-        $this->profile = Profile::select(
-            'id',
-            'username',
-            'type',
-            'job_title',
-            'work_position',
-            'bio',
-            'company',
-            'photo',
-            'cover_photo',
-            'user_direct',
-            'user_id',
-            'enterprise_id',
-            'is_leads_enabled',
-            'private'
-        )
-            ->where('username', $this->identifier)
-            ->first();
         if (!$this->profile) {
             return abort(404);
         }

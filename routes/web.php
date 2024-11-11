@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\VCardController;
 use App\Models\Group;
 use App\Models\Profile;
@@ -82,10 +83,19 @@ Route::get('/optimize', function () {
 
 
 // Profile using card_id
-Route::view('/card_id/{uuid}', 'view-profile-by-card');
+// Route::view('/card_id/{uuid}', 'view');
+
+Route::get('/card_id/{uuid}', [UserProfileController::class, 'viewProfileByCardId']);
 
 // Profile using username
-Route::view('/{username}', 'view-profile-by-username');
+// Route::view('/{username}', 'view');
+Route::get('/{username}', [UserProfileController::class, 'viewProfileByUsername']);
+
+//increment platform
+Route::post('/platform/increment', [UserProfileController::class, 'incrementPlatformClick'])->name('platform.increment');
+
+//lead
+Route::post('/viewer/store', [UserProfileController::class, 'viewerDetail'])->name('viewer.store');
 
 // delete url
 Route::get('/account-deletion/policy', function () {

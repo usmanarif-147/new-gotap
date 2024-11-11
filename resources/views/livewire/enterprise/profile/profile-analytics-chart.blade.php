@@ -1,10 +1,11 @@
 <div>
     <div class="row mb-5">
-        <div class="col-lg-12 col-md-12 col-12 mb-4">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 mb-4">
             <div class="card h-100">
                 <div class="card-body">
+                    <h5 class="card-title">Profile Analytics</h5>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-4 ms-auto">
                             <select class="form-select form-select-sm" wire:model="days">
                                 <option selected>Select Days</option>
                                 <option value="7">Last 7 Days</option>
@@ -18,7 +19,6 @@
                 </div>
             </div>
         </div>
-
     </div>
     <script>
         $(document).ready(function() {
@@ -38,6 +38,7 @@
                     labels: ['Profile Views', 'Total Clicks', 'Total Platforms', 'Total Groups'],
                     datasets: [{
                         label: 'Profile Analytics',
+                        borderRadius: 15,
                         data: [
                             data[0]['profileViews'],
                             data[1]['total_clicks'],
@@ -57,7 +58,18 @@
                     responsive: true,
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                autoSkip: false // Ensure all labels are displayed
+                            },
+                            grid: {
+                                display: false
+                            }
                         }
                     }
                 }
