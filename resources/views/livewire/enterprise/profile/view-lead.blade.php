@@ -32,49 +32,49 @@
                     <div class="col-md-6">
                         <div class="lead-detail">
                             <h6 class="text-black">Name:</h6>
-                            <p>{{ $lead->name }}</p>
+                            <p>{{ $lead->name ?? 'N/A' }}</p>
                         </div>
                         <div class="lead-detail">
                             <h6 class="text-black">Phone:</h6>
-                            <p>{{ $lead->phone }}</p>
+                            <p>{{ $lead->phone ?? 'N/A' }}</p>
                         </div>
-                        @if ($lead->country)
-                            <div class="lead-detail">
-                                <h6 class="text-black">Country:</h6>
-                                <p>{{ $lead->country }}</p>
-                            </div>
-                        @endif
-                        @if ($lead->state)
-                            <div class="lead-detail">
-                                <h6 class="text-black">State:</h6>
-                                <p>{{ $lead->state }}</p>
-                            </div>
-                        @endif
+                        {{-- @if ($lead->country) --}}
+                        <div class="lead-detail">
+                            <h6 class="text-black">Country:</h6>
+                            <p>{{ $lead->country ?? 'N/A' }}</p>
+                        </div>
+                        {{-- @endif --}}
+                        {{-- @if ($lead->state) --}}
+                        <div class="lead-detail">
+                            <h6 class="text-black">State:</h6>
+                            <p>{{ $lead->state ?? 'N/A' }}</p>
+                        </div>
+                        {{-- @endif --}}
                     </div>
                     <div class="col-md-6">
                         <div class="lead-detail">
                             <h6 class="text-black">Email:</h6>
-                            <p>{{ $lead->email }}</p>
+                            <p>{{ $lead->email ?? 'N/A' }}</p>
                         </div>
                         <div class="lead-detail">
                             <h6 class="text-black">Date:</h6>
-                            <p>{{ humanDateFormat($lead->created_at) }}</p>
+                            <p>{{ optional($lead)->created_at ? humanDateFormat($lead->created_at) : 'N/A' }}</p>
                         </div>
-                        @if ($lead->city)
-                            <div class="lead-detail">
-                                <h6 class="text-black">City:</h6>
-                                <p>{{ $lead->city }}</p>
-                            </div>
-                        @endif
+                        {{-- @if ($lead->city) --}}
+                        <div class="lead-detail">
+                            <h6 class="text-black">City:</h6>
+                            <p>{{ $lead->city ?? 'N/A' }}</p>
+                        </div>
+                        {{-- @endif --}}
                     </div>
-                    @if ($lead->note)
-                        <div class="col-md">
-                            <div class="lead-detail">
-                                <h6 class="text-black">Note:</h6>
-                                <p>{{ $lead->note }}</p>
-                            </div>
+                    {{-- @if ($lead->note) --}}
+                    <div class="col-md">
+                        <div class="lead-detail">
+                            <h6 class="text-black">Note:</h6>
+                            <p>{{ $lead->note ?? 'N/A' }}</p>
                         </div>
-                    @endif
+                    </div>
+                    {{-- @endif --}}
                 </div>
             </div>
         </div>
