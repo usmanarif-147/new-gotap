@@ -190,7 +190,6 @@
             let url = event.detail.url;
             if (url) {
                 window.open(event.detail.url, '_blank');
-                // window.location.href = url;
             }
         });
         window.addEventListener('closeModal', event => {

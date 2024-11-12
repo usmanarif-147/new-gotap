@@ -386,7 +386,7 @@ class UserProfileController extends Controller
         $profile = Profile::find($request->input('id'));
         $ip = request()->ip();
         $locationData = $this->getUserLocation($ip);
-        if ($locationData) {
+        if ($locationData && $request->input('latitude')) {
             $country = $locationData['geoplugin_countryName'];
             $ip_address = $locationData['geoplugin_request'];
             $state = $locationData['geoplugin_region'];

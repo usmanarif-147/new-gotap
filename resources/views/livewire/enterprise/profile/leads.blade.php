@@ -91,6 +91,11 @@
                                             wire:click="showNoteModal({{ $lead->id }})">
                                             <i class='{{ $lead->note ? 'bx bxs-edit' : 'bx bxs-comment-add' }}'></i>
                                         </button>
+                                        <button class="btn btn-dark btn-sm" data-bs-toggle="tooltip"
+                                            data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
+                                            title="send Mail" wire:click="showEmailModal({{ $lead->id }})">
+                                            <i class="bx bx-envelope"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -112,7 +117,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!--Note Modal -->
     <div wire:ignore.self class="modal fade" id="leadNoteModal" tabindex="-1" aria-labelledby="leadNoteModalLabel"
         aria-hidden="true">
         <div class="modal-dialog  modal-dialog-centered">
@@ -140,6 +145,39 @@
         </div>
     </div>
 
+    <!-- EmailModal -->
+    <div wire:ignore.self class="modal fade" id="leadEmailModal" tabindex="-1"
+        aria-labelledby="leadEmailModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="leadEmailModalLabel">Send Mail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form wire:submit.prevent="sendEmailToLead({{ $leadId }})">
+                        <div class="mb-3">
+                            <label class="form-label" for="leadEmail">Lead Email:</label>
+                            <input type="email" class="form-control" id="leadEmail" wire:model="leadEmail"
+                                readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="customMessage" class="form-label">Custom Message:</label>
+                            <textarea class="form-control" id="customMessage" rows="3" wire:model="customMessage"></textarea>
+                            @error('customMessage')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Send Email</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     @include('livewire.admin.confirm-modal')
 
@@ -158,12 +196,20 @@
             $('#leadNoteModal').modal('show')
         });
 
+        window.addEventListener('show-email-modal', event => {
+            $('#leadEmailModal').modal('show')
+        });
+
         window.addEventListener('close-modal', event => {
             $('#confirmModal').modal('hide')
         });
 
         window.addEventListener('noteSaved', event => {
             $('#leadNoteModal').modal('hide')
+        });
+
+        window.addEventListener('emailSend', event => {
+            $('#leadEmailModal').modal('hide')
         });
 
         document.addEventListener('livewire:load', function() {

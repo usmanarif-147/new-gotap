@@ -237,13 +237,6 @@
                 location.href = url;
             }
         });
-
-        window.addEventListener('redirect', event => {
-            let url = event.detail.url;
-            if (url) {
-                window.open(event.detail.url, '_blank');
-            }
-        });
         // window.addEventListener('closeModal', event => {
         //     $('#userDetails').hide();
         // });
@@ -284,8 +277,13 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.redirect) {
-                        window.open(data.redirect, '_blank');
-                        // window.location.href = data.redirect;
+                        let link = document.createElement('a');
+                        link.href = data.redirect;
+                        link.target = '_blank';
+                        link.rel = 'noopener noreferrer';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
                     } else if (data.error) {
                         alert(data.error);
                     }
