@@ -128,14 +128,17 @@
             </a>
         </li>
         <li class="menu-item">
-            <a class="menu-link {{ Request::routeIs('') ? '' : 'collapsed' }}" data-bs-toggle="collapse"
-                href="#AdminSubmenu" role="button" aria-expanded="{{ Request::routeIs('') ? 'true' : 'false' }}"
+            <a class="menu-link {{ Request::routeIs('enterprise.invite.mail') ? '' : 'collapsed' }}"
+                data-bs-toggle="collapse" href="#AdminSubmenu" role="button"
+                aria-expanded="{{ Request::routeIs('enterprise.invite.mail') ? 'true' : 'false' }}"
                 aria-controls="AdminSubmenu">
                 <i class="menu-icon tf-icons bx bxs-user-detail"></i>
                 <div class="me-5">Admin</div>
-                <i class='arrow bx {{ Request::routeIs('') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
+                <i
+                    class='arrow bx {{ Request::routeIs('enterprise.invite.mail') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
             </a>
-            <ul class="collapse submenu {{ Request::routeIs('') ? 'show' : '' }}" id="AdminSubmenu">
+            <ul class="collapse submenu {{ Request::routeIs('enterprise.invite.mail') ? 'show' : '' }}"
+                id="AdminSubmenu">
                 <li class="{{ Request::routeIs('') ? 'active bg-active' : '' }}">
                     <a href="javascript:void(0)" onclick="changePassword()"
                         class="dropdown-item d-flex align-items-center">
@@ -145,14 +148,14 @@
                     </a>
                 </li>
 
-                {{-- <li class="{{ Request::routeIs('enterprise.leads-map') ? 'active bg-active' : '' }}">
-                    <a href="{{ route('enterprise.leads-map') }}" class="dropdown-item d-flex align-items-center">
+                <li class="{{ Request::routeIs('enterprise.invite.mail') ? 'active bg-active' : '' }}">
+                    <a href="{{ route('enterprise.invite.mail') }}" class="dropdown-item d-flex align-items-center">
                         <div class="vertical-line me-3"></div>
                         <div>Invite Email</div>
                     </a>
                 </li>
 
-                <li class="{{ Request::routeIs('enterprise.leads-map') ? 'active bg-active' : '' }}">
+                {{-- <li class="{{ Request::routeIs('enterprise.leads-map') ? 'active bg-active' : '' }}">
                     <a href="{{ route('enterprise.leads-map') }}" class="dropdown-item d-flex align-items-center">
                         <div class="vertical-line me-3"></div>
                         <div>Notification</div>

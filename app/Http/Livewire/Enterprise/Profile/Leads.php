@@ -2,12 +2,15 @@
 
 namespace App\Http\Livewire\Enterprise\Profile;
 
+use App\Models\User;
 use DB;
 use JeroenDesloovere\VCard\VCard;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Response;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\LeadEmail;
 
 class Leads extends Component
 {
@@ -23,7 +26,34 @@ class Leads extends Component
 
     public $note;
 
+    public $leadEmail;
+    public $customMessage;
+
     public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
+
+    public function showEmailModal($id)
+    {
+        $this->leadId = $id;
+        $lead = DB::table('leads')->where('id', $id)->first();
+        $this->leadEmail = $lead->email;
+        $this->dispatchBrowserEvent('show-email-modal');
+    }
+
+    public function sendEmailToLead($id)
+    {
+        $this->validate([
+            'customMessage' => 'required|string|max:5000',
+        ]);
+        $lead = DB::table('leads')->where('id', $id)->first();
+        $enterpriser = User::find($lead->enterprise_id);
+        Mail::to($this->leadEmail)->send(new LeadEmail($lead, $this->customMessage, $enterpriser));
+
+        $this->dispatchBrowserEvent('emailSend');
+        $this->dispatchBrowserEvent('swal:modal', [
+            'type' => 'success',
+            'message' => 'Email sent successfully to the lead.',
+        ]);
+    }
 
     public function showNoteModal($id)
     {
