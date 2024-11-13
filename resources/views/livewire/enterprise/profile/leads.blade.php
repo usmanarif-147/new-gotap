@@ -1,20 +1,19 @@
 <div>
-    <div>
-        <div class="d-flex justify-content-between">
-            <h2 class="card-header">
-                <span>
-                    <h5 style="margin-top:10px"> Total: {{ $total }} </h4>
-                </span>
-            </h2>
-        </div>
-    </div>
-
     <div class="card">
         <div class="card-header">
-            <div class="row">
-                <div class="col-md-3 ms-auto">
-                    <label for=""> Search </label>
-                    <input class="form-control me-2" type="search" wire:model.debounce.500ms="search"
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0">Total: {{ $total }}</h5>
+                </div>
+                <div class="flex-grow-1 d-flex justify-content-center">
+                    <button wire:click="showBulkEmailModal" class="btn btn-dark"
+                        @if (count($selectedLeads) === 0) disabled @endif>
+                        Send Mails
+                    </button>
+                </div>
+                <div class="d-flex align-items-center">
+                    <label for="search" class="me-2 mb-0">Search</label>
+                    <input id="search" class="form-control" type="search" wire:model.debounce.500ms="search"
                         placeholder="Search" aria-label="Search">
                 </div>
             </div>
@@ -25,6 +24,9 @@
                     <table class="table admin-table table-sm">
                         <thead class="table-light">
                             <tr>
+                                <th>
+                                    <input type="checkbox" wire:model="selectAll">
+                                </th>
                                 <th> Lead </th>
                                 <th> Profile </th>
                                 <th> Phone No </th>
@@ -35,6 +37,8 @@
                         <tbody class="table-border-bottom-0">
                             @foreach ($leads as $ind => $lead)
                                 <tr>
+                                    <td><input type="checkbox" wire:model="selectedLeads" value="{{ $lead->id }}">
+                                    </td>
                                     <td style="width: 30%;">
                                         <div class="d-flex align-items-center">
                                             <!-- Profile Image -->
@@ -80,9 +84,9 @@
                                             title="delete" wire:click="confirmModal({{ $lead->id }})">
                                             <i class='bx bx-trash'></i>
                                         </button>
-                                        <a href="{{ route('lead.download', $lead->id) }}" class="btn btn-primary btn-sm"
-                                            data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top"
-                                            data-bs-html="true" title="download">
+                                        <a href="{{ route('lead.download', $lead->id) }}"
+                                            class="btn btn-primary btn-sm" data-bs-toggle="tooltip" data-bs-offset="0,4"
+                                            data-bs-placement="top" data-bs-html="true" title="download">
                                             <i class='bx bx-download'></i>
                                         </a>
                                         <button class="btn btn-dark btn-sm" data-bs-toggle="tooltip"
@@ -162,8 +166,12 @@
                                 readonly>
                         </div>
                         <div class="mb-3">
-                            <label for="customMessage" class="form-label">Custom Message:</label>
-                            <textarea class="form-control" id="customMessage" rows="3" wire:model="customMessage"></textarea>
+                            <label class="form-label" for="subject">Subject *:</label>
+                            <input type="text" class="form-control" id="subject" wire:model="subject">
+                        </div>
+                        <div wire:ignore class="mb-3">
+                            <label for="customMessage" class="form-label">Custom Message *:</label>
+                            <textarea class="form-control" id="customMessage" rows="3" wire:model.defer="customMessage"></textarea>
                             @error('customMessage')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -178,8 +186,79 @@
         </div>
     </div>
 
+    <!-- BulkEmailModal -->
+    <div wire:ignore.self class="modal fade" id="leadBulkEmailModal" tabindex="-1"
+        aria-labelledby="leadBulkEmailModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="leadBulkEmailModalLabel">Send Bulk Mails</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form wire:submit.prevent="sendBulkEmail">
+                        <div class="mb-3">
+                            <label class="form-label" for="subject1">Subject:</label>
+                            <input type="text" class="form-control" id="subject1" wire:model="subject">
+                        </div>
+                        <div wire:ignore class="mb-3">
+                            <label for="customMessage" class="form-label">Custom Message:</label>
+                            <textarea class="form-control" id="customMessage1" rows="3" wire:model.defer="customMessage"></textarea>
+                            @error('customMessage')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Send Bulk Emails</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     @include('livewire.admin.confirm-modal')
+    <!-- CKEditor Script -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
+    <script>
+        document.addEventListener('livewire:load', function() {
+            if (document.querySelector('#customMessage')) {
+                ClassicEditor
+                    .create(document.querySelector('#customMessage'))
+                    .then(editor => {
+                        editor.model.document.on('change:data', () => {
+                            @this.set('customMessage', editor.getData());
+                        });
+                        Livewire.on('refreshEditor', content => {
+                            editor.setData(content);
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+
+            if (document.querySelector('#customMessage1')) {
+                ClassicEditor
+                    .create(document.querySelector('#customMessage1'))
+                    .then(editor => {
+                        editor.model.document.on('change:data', () => {
+                            @this.set('customMessage', editor.getData());
+                        });
+
+                        Livewire.on('refreshEditor', content => {
+                            editor.setData(content);
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        });
+    </script>
+
 
     <script>
         window.addEventListener('swal:modal', event => {
@@ -200,6 +279,10 @@
             $('#leadEmailModal').modal('show')
         });
 
+        window.addEventListener('show-bulk-email-modal', event => {
+            $('#leadBulkEmailModal').modal('show')
+        });
+
         window.addEventListener('close-modal', event => {
             $('#confirmModal').modal('hide')
         });
@@ -210,6 +293,10 @@
 
         window.addEventListener('emailSend', event => {
             $('#leadEmailModal').modal('hide')
+        });
+
+        window.addEventListener('emailBulkSend', event => {
+            $('#leadBulkEmailModal').modal('hide')
         });
 
         document.addEventListener('livewire:load', function() {

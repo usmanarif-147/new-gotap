@@ -134,7 +134,7 @@
                           text-align: left;
                         "
                                             colspan="3">
-                                            {{ $customMessage }}
+                                            {!! $customMessage !!}
                                         </td>
                                     </tr>
 

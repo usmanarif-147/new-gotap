@@ -16,18 +16,22 @@ class LeadEmail extends Mailable
 
     public $enterpriser;
 
+    public $subject;
+
     /**
      * Create a new message instance.
      *
      * @param $lead
      * @param $customMessage
      * @param $enterpriser
+     * @param $subject
      */
-    public function __construct($lead, $customMessage, $enterpriser)
+    public function __construct($lead, $subject, $customMessage, $enterpriser)
     {
         $this->lead = $lead;
         $this->customMessage = $customMessage;
         $this->enterpriser = $enterpriser;
+        $this->subject = $subject;
     }
 
     /**
@@ -39,7 +43,7 @@ class LeadEmail extends Mailable
     {
         return $this->from($this->enterpriser->email, $this->enterpriser->name)
             ->view('emails.lead')
-            ->subject('Important Information for You')
+            ->subject($this->subject)
             ->with([
                 'leadName' => $this->lead->name,
                 'customMessage' => $this->customMessage,

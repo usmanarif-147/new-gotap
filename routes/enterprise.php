@@ -33,9 +33,6 @@ Route::middleware('enterprise')->group(function () {
     //edit Enterprise
     Route::view('enterprise/edit', 'enterprise.edit-enterprise')->name('enterprise.edit');
 
-    //invite Mail
-    Route::view('/enterprise/invitemail', 'enterprise.profile.invite-mail')->name('enterprise.invite.mail');
-
     Route::get('enterprise/confirm-password', [ConfirmablePasswordController::class, 'showEnterprise'])
         ->name('enterprise.password.confirm');
 
