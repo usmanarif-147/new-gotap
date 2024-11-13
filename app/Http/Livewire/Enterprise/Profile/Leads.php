@@ -26,11 +26,60 @@ class Leads extends Component
 
     public $note;
 
+    public $selectedLeads = [];
+
+    public $selectAll = false;
+
     public $leadEmail;
-    public $customMessage;
+    public $customMessage, $subject;
 
     public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
 
+    public function mount()
+    {
+        $this->emit('refreshEditor', $this->customMessage);
+    }
+
+    public function updatedSelectAll($value)
+    {
+        if ($value) {
+            $this->selectedLeads = DB::table('leads')->where('enterprise_id', auth()->id())->pluck('id')->toArray();
+        } else {
+            $this->selectedLeads = [];
+        }
+    }
+
+    public function updatedSelectedLeads()
+    {
+        $this->selectAll = DB::table('leads')->where('enterprise_id', auth()->id())->count() === count($this->selectedLeads);
+    }
+
+    public function showBulkEmailModal()
+    {
+        $this->dispatchBrowserEvent('show-bulk-email-modal');
+    }
+
+    public function sendBulkEmail()
+    {
+        $this->validate([
+            'subject' => 'required|string|max:255',
+            'customMessage' => 'required|string|max:5000',
+        ]);
+        $leads = DB::table('leads')->whereIn('id', $this->selectedLeads)->get();
+        foreach ($leads as $lead) {
+            $enterpriser = User::find($lead->enterprise_id);
+            Mail::to($this->leadEmail)->send(new LeadEmail($lead, $this->subject, $this->customMessage, $enterpriser));
+        }
+        $this->dispatchBrowserEvent('emailBulkSend');
+        $this->selectedLeads = [];
+        $this->selectAll = false;
+        $this->subject = '';
+        $this->customMessage = '';
+        $this->dispatchBrowserEvent('swal:modal', [
+            'type' => 'success',
+            'message' => 'Emails sent successfully to all leads.',
+        ]);
+    }
     public function showEmailModal($id)
     {
         $this->leadId = $id;
@@ -42,13 +91,16 @@ class Leads extends Component
     public function sendEmailToLead($id)
     {
         $this->validate([
+            'subject' => 'required|string|max:255',
             'customMessage' => 'required|string|max:5000',
         ]);
         $lead = DB::table('leads')->where('id', $id)->first();
         $enterpriser = User::find($lead->enterprise_id);
-        Mail::to($this->leadEmail)->send(new LeadEmail($lead, $this->customMessage, $enterpriser));
+        Mail::to($this->leadEmail)->send(new LeadEmail($lead, $this->subject, $this->customMessage, $enterpriser));
 
         $this->dispatchBrowserEvent('emailSend');
+        $this->subject = '';
+        $this->customMessage = '';
         $this->dispatchBrowserEvent('swal:modal', [
             'type' => 'success',
             'message' => 'Email sent successfully to the lead.',

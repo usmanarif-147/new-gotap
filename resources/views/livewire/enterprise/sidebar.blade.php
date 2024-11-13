@@ -148,13 +148,6 @@
                     </a>
                 </li>
 
-                <li class="{{ Request::routeIs('enterprise.invite.mail') ? 'active bg-active' : '' }}">
-                    <a href="{{ route('enterprise.invite.mail') }}" class="dropdown-item d-flex align-items-center">
-                        <div class="vertical-line me-3"></div>
-                        <div>Invite Email</div>
-                    </a>
-                </li>
-
                 {{-- <li class="{{ Request::routeIs('enterprise.leads-map') ? 'active bg-active' : '' }}">
                     <a href="{{ route('enterprise.leads-map') }}" class="dropdown-item d-flex align-items-center">
                         <div class="vertical-line me-3"></div>
