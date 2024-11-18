@@ -70,7 +70,7 @@ class GroupController extends Controller
             ->where('groups.user_id', auth()->id())
             ->get();
 
-        $groupLeads = Group::select('Leads.*')
+        $groupLeads = Group::select('leads.*')
             ->join('group_leads', 'group_leads.group_id', 'groups.id')
             ->join('leads', 'leads.id', 'group_leads.lead_id')
             ->where('groups.id', $request->group_id)
