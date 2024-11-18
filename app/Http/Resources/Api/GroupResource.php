@@ -15,6 +15,7 @@ class GroupResource extends JsonResource
             'title' => $this->title,
             'total_profiles' => $this->total_profiles,
             'total_contacts' => $this->total_contacts,
+            'total_leads' => $this->total_leads,
             'active' => $this->active,
             'created_at' => defaultDateFormat($this->created_at),
         ];
