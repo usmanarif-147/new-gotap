@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Profile\AddLeadRequest;
+use App\Http\Requests\Api\Profile\EnterpriseProfileRequest;
 use App\Http\Requests\Api\Profile\UpdateProfileLeadRequest;
 use App\Http\Requests\Api\Profile\ViewProfileRequest;
 use App\Http\Resources\Api\UserProfileResource;
 use App\Models\Card;
 use App\Models\Profile;
 use App\Models\User;
+use App\Models\UserRequestProfile;
 use Illuminate\Support\Facades\DB;
+use Request;
 
 class ViewProfileController extends Controller
 {
@@ -226,5 +229,55 @@ class ViewProfileController extends Controller
         return response()->json([
             'message' => 'Lead created Successfully!',
         ]);
+    }
+
+    public function deleteLead(UpdateProfileLeadRequest $request)
+    {
+        $lead = DB::table('leads')->find($request->id);
+        if (!$lead) {
+            return response()->json([
+                'message' => 'Lead not Found',
+            ], 404);
+        }
+        DB::table('leads')->where('id', $request->id)->delete();
+        return response()->json([
+            'message' => 'Lead Deleted Successfully!',
+        ]);
+    }
+
+    public function UserRequestProfile(EnterpriseProfileRequest $request)
+    {
+        $enterprise = User::where('email', $request->email)->first();
+        if (!$enterprise) {
+            return response()->json([
+                'message' => 'Enterpriser not Found',
+            ], 404);
+        }
+
+        $user = User::find(auth()->id());
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not Found',
+            ], 404);
+        }
+        $existingRequest = UserRequestProfile::where('user_id', $user->id)
+            ->where('enterprise_id', $enterprise->id)
+            ->whereIn('status', [0, 1])
+            ->first();
+
+        if ($existingRequest) {
+            return response()->json([
+                'message' => 'Request already exists',
+            ], 200);
+        }
+        UserRequestProfile::create([
+            'user_id' => $user->id,
+            'enterprise_id' => $enterprise->id,
+            'status' => 0,
+        ]);
+
+        return response()->json([
+            'message' => 'Request successfully added',
+        ], 201);
     }
 }
