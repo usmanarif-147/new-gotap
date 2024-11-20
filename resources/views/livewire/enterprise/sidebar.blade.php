@@ -55,22 +55,21 @@
             </a>
         </li>
         <li class="menu-item">
-            <a class="menu-link {{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage') ? '' : 'collapsed' }}"
+            <a class="menu-link {{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage', 'enterprise.requests') ? '' : 'collapsed' }}"
                 data-bs-toggle="collapse" href="#TeamSubmenu" role="button"
-                aria-expanded="{{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage') ? 'true' : 'false' }}"
+                aria-expanded="{{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage', 'enterprise.requests') ? 'true' : 'false' }}"
                 aria-controls="TeamSubmenu">
                 <i class="menu-icon tf-icons bx bxs-group"></i>
                 <div class="me-5">Team</div>
                 <i
-                    class='arrow bx {{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
+                    class='arrow bx {{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage', 'enterprise.requests') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
             </a>
-            <ul class="collapse submenu {{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage') ? 'show' : '' }}"
+            <ul class="collapse submenu {{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage', 'enterprise.requests') ? 'show' : '' }}"
                 id="TeamSubmenu">
                 <li
                     class="{{ Request::routeIs('enterprise.profiles', 'enterprise.profile.manage') ? 'active bg-active' : '' }}">
                     <a href="{{ route('enterprise.profiles') }}" class="dropdown-item d-flex align-items-center">
                         <div class="vertical-line me-3"></div>
-                        {{-- <i class='tf-icons bx bxs-user-detail me-3'></i> --}}
                         <div>Profiles</div>
                     </a>
                 </li>
@@ -78,15 +77,26 @@
                     <a href="{{ route('enterprise.profile.subteams') }}"
                         class="dropdown-item d-flex align-items-center">
                         <div class="vertical-line me-3"></div>
-                        {{-- <i class='tf-icons bx bxs-user-detail me-3'></i> --}}
                         <div>Sub Teams</div>
                     </a>
                 </li>
                 <li class="{{ Request::routeIs('enterprise.profile.create') ? 'active bg-active' : '' }}">
                     <a href="{{ route('enterprise.profile.create') }}" class="dropdown-item d-flex align-items-center">
-                        {{-- <i class='tf-icons bx bxs-user-detail me-3'></i> --}}
                         <div class="vertical-line me-3"></div>
                         <div>Create Profile</div>
+                    </a>
+                </li>
+                <li class="{{ $isActive || Request::routeIs('enterprise.requests') ? 'active bg-active' : '' }}">
+                    <a href="{{ route('enterprise.requests') }}" class="dropdown-item d-flex align-items-center">
+                        <div class="vertical-line me-3"></div>
+                        <div>
+                            Requests
+                            @if ($pending)
+                                <span class="badge bg-warning">
+                                    {{ $pending }}
+                                </span>
+                            @endif
+                        </div>
                     </a>
                 </li>
             </ul>
@@ -142,18 +152,10 @@
                 <li class="{{ Request::routeIs('') ? 'active bg-active' : '' }}">
                     <a href="javascript:void(0)" onclick="changePassword()"
                         class="dropdown-item d-flex align-items-center">
-                        {{-- <i class='tf-icons bx bxs-group me-3'></i> --}}
                         <div class="vertical-line me-3"></div>
                         <div>Password Reset</div>
                     </a>
                 </li>
-
-                {{-- <li class="{{ Request::routeIs('enterprise.leads-map') ? 'active bg-active' : '' }}">
-                    <a href="{{ route('enterprise.leads-map') }}" class="dropdown-item d-flex align-items-center">
-                        <div class="vertical-line me-3"></div>
-                        <div>Notification</div>
-                    </a>
-                </li> --}}
             </ul>
         </li>
         <li class="menu-item">
@@ -175,7 +177,6 @@
             <ul class="collapse submenu {{ Request::routeIs('enterprise.edit') ? 'show' : '' }}" id="SettingSubmenu">
                 <li class="{{ Request::routeIs('enterprise.edit') ? 'active bg-active' : '' }}">
                     <a href="{{ route('enterprise.edit') }}" class="dropdown-item d-flex align-items-center">
-                        {{-- <i class='tf-icons bx bxs-group me-3'></i> --}}
                         <div class="vertical-line me-3"></div>
                         <div>Manage Account</div>
                     </a>

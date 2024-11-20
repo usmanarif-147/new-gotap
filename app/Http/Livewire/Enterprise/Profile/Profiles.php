@@ -6,6 +6,7 @@ use App\Models\Card;
 use App\Models\Group;
 use App\Models\Profile;
 use App\Models\ProfileCard;
+use App\Models\UserRequestProfile;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -303,7 +304,16 @@ class Profiles extends Component
                 $profile->update([
                     'user_id' => null
                 ]);
+                UserRequestProfile::where('enterprise_id', auth()->id())->where('user_id', $this->userId)->where('status', 1)->update([
+                    'status' => 2,
+                ]);
             } else {
+                $profile->update([
+                    'user_id' => null
+                ]);
+                UserRequestProfile::where('enterprise_id', auth()->id())->where('user_id', $this->userId)->where('status', 1)->update([
+                    'status' => 2,
+                ]);
                 $this->dispatchBrowserEvent('swal:modal', [
                     'type' => 'danger',
                     'message' => 'Card not found!',

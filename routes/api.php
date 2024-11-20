@@ -111,11 +111,15 @@ Route::middleware('localization')->group(function () {
             // View User Profile
             Route::post('/viewUserProfile', [ViewProfileController::class, 'viewUserProfile']);  // profile
 
+            //Send Request For Enterpriser Profile
+            Route::post('/UserRequestProfile', [ViewProfileController::class, 'UserRequestProfile']);
+
             //profile Leads
             Route::post('/ProfileLeadsEnabled', [ViewProfileController::class, 'profileLeadsEnabled']);
             Route::get('/ProfileLeads', [ViewProfileController::class, 'profileLeads']);
             Route::post('/UpdateProfileLead', [ViewProfileController::class, 'updateProfileLead']);
             Route::post('/addLead', [ViewProfileController::class, 'addLead']);
+            Route::post('/deleteLead', [ViewProfileController::class, 'deleteLead']);
 
             // Connects
             Route::post('/connect', [ConnectController::class, 'connect']);
