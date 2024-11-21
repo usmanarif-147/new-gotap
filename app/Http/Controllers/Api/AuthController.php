@@ -77,8 +77,7 @@ class AuthController extends Controller
                     'message' => trans('backend.account_registered_success'),
                     'data' => new UserResource($user),
                     'token' => $token
-                ],
-                201
+                ]
             );
         } catch (Exception $ex) {
             DB::rollBack();
@@ -86,8 +85,8 @@ class AuthController extends Controller
             return response()->json(
                 [
                     'message' => trans('backend.account_registration_failed'),
+                    'error' => $ex->getMessage()
                 ],
-                422
             );
         }
     }
