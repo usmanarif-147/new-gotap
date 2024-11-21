@@ -221,7 +221,7 @@
 
     @include('livewire.admin.confirm-modal')
     <!-- CKEditor Script -->
-    <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
+    <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
     <script>
         document.addEventListener('livewire:load', function() {
             if (document.querySelector('#customMessage')) {

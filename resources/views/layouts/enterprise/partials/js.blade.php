@@ -18,7 +18,7 @@
  <!-- endbuild -->
 
  <!-- Vendors JS -->
- {{-- <script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script> --}}
+ <script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
 
  <!-- Main JS -->
  <script src="{{ asset('assets/js/main.js') }}"></script>
@@ -28,18 +28,16 @@
  <script src="{{ asset('assets/js/pages-account-settings-account.js') }}"></script>
 
  <!-- Place this tag in your head or just before your close body tag. -->
- <script async defer src="https://buttons.github.io/buttons.js"></script>
+ <script async defer src="{{ asset('assets/js/buttons.js') }}"></script>
 
  {{-- sweetaler2 --}}
 
- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+ <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 
  {{-- blocl ui --}}
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"
-     integrity="sha512-eYSzo+20ajZMRsjxB6L7eyqo5kuXuS2+wEbbOkpaur+sA2shQameiJiWEzCIDwJqaB0a4a6tCuEvCOBHUg3Skg=="
-     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ <script src="{{ asset('assets/js/jquery.blockUI.min.js') }}"></script>
+ <script src="{{ asset('assets/js/html5-qrcode.min.js') }}" type="text/javascript"></script>
 
- <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
  <script>
      function changePassword() {

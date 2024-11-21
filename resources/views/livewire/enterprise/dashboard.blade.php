@@ -31,7 +31,7 @@
     </div>
 
     @section('script')
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="{{ asset('assets/js/chart.js') }}"></script>
         <script>
             document.addEventListener('livewire:load', function() {
                 const canvas = document.getElementById('profilePlatformChart');

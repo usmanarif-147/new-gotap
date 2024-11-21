@@ -7,6 +7,7 @@ use App\Models\ProfileCard;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Models\UserRequestProfile as ProfileRequestUser;
 
 class UserRequestProfile extends Component
 {
@@ -42,7 +43,7 @@ class UserRequestProfile extends Component
         Profile::where('id', $profileId)->update([
             'user_id' => $this->userId,
         ]);
-        \App\Models\UserRequestProfile::where('id', $this->reqId)->update([
+        ProfileRequestUser::where('id', $this->reqId)->update([
             'status' => 1,
         ]);
         ProfileCard::where('profile_id', $profileId)->update([
@@ -58,7 +59,7 @@ class UserRequestProfile extends Component
 
     public function getData()
     {
-        $filteredData = \App\Models\UserRequestProfile::select(
+        $filteredData = ProfileRequestUser::select(
             'user_request_profiles.id',
             'user_request_profiles.user_id',
             'user_request_profiles.enterprise_id',

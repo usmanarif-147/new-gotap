@@ -1,4 +1,4 @@
-@section('style')
+<div>
     <style>
         /* Camera icon for cover photo */
         .camera-icon-cover {
@@ -76,8 +76,6 @@
             display: none;
         }
     </style>
-@endsection
-<div>
     <div class="row">
         <div class="col-xl-8">
             <div class="card mb-4">
