@@ -13,12 +13,11 @@
 
 
     <meta name="description" content="" />
-
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('logo.png') }}" />
     @include('layouts.enterprise.partials.css')
-
-    @yield('style')
-
     @livewireStyles
+    @yield('style')
 
 </head>
 
@@ -34,7 +33,7 @@
                         <div class="loading-spinner"></div>
                     </div>
                 </div>
-                <div class="content-wrapper" id="main-content" style="visibility: hidden;">
+                <div class="content-wrapper" id="main-content" style="visibility: hidden">
                     <div class="container-xxl flex-grow-1 container-p-y">
                         @yield('content')
                     </div>
@@ -46,20 +45,23 @@
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
 
-    @include('layouts.enterprise.partials.js')
-
-
-    @yield('script')
-
     <script>
-        $(document).ready(function() {
-            $("#loader").hide();
-            $('#main-content').css('visibility', 'visible');
-        })
-        $('#footer-date').text(new Date().getFullYear())
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide the loader
+            document.getElementById('loader').style.display = 'none';
+
+            // Make the main content visible
+            document.getElementById('main-content').style.visibility = 'visible';
+
+            // Set the footer date to the current year
+            document.getElementById('footer-date').textContent = new Date().getFullYear();
+        });
     </script>
+
+    @include('layouts.enterprise.partials.js')
+    @yield('script')
     @livewireScripts
-    <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v0.x.x/dist/livewire-sortable.js"></script>
+    <script src="{{ asset('assets/js/livewire-sortable.js') }}"></script>
 </body>
 
 </html>

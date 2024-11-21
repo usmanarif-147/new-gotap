@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Profile\AddLeadRequest;
+use App\Http\Requests\Api\Profile\DeleteLeadRequest;
 use App\Http\Requests\Api\Profile\EnterpriseProfileRequest;
 use App\Http\Requests\Api\Profile\UpdateProfileLeadRequest;
 use App\Http\Requests\Api\Profile\ViewProfileRequest;
@@ -231,7 +232,7 @@ class ViewProfileController extends Controller
         ]);
     }
 
-    public function deleteLead(UpdateProfileLeadRequest $request)
+    public function deleteLead(DeleteLeadRequest $request)
     {
         $lead = DB::table('leads')->find($request->id);
         if (!$lead) {

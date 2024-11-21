@@ -1,9 +1,9 @@
 <div>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="{{ asset('assets/map/leaflet.css') }}">
+    <script src="{{ asset('assets/map/leaflet.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('assets/map/MarkerCluster.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/map/MarkerCluster.Default.css') }}">
+    <script src="{{ asset('assets/map/leaflet.markercluster.js') }}"></script>
 
     <style>
         .leads-scrollable {
