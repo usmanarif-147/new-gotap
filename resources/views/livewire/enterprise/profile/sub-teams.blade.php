@@ -47,29 +47,22 @@
             z-index: 1055;
         }
     </style>
-    <div>
-        <div class="d-flex justify-content-between">
-            <h2 class="card-header">
-                <span>
-                    <h5 style="margin-top:10px"> Total: {{ $total }} </h4>
-                </span>
-            </h2>
-            <h5 class="card-header">
-                <button type="button" class="btn" style="background: #0EA7C1; color:white" data-bs-toggle="modal"
-                    data-bs-target="#subteamModal">
-                    Create Sub Team
-                </button>
-            </h5>
-        </div>
-    </div>
-
     <div class="card">
         <div class="card-header">
-            <div class="row">
-                <div class="col-md-3 ms-auto">
-                    <label for=""> Search </label>
-                    <input class="form-control me-2" type="search" wire:model.debounce.500ms="search"
-                        placeholder="Search By Name" aria-label="Search">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0">Total: {{ $total }}</h5>
+                </div>
+                <div class="flex-grow-1 d-flex justify-content-center">
+                    <button type="button" class="btn" style="background: #0EA7C1; color:white" data-bs-toggle="modal"
+                        data-bs-target="#subteamModal">
+                        Create Sub Team
+                    </button>
+                </div>
+                <div class="d-flex align-items-center">
+                    <label for="search" class="me-2 mb-0">Search</label>
+                    <input id="search" class="form-control" type="search" wire:model.debounce.500ms="search"
+                        placeholder="Search" aria-label="Search">
                 </div>
             </div>
         </div>
