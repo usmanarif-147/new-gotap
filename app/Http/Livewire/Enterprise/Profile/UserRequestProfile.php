@@ -17,8 +17,17 @@ class UserRequestProfile extends Component
     public $search = '';
     public $userId, $reqId;
 
-    public $searchTerm = '';
+    public $searchTerm = '', $sortBy, $filterByStatus = '', $statuses = [];
     public $profiles = [];
+
+    public function mount()
+    {
+        $this->statuses = [
+            '1' => 'Pending',
+            '2' => 'Active',
+            '3' => 'D-Active',
+        ];
+    }
 
     public function showProfileModal($userid, $id)
     {
@@ -71,6 +80,25 @@ class UserRequestProfile extends Component
             'user_request_profiles.created_at'
         )
             ->leftJoin('users', 'user_request_profiles.user_id', '=', 'users.id')
+            ->when($this->filterByStatus, function ($query) {
+                if ($this->filterByStatus == 3) {
+                    $query->where('user_request_profiles.status', 2);
+                }
+                if ($this->filterByStatus == 2) {
+                    $query->where('user_request_profiles.status', 1);
+                }
+                if ($this->filterByStatus == 1) {
+                    $query->where('user_request_profiles.status', 0);
+                }
+            })
+            ->when($this->sortBy, function ($query) {
+                if ($this->sortBy == 'created_asc') {
+                    $query->orderBy('user_request_profiles.created_at', 'asc');
+                }
+                if ($this->sortBy == 'created_desc') {
+                    $query->orderBy('user_request_profiles.created_at', 'desc');
+                }
+            })
             ->when($this->search, function ($query) {
                 $query->where(function ($query) {
                     $query->where('users.username', 'like', "%$this->search%")

@@ -1,11 +1,34 @@
 <div>
+    <div>
+        <div class="d-flex justify-content-between">
+            <h2 class="card-header">
+                <span>
+                    <h5 style="margin-top:10px"> Total: {{ $total }} </h4>
+                </span>
+            </h2>
+        </div>
+    </div>
     <div class="card">
         <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="mb-0">Total: {{ $total }}</h5>
+            <div class="row">
+                <div class="col-md-3 ms-auto">
+                    <label> Select Status </label>
+                    <select wire:model="filterByStatus" class="form-control form-select me-2">
+                        <option value="" selected> Select Status </option>
+                        @foreach ($statuses as $val => $status)
+                            <option value="{{ $val }}">{{ $status }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="d-flex align-items-center">
+                <div class="col-md-3">
+                    <label for=""> Sort by </label>
+                    <select wire:model="sortBy" class="form-control form-select me-2">
+                        <option value="" selected> Select Sort </option>
+                        <option value="created_asc"> Created Date (Low to High)</option>
+                        <option value="created_desc"> Created Date (High to Low)</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
                     <label for="search" class="me-2 mb-0">Search</label>
                     <input id="search" class="form-control" type="search" wire:model.debounce.500ms="search"
                         placeholder="Search" aria-label="Search">
