@@ -21,7 +21,7 @@ class Platforms extends Component
     // filter valriables
     public $searchQuery = '', $filterByStatus, $filterByCategory, $sortBy;
 
-    public $total, $heading, $statuses = [], $categories;
+    public $total, $statuses = [], $categories;
 
     public function mount()
     {
@@ -140,8 +140,6 @@ class Platforms extends Component
     public function render()
     {
         $data = $this->getData();
-
-        $this->heading = "Platforms";
         $platforms = $data->paginate(10);
 
         $this->total = $platforms->total();

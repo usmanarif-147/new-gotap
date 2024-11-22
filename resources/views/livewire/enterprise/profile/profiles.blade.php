@@ -2,7 +2,7 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
-                {{ $heading }}
+                {{-- {{ $heading }} --}}
                 <span>
                     <h5 style="margin-top:10px"> Total: {{ $total }} </h4>
                 </span>
@@ -27,7 +27,7 @@
                         @endforeach
                     </select>
                 </div> --}}
-                <div class="col-md-3 offset-6">
+                <div class="col-md-3 ms-auto">
                     <label for=""> Sort by </label>
                     <select wire:model="sortBy" class="form-control form-select me-2">
                         <option value="" selected> Select Sort </option>
@@ -63,7 +63,7 @@
                                     <td>
                                         <div class="img-holder">
                                             <img
-                                                src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}">
+                                                src="{{ asset($profile->photo && file_exists(public_path('storage/' . $profile->photo)) ? Storage::url($profile->photo) : 'user.png') }}">
                                         </div>
                                     </td>
                                     <td>
@@ -80,13 +80,17 @@
                                                         value="{{ $profile->card_uuid }}">
                                                     {{-- {{ $profile->uuid }} --}}
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-2 position-relative">
                                                     <a href="javascript:void(0)"
                                                         onclick="copy('{{ $profile->card_id }}')">
                                                         <i class="bx bx-clipboard" data-bs-toggle="tooltip"
                                                             data-bs-offset="0,4" data-bs-placement="top"
                                                             title="Copy Link" aria-hidden="true"></i>
                                                     </a>
+                                                    <div id="copy-notification{{ $profile->card_id }}"
+                                                        style="display: none; position: absolute; top: 0; left: 50px; color: blue;">
+                                                        Copied!
+                                                    </div>
                                                 </div>
                                             </div>
                                         @else
@@ -125,11 +129,6 @@
                                                 <i class='bx bx-qr-scan'></i>
                                             </button>
                                         @endif
-                                        {{-- <a href="{{ route('enterprise.profile.edit', [$profile->id]) }}"
-                                            class="btn btn-warning" data-bs-toggle="tooltip" data-bs-offset="0,4"
-                                            data-bs-placement="top" data-bs-html="true" title="Edit">
-                                            <i class="bx bx-edit-alt"></i>
-                                        </a> --}}
                                         <a href="{{ route('enterprise.profile.manage', [$profile->id]) }}"
                                             class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                             data-bs-placement="top" data-bs-html="true" title="Manage">
@@ -141,6 +140,14 @@
                                             title="delete" wire:click="confirmModal({{ $profile->id }})">
                                             <i class='bx bx-trash'></i>
                                         </button>
+                                        @if ($profile->user_id != null)
+                                            <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
+                                                data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
+                                                title="User Disconnect"
+                                                wire:click="confirmUserDactivate({{ $profile->id }},{{ $profile->user_id }})">
+                                                <i class='bx bx-user-x'></i>
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -239,7 +246,9 @@
 
         const nfcScanBtn = document.querySelector('#nfcScanBtn');
 
-        if ('NDEFReader' in window) {} else {
+        if ('NDEFReader' in window) {
+
+        } else {
             nfcScanBtn.disabled = true;
             console.log('NFC is not available on this device');
         }
@@ -318,7 +327,14 @@
             // Remove the temporary input
             document.body.removeChild(tempInput);
 
-            alert("copied");
+            // Show the notification
+            let notification = document.getElementById('copy-notification' + id);
+            notification.style.display = 'block';
+
+            // Hide the notification after 2 seconds
+            setTimeout(function() {
+                notification.style.display = 'none';
+            }, 2000); // 2000 ms = 2 seconds
         }
     </script>
 
