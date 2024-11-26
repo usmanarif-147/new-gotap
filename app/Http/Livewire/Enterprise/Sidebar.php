@@ -16,12 +16,12 @@ class Sidebar extends Component
 
     public function mount()
     {
-        $this->pending = UserRequestProfile::where('status', 0)->count();
+        $this->pending = UserRequestProfile::where('enterprise_id', auth()->id())->where('status', 0)->count();
     }
 
     public function PendingStatus()
     {
-        $this->pending = UserRequestProfile::where('status', 0)->count();
+        $this->pending = UserRequestProfile::where('enterprise_id', auth()->id())->where('status', 0)->count();
         $this->isActive = true;
     }
     public function render()
