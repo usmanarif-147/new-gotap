@@ -51,8 +51,8 @@
                                 <th> Photo </th>
                                 <th> Name </th>
                                 <th> Username </th>
-                                <th> Uuid Link </th>
                                 <th> Email </th>
+                                <th> Uuid Link </th>
                                 <th> Card Status </th>
                                 <th> Actions </th>
                             </tr>
@@ -60,18 +60,41 @@
                         <tbody class="table-border-bottom-0">
                             @foreach ($profiles as $profile)
                                 <tr>
-                                    <td>
-                                        <div class="img-holder">
-                                            <img
-                                                src="{{ asset($profile->photo && file_exists(public_path('storage/' . $profile->photo)) ? Storage::url($profile->photo) : 'user.png') }}">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {{ $profile->name ? $profile->name : 'N/A' }}
-                                    </td>
-                                    <td>
-                                        {{ $profile->username ? $profile->username : 'N/A' }}
-                                    </td>
+                                    @if ($profile->user_id == null)
+                                        <td>
+                                            <div class="img-holder">
+                                                <img
+                                                    src="{{ asset($profile->photo && file_exists(public_path('storage/' . $profile->photo)) ? Storage::url($profile->photo) : 'user.png') }}">
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {{ $profile->name ? $profile->name : 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $profile->username ? $profile->username : 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $profile->email ? $profile->email : 'N/A' }}
+                                        </td>
+                                    @else
+                                        <td>
+                                            <div class="img-holder">
+                                                <img
+                                                    src="{{ asset($profile->user_photo && file_exists(public_path('storage/' . $profile->user_photo)) ? Storage::url($profile->user_photo) : 'user.png') }}">
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {{ $profile->user_name ? $profile->user_name : 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $profile->user_username ? $profile->user_username : 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $profile->user_email ? $profile->user_email : 'N/A' }}
+                                        </td>
+                                    @endif
                                     <td>
                                         @if (!empty($profile->card_uuid))
                                             <div class="row">
@@ -97,9 +120,6 @@
                                             N/A
                                         @endif
 
-                                    </td>
-                                    <td>
-                                        {{ $profile->email ? $profile->email : 'N/A' }}
                                     </td>
                                     <td>
                                         @if (!empty($profile->card_uuid))

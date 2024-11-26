@@ -108,19 +108,15 @@ class Profiles extends Component
             'profiles.user_id',
             'profile_cards.card_id',
             'profile_cards.status as cardStatus',
-            'cards.uuid as card_uuid'
-            // 'profiles.status',
+            'cards.uuid as card_uuid',
+            'users.name as user_name',
+            'users.username as user_username',
+            'users.email as user_email',
+            'users.photo as user_photo'
         )
             ->leftJoin('profile_cards', 'profiles.id', 'profile_cards.profile_id')
             ->leftJoin('cards', 'profile_cards.card_id', 'cards.id')
-            // ->when($this->filterByStatus, function ($query) {
-            //     if ($this->filterByStatus == 2) {
-            //         $query->where('profiles.status', 0);
-            //     }
-            //     if ($this->filterByStatus == 1) {
-            //         $query->where('profiles.status', 1);
-            //     }
-            // })
+            ->leftJoin('users', 'profiles.user_id', '=', 'users.id')
             ->when($this->sortBy, function ($query) {
                 if ($this->sortBy == 'created_asc') {
                     $query->orderBy('profiles.created_at', 'asc');
@@ -133,7 +129,9 @@ class Profiles extends Component
                 $query->where(function ($query) {
                     $query->where('profiles.name', 'like', "%$this->search%")
                         ->orWhere('profiles.username', 'like', "%$this->search%")
-                        ->orWhere('profiles.email', 'like', "%$this->search%");
+                        ->orWhere('profiles.email', 'like', "%$this->search%")
+                        ->orWhere('users.name', 'like', "%$this->search%")
+                        ->orWhere('users.email', 'like', "%$this->search%");
                 });
             })
             ->where('profiles.enterprise_id', auth()->id())
