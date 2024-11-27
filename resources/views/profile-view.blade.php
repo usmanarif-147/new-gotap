@@ -198,6 +198,8 @@
 
                                         <input type="text" value="{{ $profile->id }}" name="id"
                                             class="form-control" hidden>
+                                        <input type="int" value="{{ $type }}" name="type"
+                                            class="form-control" hidden>
                                     </form>
                                 </div>
 

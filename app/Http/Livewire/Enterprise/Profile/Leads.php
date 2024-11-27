@@ -176,6 +176,7 @@ class Leads extends Component
             'leads.email',
             'leads.phone',
             'leads.note',
+            'leads.type',
             'leads.viewing_id',
             'leads.viewer_id',
             'leads.created_at',
