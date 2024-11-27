@@ -48,10 +48,8 @@
                     <table class="table admin-table table-sm">
                         <thead class="table-light">
                             <tr>
-                                <th> Photo </th>
-                                <th> Name </th>
-                                <th> Username </th>
-                                <th> Email </th>
+                                <th> Profile </th>
+                                <th> User </th>
                                 <th> Uuid Link </th>
                                 <th> Card Status </th>
                                 <th> Actions </th>
@@ -60,39 +58,48 @@
                         <tbody class="table-border-bottom-0">
                             @foreach ($profiles as $profile)
                                 <tr>
-                                    @if ($profile->user_id == null)
-                                        <td>
-                                            <div class="img-holder">
-                                                <img
-                                                    src="{{ asset($profile->photo && file_exists(public_path('storage/' . $profile->photo)) ? Storage::url($profile->photo) : 'user.png') }}">
-
+                                    <td style="width: 30%;">
+                                        <div class="d-flex align-items-center">
+                                            <!-- Profile Image -->
+                                            <div
+                                                style="width: 30px; height: 30px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
+                                                <img src="{{ asset($profile->photo && file_exists(public_path('storage/' . $profile->photo)) ? Storage::url($profile->photo) : 'user.png') }}"
+                                                    alt="Viewer Photo" class="img-fluid"
+                                                    style="width: 100%; height: 100%; object-fit: cover;">
                                             </div>
-                                        </td>
-                                        <td>
-                                            {{ $profile->name ? $profile->name : 'N/A' }}
-                                        </td>
-                                        <td>
-                                            {{ $profile->username ? $profile->username : 'N/A' }}
-                                        </td>
-                                        <td>
-                                            {{ $profile->email ? $profile->email : 'N/A' }}
+                                            <!-- Name and Email -->
+                                            <div style="margin-left: 5%;">
+                                                <span class="font-weight-bold text-dark"
+                                                    style="font-size: 15px;">{{ $profile->username ? $profile->username : 'N/A' }}</span>
+                                                <p class="mb-0" style="font-size: 12px;">
+                                                    {{ $profile->email ? $profile->email : 'N/A' }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    @if ($profile->user_id != null)
+                                        <td style="width: 30%;">
+                                            <div class="d-flex align-items-center">
+                                                <!-- Profile Image -->
+                                                <div
+                                                    style="width: 30px; height: 30px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
+                                                    <img src="{{ asset($profile->user_photo && file_exists(public_path('storage/' . $profile->user_photo)) ? Storage::url($profile->user_photo) : 'user.png') }}"
+                                                        alt="Viewer Photo" class="img-fluid"
+                                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                                </div>
+                                                <!-- Name and Email -->
+                                                <div style="margin-left: 5%;">
+                                                    <span class="font-weight-bold text-dark"
+                                                        style="font-size: 15px;">{{ $profile->user_name ? $profile->user_name : 'N/A' }}</span>
+                                                    <p class="mb-0" style="font-size: 12px;">
+                                                        {{ $profile->user_email ? $profile->user_email : 'N/A' }}</p>
+                                                </div>
+                                            </div>
                                         </td>
                                     @else
-                                        <td>
-                                            <div class="img-holder">
-                                                <img
-                                                    src="{{ asset($profile->user_photo && file_exists(public_path('storage/' . $profile->user_photo)) ? Storage::url($profile->user_photo) : 'user.png') }}">
-
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{ $profile->user_name ? $profile->user_name : 'N/A' }}
-                                        </td>
-                                        <td>
-                                            {{ $profile->user_username ? $profile->user_username : 'N/A' }}
-                                        </td>
-                                        <td>
-                                            {{ $profile->user_email ? $profile->user_email : 'N/A' }}
+                                        <td class=" text-center">
+                                            <span>
+                                                No User Attach
+                                            </span>
                                         </td>
                                     @endif
                                     <td>

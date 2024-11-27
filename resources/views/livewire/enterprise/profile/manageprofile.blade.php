@@ -54,6 +54,10 @@
             <button class="nav-link {{ $tab_change == 5 ? 'active' : '' }}" type="button"
                 wire:click="profileAnalytics()">Analytics</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {{ $tab_change == 6 ? 'active' : '' }}" type="button"
+                wire:click="profileLeads()">Leads</button>
+        </li>
     </ul>
     <div>
         @if ($tab_change == 0)
@@ -141,6 +145,11 @@
     <div>
         @if ($tab_change == 5)
             <livewire:enterprise.profile.profile-analytics-chart :id="$profile_id" :tab="$tab_change" />
+        @endif
+    </div>
+    <div>
+        @if ($tab_change == 6)
+            <livewire:enterprise.profile.profile-leads :id="$profile_id" :tab="$tab_change" />
         @endif
     </div>
     <script>
