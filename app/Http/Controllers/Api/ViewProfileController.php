@@ -261,6 +261,13 @@ class ViewProfileController extends Controller
                 'message' => 'User not Found',
             ], 404);
         }
+
+        $profile = Profile::where('user_id', $user->id)->where('enterprise_id', $enterprise->id)->first();
+        if ($profile) {
+            return response()->json([
+                'message' => 'You Already Have Profile From This Company',
+            ], 200);
+        }
         $existingRequest = UserRequestProfile::where('user_id', $user->id)
             ->where('enterprise_id', $enterprise->id)
             ->whereIn('status', [0, 1])

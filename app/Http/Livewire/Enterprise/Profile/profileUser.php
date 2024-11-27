@@ -2,12 +2,9 @@
 
 namespace App\Http\Livewire\Enterprise\Profile;
 
-use App\Models\Card;
 use App\Models\Profile;
-use App\Models\ProfileCard;
 use Livewire\Component;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 class profileUser extends Component
 {
@@ -31,11 +28,13 @@ class profileUser extends Component
             return $profileUser;
         }
     }
+
+
     public function render()
     {
         $user = $this->linkedUser();
         return view('livewire.enterprise.profile.profile-user', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 }

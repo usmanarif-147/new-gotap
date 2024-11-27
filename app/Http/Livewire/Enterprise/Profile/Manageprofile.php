@@ -105,6 +105,11 @@ class Manageprofile extends Component
     {
         $this->tab_change = 5;
     }
+
+    public function profileLeads()
+    {
+        $this->tab_change = 6;
+    }
     public function render()
     {
         $id = $this->profile_id;
