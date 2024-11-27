@@ -221,6 +221,7 @@ class ViewProfileController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
+            'type' => 3,
             'note' => $request->note,
             'viewing_id' => $Profile->id,
             'employee_id' => auth()->id(),

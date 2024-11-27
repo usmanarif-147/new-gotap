@@ -264,7 +264,7 @@ class UserProfileController extends Controller
             ->first();
         $platforms = $this->getProfileData($profile);
         $profileCheck = $this->userdetail($profile);
-        return view('profile-view', ['profile' => $profile, 'platforms' => $platforms['platforms'], 'profilecheck' => $profileCheck, 'redicretTo' => $platforms['redirect']]);
+        return view('profile-view', ['profile' => $profile, 'platforms' => $platforms['platforms'], 'profilecheck' => $profileCheck, 'redicretTo' => $platforms['redirect'], 'type' => 2]);
     }
 
     //view by card Id
@@ -279,7 +279,7 @@ class UserProfileController extends Controller
             ->first();
         $platforms = $this->getProfileData($profile);
         $profileCheck = $this->userdetail($profile);
-        return view('profile-view', ['profile' => $profile, 'platforms' => $platforms['platforms'], 'profilecheck' => $profileCheck, 'redicretTo' => $platforms['redirect']]);
+        return view('profile-view', ['profile' => $profile, 'platforms' => $platforms['platforms'], 'profilecheck' => $profileCheck, 'redicretTo' => $platforms['redirect'], 'type' => 1]);
     }
 
     //get profile data
@@ -401,7 +401,7 @@ class UserProfileController extends Controller
             $lat = null;
             $long = null;
         }
-        $data = ['name' => $request->input('name'), 'email' => $request->input('email'), 'phone' => $request->input('phone')];
+        $data = ['name' => $request->input('name'), 'email' => $request->input('email'), 'phone' => $request->input('phone'), 'type' => $request->input('type')];
         DB::table('leads')->insert([
             'enterprise_id' => $profile->enterprise_id,
             'employee_id' => $profile->user_id,
@@ -409,6 +409,7 @@ class UserProfileController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
+            'type' => $data['type'],
             'ip_address' => $ip_address,
             'country' => $country,
             'state' => $state,

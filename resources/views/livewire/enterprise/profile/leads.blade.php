@@ -29,6 +29,7 @@
                                 </th>
                                 <th> Lead </th>
                                 <th> Profile </th>
+                                <th> Type </th>
                                 <th> Phone No </th>
                                 <th> Created Date </th>
                                 <th> Action </th>
@@ -64,6 +65,15 @@
                                                 alt="Viewing Photo" class="img-fluid"
                                                 style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('enterprise.leads.view', $lead->id) }}"
+                                            class="btn btn-dark btn-sm" data-bs-toggle="tooltip" data-bs-offset="0,4"
+                                            data-bs-placement="top" data-bs-html="true"
+                                            title="{{ $lead->type == 1 ? 'Scanned' : ($lead->type == 2 ? 'Lead form' : ($lead->type == 3 ? 'Manually Add' : 'Unknown')) }}">
+                                            <i
+                                                class="{{ $lead->type == 1 ? 'bx bxs-devices' : ($lead->type == 2 ? 'bx bxs-receipt' : ($lead->type == 3 ? 'bx bxs-detail' : 'bx bxs-error')) }}"></i>
+                                        </a>
                                     </td>
                                     <td>
                                         <span class="d-block">{{ $lead->phone ? $lead->phone : 'N/A' }}</span>

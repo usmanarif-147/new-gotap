@@ -32,6 +32,7 @@ return new class extends Migration {
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
             $table->text('note')->nullable();
+            $table->tinyInteger('type')->default(1);
             $table->timestamps();
         });
     }
