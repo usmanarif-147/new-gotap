@@ -224,6 +224,7 @@ class ViewProfileController extends Controller
             'type' => 3,
             'note' => $request->note,
             'viewing_id' => $Profile->id,
+            'enterprise_id' => $Profile->enterprise_id,
             'employee_id' => auth()->id(),
             'created_at' => now(),
             'updated_at' => now(),
