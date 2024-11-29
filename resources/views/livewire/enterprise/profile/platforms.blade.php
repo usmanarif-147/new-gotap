@@ -36,7 +36,7 @@
                                         <div class="card-body px-4 py-3 shadow">
                                             <div class="row">
                                                 <div class="col-2 align-content-center" style="height: 75px;width:75px">
-                                                    <img src="{{ asset($platforms['icon'] && Storage::exists($platforms['icon']) ? Storage::url($platforms['icon']) : 'pbg.png') }}"
+                                                    <img src="{{ asset($platforms['icon'] && file_exists(public_path('storage/' . $platforms['icon'])) ? Storage::url($platforms['icon']) : 'pbg.png') }}"
                                                         class="img-fluid rounded" height="100%" width="100%">
                                                 </div>
                                                 <div class="col-6 align-content-center">
