@@ -58,6 +58,10 @@
             <button class="nav-link {{ $tab_change == 6 ? 'active' : '' }}" type="button"
                 wire:click="profileLeads()">Leads</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {{ $tab_change == 7 ? 'active' : '' }}" type="button"
+                wire:click="profileConnects()">People</button>
+        </li>
     </ul>
     <div>
         @if ($tab_change == 0)
@@ -150,6 +154,11 @@
     <div>
         @if ($tab_change == 6)
             <livewire:enterprise.profile.profile-leads :id="$profile_id" :tab="$tab_change" />
+        @endif
+    </div>
+    <div>
+        @if ($tab_change == 7)
+            <livewire:enterprise.profile.profile-connects :id="$profile_id" :tab="$tab_change" />
         @endif
     </div>
     <script>
