@@ -18,8 +18,7 @@
                     <table class="table admin-table table-sm">
                         <thead class="table-light">
                             <tr>
-                                <th> Name </th>
-                                <th> Photo </th>
+                                <th> Profile </th>
                                 <th> Email </th>
                                 <th> Phone No </th>
                                 <th> Created Date </th>
@@ -28,26 +27,36 @@
                         <tbody class="table-border-bottom-0">
                             @foreach ($users as $ind => $user)
                                 <tr>
-                                    <td>
-                                        <span class="d-block">{{ $user->name ? $user->name : $user->username }}</span>
-                                    </td>
-                                    <td>
-                                        <div class="img-holder"
-                                            style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden;">
-                                            <img src="{{ asset($user->photo && file_exists(public_path('storage/' . $user->photo)) ? Storage::url($user->photo) : 'user.png') }}"
-                                                alt="Viewing Photo" class="img-fluid"
-                                                style="width: 100%; height: 100%; object-fit: cover;">
+                                    <td style="width: 30%;">
+                                        <div class="d-flex align-items-center">
+                                            <!-- Profile Image -->
+                                            <div
+                                                style="width: 30px; height: 30px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
+                                                <img src="{{ asset($user->connection_photo && file_exists(public_path('storage/' . $user->connection_photo)) ? Storage::url($user->connection_photo) : 'user.png') }}"
+                                                    alt="Viewer Photo" class="img-fluid"
+                                                    style="width: 100%; height: 100%; object-fit: cover;">
+                                            </div>
+                                            <!-- Name and Email -->
+                                            <div style="margin-left: 5%;">
+                                                <span class="font-weight-bold text-dark"
+                                                    style="font-size: 15px;">{{ $user->connection_name ? $user->connection_name : $user->connection_user_name }}</span>
+                                                <p class="mb-0" style="font-size: 12px;">
+                                                    {{ $user->connection_job_title ? $user->connection_job_title : 'N/A' }}
+                                                </p>
+                                            </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="d-block">{{ $user->email ? $user->email : 'N/A' }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="d-block">{{ $user->phone ? $user->phone : 'N/A' }}</span>
+                                        <span
+                                            class="d-block">{{ $user->connection_email ? $user->connection_email : 'N/A' }}</span>
                                     </td>
                                     <td>
                                         <span
-                                            class="d-block">{{ $user->created_at ? humanDateFormat($user->created_at) : 'N/A' }}</span>
+                                            class="d-block">{{ $user->connection_phone ? $user->connection_phone : 'N/A' }}</span>
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="d-block">{{ $user->connection_created_at ? humanDateFormat($user->connection_created_at) : 'N/A' }}</span>
                                     </td>
                                 </tr>
                             @endforeach
