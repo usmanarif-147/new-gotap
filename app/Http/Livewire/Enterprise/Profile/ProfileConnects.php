@@ -50,26 +50,6 @@ class ProfileConnects extends Component
                 });
             })
             ->orderBy('connects.created_at', 'desc');
-        //     ->get();
-        // dd($users);
-        // $users = DB::table('connects')->select(
-        //     'users.name',
-        //     'users.username',
-        //     'users.email',
-        //     'users.phone',
-        //     'users.photo',
-        //     'users.created_at'
-        // )
-        //     ->where('connected_id', $this->profile_id)
-        //     ->leftjoin('users', 'connects.connecting_id', '=', 'users.id')
-        //     ->when($this->search, function ($query) {
-        //         $query->where(function ($query) {
-        //             $query->where('users.name', 'like', "%$this->search%")
-        //                 ->orWhere('users.email', 'like', "%$this->search%")
-        //                 ->orWhere('users.phone', 'like', "%$this->search%");
-        //         });
-        //     })
-        //     ->orderBy('connects.created_at', 'desc');
         return $users;
     }
     public function render()

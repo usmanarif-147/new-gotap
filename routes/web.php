@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\VCardController;
+use App\Models\Connect;
 use App\Models\Group;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Artisan;
@@ -46,6 +47,31 @@ Route::get('/terms-and-conditions', function () {
 Route::get('/optimize', function () {
     Artisan::call('optimize:clear');
     dd("done");
+});
+
+Route::get('/connectsLeads', function () {
+    $connections = Connect::all();
+
+    foreach ($connections as $connection) {
+        $profile = Profile::find($connection->connected_id);
+        $user = User::find($connection->connecting_id);
+        $active = Profile::where('user_id', $user->id)->where('active', 1)->first();
+        DB::table('leads')->insert([
+            'enterprise_id' => $profile->enterprise_id,
+            'employee_id' => $profile->user_id,
+            'viewing_id' => $profile->id,
+            'viewer_id' => $active ? $active->id : null,
+            'name' => $user->name ? $user->name : $user->username,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'type' => 4,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
+
+    return 'Leads created successfully for all connections!';
 });
 
 // Route::get('/key', function () {
