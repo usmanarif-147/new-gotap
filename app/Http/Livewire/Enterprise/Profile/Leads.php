@@ -184,11 +184,13 @@ class Leads extends Component
             DB::raw('COALESCE(viewingProfile.photo, "photo") as viewing_photo'),
             DB::raw('COALESCE(viewerProfile.username, "No Viewer") as viewer_username'),
             DB::raw('COALESCE(viewerProfile.photo, "photo") as viewer_photo'),
+            DB::raw('COALESCE(viewingUser.photo, "photo") as viewing_user_photo'),
         )
             // Join profiles on viewing_id
             ->leftJoin('profiles as viewingProfile', 'leads.viewing_id', '=', 'viewingProfile.id')
             // Join profiles on viewer_id
             ->leftJoin('profiles as viewerProfile', 'leads.viewer_id', '=', 'viewerProfile.id')
+            ->leftJoin('users as viewingUser', 'viewingProfile.user_id', '=', 'viewingUser.id')
             ->when($this->search, function ($query) {
                 $query->where(function ($query) {
                     $query->where('leads.name', 'like', "%$this->search%")

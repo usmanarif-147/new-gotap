@@ -384,6 +384,9 @@ class ProfileController extends Controller
                 // Remove from connects
                 $this->removeFromConnects($profile->id);
 
+                //Remove from leads
+                $this->removeFromLeads($profile->id);
+
                 // Delete profile cover photo
                 if ($profile->cover_photo) {
                     Storage::disk('public')->delete($profile->cover_photo);
@@ -439,7 +442,10 @@ class ProfileController extends Controller
     {
         DB::table('connects')->where('connected_id', $profileId)->delete();
     }
-
+    private function removeFromLeads($profileId)
+    {
+        DB::table('leads')->where('viewing_id', $profileId)->delete();
+    }
     private function removeProfileFromGroups($profileId)
     {
         $user_groups = DB::table('user_groups')->where('profile_id', $profileId)->get();

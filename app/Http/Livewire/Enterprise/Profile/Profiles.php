@@ -207,6 +207,8 @@ class Profiles extends Component
             // Remove from connects
             $this->removeFromConnects($profile->id);
 
+            $this->removeFromLeads($profile->id);
+
             // Delete profile cover photo
             if ($profile->cover_photo) {
                 Storage::disk('public')->delete($profile->cover_photo);
@@ -267,6 +269,11 @@ class Profiles extends Component
         DB::table('user_groups')->where('profile_id', $profileId)->delete();
     }
 
+    private function removeFromLeads($profileId)
+    {
+        DB::table('leads')->where('viewing_id', $profileId)->delete();
+    }
+
     public function confirmUserDactivate($id, $user_id)
     {
         $this->profileId = $id;
@@ -305,6 +312,8 @@ class Profiles extends Component
                 UserRequestProfile::where('enterprise_id', auth()->id())->where('user_id', $this->userId)->where('status', 1)->update([
                     'status' => 2,
                 ]);
+                DB::table('leads')->where('employee_id', $this->userId)->where('enterprise_id', $profile->enterprise_id)->where('viewing_id', $this->profileId)
+                    ->update(['employee_id' => null]);
             } else {
                 $profile->update([
                     'user_id' => null
@@ -312,6 +321,8 @@ class Profiles extends Component
                 UserRequestProfile::where('enterprise_id', auth()->id())->where('user_id', $this->userId)->where('status', 1)->update([
                     'status' => 2,
                 ]);
+                DB::table('leads')->where('employee_id', $this->userId)->where('enterprise_id', $profile->enterprise_id)->where('viewing_id', $this->profileId)
+                    ->update(['employee_id' => null]);
                 $this->dispatchBrowserEvent('swal:modal', [
                     'type' => 'danger',
                     'message' => 'Card not found!',

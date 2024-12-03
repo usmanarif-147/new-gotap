@@ -70,9 +70,9 @@
                                         <a href="{{ route('enterprise.leads.view', $lead->id) }}" style="color:black"
                                             data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top"
                                             data-bs-html="true"
-                                            title="{{ $lead->type == 1 ? 'Scanned' : ($lead->type == 2 ? 'Lead form' : ($lead->type == 3 ? 'Manually Add' : 'Unknown')) }}">
+                                            title="{{ $lead->type == 1 ? 'Scanned' : ($lead->type == 2 ? 'Lead form' : ($lead->type == 3 ? 'Manually Add' : 'User To User')) }}">
                                             <i
-                                                class="{{ $lead->type == 1 ? 'bx bxs-devices' : ($lead->type == 2 ? 'bx bxs-receipt' : ($lead->type == 3 ? 'bx bxs-detail' : 'bx bxs-error')) }}"></i>
+                                                class="{{ $lead->type == 1 ? 'bx bxs-devices' : ($lead->type == 2 ? 'bx bxs-receipt' : ($lead->type == 3 ? 'bx bxs-detail' : 'bx bxs-group')) }}"></i>
                                         </a>
                                     </td>
                                     <td>
