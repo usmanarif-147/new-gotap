@@ -20,6 +20,9 @@ Route::middleware('admin')->group(function () {
     // applications
     Route::view('admin/applications', 'admin.application.applications')->name('admin.applications');
 
+    //Add Enterpriser 
+    Route::view('admin/enterpriser-create', 'admin.enterpriser.create')->name('admin.enterpriser.create');
+
     // categories
     Route::view('admin/categories', 'admin.category.categories')->name('admin.categories');
     Route::view('admin/category/create', 'admin.category.create')->name('admin.category.create');
