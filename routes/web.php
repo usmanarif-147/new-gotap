@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\DB;
 
 Route::view('/', 'welcome');
 
