@@ -5,40 +5,50 @@
         }
 
         .bg-active {
-            background-color: #deccfe;
+            background-color: #dcdcdc9f;
             border-radius: 8px;
             display: inline-block;
             width: auto;
         }
 
         .menu-item .active a {
-            color: #703ccc;
+            color: #000000;
             font-weight: bold;
         }
 
         .vertical-line {
             width: 2px;
             height: 24px;
-            background-color: #ccc;
+            background-color: #b0afaf;
             display: inline-block;
             margin-right: 10px;
         }
 
         .bg-active .vertical-line {
-            background-color: #6b5bff;
+            background-color: #000000;
+        }
+
+        hr.shadow {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow */
+            border: 0;
+            /* Removes the default border */
+            height: 1px;
+            /* Ensures it looks like an <hr> */
+            background-color: #ddd;
+            /* Adjust the color as needed */
         }
     </style>
     <div class="app-brand demo mb-2 d-flex justify-content-center align-items-center">
         <a href="/enterprise/dashboard" class="app-brand-link">
-            <span class="app-brand-logo demo" style="background:white">
-                <div>
-                    <img src="{{ asset(auth()->user()->enterprise_logo && file_exists(public_path('storage/' . auth()->user()->enterprise_logo)) ? Storage::url(auth()->user()->enterprise_logo) : 'logo.png') }}"
-                        class="img-fluid" height="50" width="50" alt="Logo here">
-
+            <span class="app-brand-logo demo" style="background:white;">
+                <div class="d-flex align-items-center">
+                    <img src="{{ asset('gotapEnterprise.png') }}" class="img-fluid" height="100" width="100"
+                        alt="Logo here">
+                    <span class="ms-2 fw-bold" style="color: black">Teams</span>
                 </div>
             </span>
         </a>
-
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm align-middle"></i>
         </a>
@@ -60,9 +70,9 @@
                 aria-expanded="{{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage', 'enterprise.requests') ? 'true' : 'false' }}"
                 aria-controls="TeamSubmenu">
                 <i class="menu-icon tf-icons bx bxs-group"></i>
-                <div class="me-5">Team</div>
+                <div>Team</div>
                 <i
-                    class='arrow bx {{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage', 'enterprise.requests') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
+                    class='ms-auto arrow bx {{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage', 'enterprise.requests') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
             </a>
             <ul class="collapse submenu {{ Request::routeIs('enterprise.profiles', 'enterprise.profile.create', 'enterprise.profile.subteams', 'enterprise.profile.manage', 'enterprise.requests') ? 'show' : '' }}"
                 id="TeamSubmenu">
@@ -107,9 +117,9 @@
                 aria-expanded="{{ Request::routeIs('enterprise.leads', 'enterprise.leads-map', 'enterprise.leads.view') ? 'true' : 'false' }}"
                 aria-controls="LeadsSubmenu">
                 <i class="menu-icon tf-icons bx bxs-user-detail"></i>
-                <div class="me-5">Leads</div>
+                <div>Leads</div>
                 <i
-                    class='arrow bx {{ Request::routeIs('enterprise.leads', 'enterprise.leads-map', 'enterprise.leads.view') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
+                    class='ms-auto arrow bx {{ Request::routeIs('enterprise.leads', 'enterprise.leads-map', 'enterprise.leads.view') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
             </a>
             <ul class="collapse submenu {{ Request::routeIs('enterprise.leads', 'enterprise.leads-map', 'enterprise.leads.view') ? 'show' : '' }}"
                 id="LeadsSubmenu">
@@ -138,17 +148,22 @@
             </a>
         </li>
         <li class="menu-item">
-            <a class="menu-link {{ Request::routeIs('enterprise.invite.mail') ? '' : 'collapsed' }}"
-                data-bs-toggle="collapse" href="#AdminSubmenu" role="button"
-                aria-expanded="{{ Request::routeIs('enterprise.invite.mail') ? 'true' : 'false' }}"
+            <a class="menu-link {{ Request::routeIs('enterprise.edit') ? '' : 'collapsed' }}" data-bs-toggle="collapse"
+                href="#AdminSubmenu" role="button"
+                aria-expanded="{{ Request::routeIs('enterprise.edit') ? 'true' : 'false' }}"
                 aria-controls="AdminSubmenu">
                 <i class="menu-icon tf-icons bx bxs-user-detail"></i>
-                <div class="me-5">Admin</div>
+                <div>Admin</div>
                 <i
-                    class='arrow bx {{ Request::routeIs('enterprise.invite.mail') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
+                    class='ms-auto arrow bx {{ Request::routeIs('enterprise.edit') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
             </a>
-            <ul class="collapse submenu {{ Request::routeIs('enterprise.invite.mail') ? 'show' : '' }}"
-                id="AdminSubmenu">
+            <ul class="collapse submenu {{ Request::routeIs('enterprise.edit') ? 'show' : '' }}" id="AdminSubmenu">
+                <li class="{{ Request::routeIs('enterprise.edit') ? 'active bg-active' : '' }}">
+                    <a href="{{ route('enterprise.edit') }}" class="dropdown-item d-flex align-items-center">
+                        <div class="vertical-line me-3"></div>
+                        <div>Manage Account</div>
+                    </a>
+                </li>
                 <li class="{{ Request::routeIs('') ? 'active bg-active' : '' }}">
                     <a href="javascript:void(0)" onclick="changePassword()"
                         class="dropdown-item d-flex align-items-center">
@@ -165,24 +180,57 @@
             </a>
         </li>
         <li class="menu-item">
-            <a class="menu-link {{ Request::routeIs('enterprise.edit') ? '' : 'collapsed' }}" data-bs-toggle="collapse"
-                href="#SettingSubmenu" role="button"
-                aria-expanded="{{ Request::routeIs('enterprise.edit') ? 'true' : 'false' }}"
+            <a class="menu-link {{ Request::routeIs('') ? '' : 'collapsed' }}" data-bs-toggle="collapse"
+                href="#SettingSubmenu" role="button" aria-expanded="{{ Request::routeIs('') ? 'true' : 'false' }}"
                 aria-controls="SettingSubmenu">
                 <i class="menu-icon tf-icons bx bx-cog"></i>
-                <div class="me-5">Settings</div>
-                <i
-                    class='arrow bx {{ Request::routeIs('enterprise.edit') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
+                <div>Settings</div>
+                <i class='ms-auto arrow bx {{ Request::routeIs('') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
             </a>
-            <ul class="collapse submenu {{ Request::routeIs('enterprise.edit') ? 'show' : '' }}" id="SettingSubmenu">
-                <li class="{{ Request::routeIs('enterprise.edit') ? 'active bg-active' : '' }}">
-                    <a href="{{ route('enterprise.edit') }}" class="dropdown-item d-flex align-items-center">
+            <ul class="collapse submenu {{ Request::routeIs('') ? 'show' : '' }}" id="SettingSubmenu">
+                <li class="{{ Request::routeIs('') ? 'active bg-active' : '' }}">
+                    <a href="#" class="dropdown-item d-flex align-items-center">
                         <div class="vertical-line me-3"></div>
-                        <div>Manage Account</div>
+                        <div>My Subscription</div>
                     </a>
                 </li>
             </ul>
         </li>
+        <hr class="my-4 text-gray w-100 shadow">
+        </hr>
+        <li class="menu-item p-2">
+            <div class="card text-white p-2" style="background: #0EA7C1;">
+                <div class="d-flex align-items-center">
+                    <img src="{{ asset('logo.png') }}" alt="Card Logo" class="img-fluid me-3"
+                        style="width: 50px; height: auto;">
+                    <p class="card-title mb-0 text-wrap fw-bold text-black">Share Your Card on the GoTap</p>
+                </div>
+                <hr class="my-3 border-white">
+                <a href="#" class="text-black text-decoration-none d-block text-center">
+                    Click here to get the app
+                    <i class='arrow bx bx-right-arrow-alt'></i>
+                </a>
+            </div>
+        </li>
+        <li class="menu-item p-2 mt-4">
+            <div class="d-flex align-items-center">
+                <!-- Profile Image -->
+                <div
+                    style="width: 50px; height: 50px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
+                    <img src="{{ asset(auth()->user()->enterprise_logo && file_exists(public_path('storage/' . auth()->user()->enterprise_logo)) ? Storage::url(auth()->user()->enterprise_logo) : 'avatar.png') }}"
+                        alt="Viewer Photo" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <!-- Name and Email -->
+                <div style="margin-left: 5%;">
+                    <span class="font-weight-bold text-dark"
+                        style="font-size: 15px;">{{ Auth::user()->name ? Auth::user()->name : 'Enterpriser' }}</span>
+                    <p class="mb-0" style="font-size: 12px;">
+                        {{ Auth::user()->email ? Auth::user()->email : 'N/A' }}</p>
+                </div>
+            </div>
+        </li>
+        <hr class="my-4 text-gray w-100 shadow">
+        </hr>
     </ul>
     <script>
         // Handle arrow rotation on submenu toggle

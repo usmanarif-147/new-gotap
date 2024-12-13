@@ -6,6 +6,7 @@ use App\Mail\ApplicationApprovedMail;
 use App\Mail\ApplicationRejectedMail;
 use App\Models\Application;
 use App\Models\User;
+use App\Models\UserSubscription;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -25,7 +26,7 @@ class Applications extends Component
 
     public $total;
 
-    public $applicationId;
+    public $applicationId, $pdfFile;
 
     public $reason;
 
@@ -61,6 +62,15 @@ class Applications extends Component
         $this->resetPage();
     }
 
+    public function viewContract($id)
+    {
+        $app = Application::find($id);
+        if ($app) {
+            $this->pdfFile = $app->file;
+        }
+        $this->dispatchBrowserEvent('show-pdf-modal');
+    }
+
     /**
      * Accept Application
      */
@@ -84,11 +94,19 @@ class Applications extends Component
                 'name' => $application->name,
                 'email' => $application->email,
                 'phone' => $application->phone,
-                'enterprise_type' => $application->enterprise_type,
+                'company_name' => $application->company_name,
                 'role' => 'enterpriser',
                 'status' => 1,
                 'verified' => 1,
                 'token' => Str::random(20) . '_' . Str::random(20)
+            ]);
+
+            $sub = UserSubscription::create([
+                'enterprise_id' => $user->id,
+                'enterprise_type' => $application->enterprise_type,
+                'file' => $application->file,
+                'start_date' => $application->start_date,
+                'end_date' => $application->end_date,
             ]);
 
             $application->update([
@@ -104,7 +122,7 @@ class Applications extends Component
 
             $this->dispatchBrowserEvent('swal:modal', [
                 'message' => 'Request Accepted. Email Sent Successfully',
-                'icon' => 'success'
+                'type' => 'success'
             ]);
 
             $this->emit('pendingApplications');
@@ -112,7 +130,7 @@ class Applications extends Component
             DB::rollBack();
             $this->dispatchBrowserEvent('swal:modal', [
                 'message' => $ex->getMessage(),
-                'icon' => 'error'
+                'type' => 'error'
             ]);
         }
     }
@@ -153,7 +171,7 @@ class Applications extends Component
 
         $this->dispatchBrowserEvent('swal:modal', [
             'message' => 'Request Rejected. Email Sent Successfully',
-            'icon' => 'success'
+            'type' => 'success'
         ]);
 
         $this->emit('pendingApplications');
