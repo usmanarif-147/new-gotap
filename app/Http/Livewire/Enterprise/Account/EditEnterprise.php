@@ -17,7 +17,7 @@ class EditEnterprise extends Component
     $name,
     $email,
     $phone,
-    $enterprise_type,
+    $company_name,
     $enterprise_logo;
 
     public function mount()
@@ -26,7 +26,7 @@ class EditEnterprise extends Component
         $this->name = $enterpriser->name;
         $this->email = $enterpriser->email;
         $this->phone = $enterpriser->phone;
-        $this->enterprise_type = $enterpriser->enterprise_type;
+        $this->company_name = $enterpriser->company_name;
 
         if ($enterpriser->enterprise_logo) {
             $this->old_enterprise_logo = $enterpriser->enterprise_logo;
@@ -38,7 +38,7 @@ class EditEnterprise extends Component
             'name' => ['required', 'min:5', 'max:15'],
             'email' => ['required'],
             'phone' => ['required', 'min:5', 'max:15'],
-            'enterprise_type' => ['required', 'min:3', 'max:20'],
+            'company_name' => ['required', 'min:3', 'max:20'],
             'enterprise_logo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ];
     }
@@ -55,9 +55,9 @@ class EditEnterprise extends Component
             'phone.min' => 'The phone number must be at least 5 characters long.',
             'phone.max' => 'The phone number must not exceed 15 characters.',
 
-            'enterprise_type.min' => 'The work position must be at least 3 characters long.',
-            'enterprise_type.max' => 'The work position must not exceed 20 characters.',
-            'enterprise_type.required' => 'Enterprise Type is required',
+            'company_name.min' => 'The work position must be at least 3 characters long.',
+            'company_name.max' => 'The work position must not exceed 20 characters.',
+            'company_name.required' => 'Enterprise Type is required',
 
             'enterprise_logo.mimes' => 'The profile photo must be a file of type: jpg, jpeg, png, or webp.',
             'enterprise_logo.max' => 'The profile photo must not exceed 4MB.',

@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('username', 255)->nullable();
             $table->string('email', 255)->unique()->nullable();
             $table->string('phone', 255)->unique()->nullable();
-            $table->string('enterprise_type', 255)->nullable();
+            $table->string('company_name', 255)->nullable();
             $table->string('enterprise_logo', 255)->nullable();
             $table->string('photo', 255)->nullable();
             $table->string('role')->default('user')->comment('admin,user,enterpriser');

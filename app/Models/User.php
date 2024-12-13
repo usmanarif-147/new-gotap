@@ -17,7 +17,7 @@ class User extends Authenticatable
         'username',
         'email',
         'phone',
-        'enterprise_type',
+        'company_name',
         'enterprise_logo',
         'photo',
         'role',

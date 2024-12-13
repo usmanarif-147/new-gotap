@@ -73,12 +73,12 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label class="form-label">
-                                        Enterpriser Type
-                                        @error('enterprise_type')
+                                        Company Name
+                                        @error('company_name')
                                             <span class="text-danger error-message">{{ $message }}</span>
                                         @enderror
                                     </label>
-                                    <input type="text" wire:model="enterprise_type" class="form-control"
+                                    <input type="text" wire:model="company_name" class="form-control"
                                         placeholder="Enter Enterprise Type">
                                 </div>
                             </div>
