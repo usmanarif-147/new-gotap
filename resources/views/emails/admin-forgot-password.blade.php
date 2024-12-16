@@ -92,7 +92,8 @@
         <div class="content">
             <h1>Hello, {{ $admin->name }}</h1>
 
-            <a href="{{ route('admin.password.reset', [$admin->token]) }}">
+            {{-- <a href="{{ route('admin.password.reset', [$admin->token]) }}"> --}}
+            <a href="{{ config('app.mail_url') . '/admin/reset-password/' . $admin->token }}">
                 Reset Password
             </a>
         </div>

@@ -16,7 +16,7 @@ class Cards extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $total, $heading;
+    public $total;
 
     public $searchQuery = '', $filterByType, $filterByStatus;
 
@@ -77,7 +77,6 @@ class Cards extends Component
     public function render()
     {
         $data = $this->getData();
-        $this->heading = "Cards";
         $cards = $data->paginate(10);
         $this->total = $cards->total();
 

@@ -233,6 +233,7 @@ class ProfileController extends Controller
                     'company' => $request->company,
                     'address' => $request->address,
                     'bio' => $request->bio,
+                    'is_leads_enabled' => $request->is_leads_enabled,
                     'cover_photo' => $cover_photo,
                     'photo' => $photo,
                 ]);
@@ -383,6 +384,9 @@ class ProfileController extends Controller
                 // Remove from connects
                 $this->removeFromConnects($profile->id);
 
+                //Remove from leads
+                $this->removeFromLeads($profile->id);
+
                 // Delete profile cover photo
                 if ($profile->cover_photo) {
                     Storage::disk('public')->delete($profile->cover_photo);
@@ -438,7 +442,10 @@ class ProfileController extends Controller
     {
         DB::table('connects')->where('connected_id', $profileId)->delete();
     }
-
+    private function removeFromLeads($profileId)
+    {
+        DB::table('leads')->where('viewing_id', $profileId)->delete();
+    }
     private function removeProfileFromGroups($profileId)
     {
         $user_groups = DB::table('user_groups')->where('profile_id', $profileId)->get();
@@ -447,4 +454,150 @@ class ProfileController extends Controller
         }
         DB::table('user_groups')->where('profile_id', $profileId)->delete();
     }
+
+    public function profileAnalytics()
+    {
+        $profile = getActiveProfile();
+        $profileViews = $profile->tiks;
+        $totalTaps = $profile->taps;
+        $platforms = DB::table('profile_platforms')
+            ->select(
+                'platforms.id',
+                'platforms.title',
+                'platforms.icon',
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.clicks',
+            )
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
+            ->where('profile_id', $profile->id)
+            ->orderBy('profile_platforms.clicks')
+            ->get();
+
+        $tapThroughRate = $profileViews > 0 ? round(($totalTaps / $profileViews) * 100) : 0;
+
+
+        return response()->json(
+            [
+                'ProfileAnalytics' => [
+                    [
+                        'label' => 'Taps Streak',
+                        'clicks' => $totalTaps,
+                        'text' => '',
+                    ],
+                    [
+                        'label' => 'Taps',
+                        'clicks' => $profileViews,
+                        'text' => 'The total number of times your GOtaps digital business card is viewed. This can be via a GOtaps device, your GOtaps QR code, or even a tap of your link in a bio',
+                    ],
+                    [
+                        'label' => 'Link Taps',
+                        'clicks' => $platforms->sum('clicks'),
+                        'text' => 'The total number of times one of your links was tapped. Sharing with GOtaps Direct also counts as a tap for that single link shared directly.',
+                    ],
+                    [
+                        'label' => 'New Connections',
+                        'clicks' => DB::table('connects')->where('connecting_id', auth()->id())->count(),
+                        'text' => 'The total number of new connections that you gained by scanning a business card, having someone tap "Save Contact" on your profile, or by meeting another GOtaps user',
+                    ],
+                    [
+                        'label' => 'Tap Through Rate',
+                        'clicks' => $tapThroughRate,
+                        'text' => 'Your ratio of taps to views. Out of the total views you had on your digital business card, how many of those people actually tapped a link. This is important for maximizing your conversions and engagement.',
+                    ]
+                ],
+                'platforms' => $platforms
+            ]
+        );
+    }
+
+    // public function profileAnalytics()
+    // {
+    //     $profile = getActiveProfile();
+    //     $profileViews = $profile->tiks;
+
+    //     // Fetch platform-related analytics
+    //     $platforms = DB::table('profile_platforms')
+    //         ->select(
+    //             'platforms.id',
+    //             'platforms.title',
+    //             'platforms.icon',
+    //             'profile_platforms.path',
+    //             'profile_platforms.clicks',
+    //         )
+    //         ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
+    //         ->where('profile_id', $profile->id)
+    //         ->orderBy('profile_platforms.clicks')
+    //         ->get();
+
+    //     $totalLinkTaps = $platforms->sum('clicks');
+    //     $newConnections = DB::table('connects')->where('connecting_id', auth()->id())->count();
+
+    //     // Calculate Tap Through Rate (ratio of link taps to profile views)
+    //     $tapThroughRate = $profileViews > 0 ? round(($totalLinkTaps / $profileViews) * 100) : 0;
+
+    //     // Prepare data for the chart
+    //     $chartData = [
+    //         'labels' => ['Taps', 'Link Taps', 'New Connections', 'Tap Through Rate'],
+    //         'datasets' => [
+    //             [
+    //                 'label' => 'Profile Analytics',
+    //                 'data' => [
+    //                     $profileViews,
+    //                     $totalLinkTaps,
+    //                     $newConnections,
+    //                     $tapThroughRate
+    //                 ],
+    //                 'backgroundColor' => [
+    //                     '#36a2eb', // Color for Taps
+    //                     '#ff6384', // Color for Link Taps
+    //                     '#ffcd56', // Color for New Connections
+    //                     '#4bc0c0'  // Color for Tap Through Rate
+    //                 ]
+    //             ]
+    //         ]
+    //     ];
+
+    //     // Prepare platform-specific data for the chart
+    //     $platformsChartData = [
+    //         'labels' => $platforms->pluck('title'), // Get platform labels for the chart
+    //         'datasets' => [
+    //             [
+    //                 'label' => 'Platform Clicks',
+    //                 'data' => $platforms->pluck('clicks'), // Get the number of clicks for each platform
+    //                 'backgroundColor' => '#42A5F5',
+    //             ]
+    //         ]
+    //     ];
+
+    //     // Return response with chart data and platform information
+    //     return response()->json([
+    //         'ProfileAnalytics' => [
+    //             [
+    //                 'label' => 'Taps',
+    //                 'clicks' => $profileViews,
+    //                 'text' => 'The total number of times your GOtaps digital business card is viewed. This can be via a GOtaps device, your GOtaps QR code, or even a tap of your link in a bio',
+    //             ],
+    //             [
+    //                 'label' => 'Link Taps',
+    //                 'clicks' => $totalLinkTaps,
+    //                 'text' => 'The total number of times one of your links was tapped. Sharing with GOtaps Direct also counts as a tap for that single link shared directly.',
+    //             ],
+    //             [
+    //                 'label' => 'New Connections',
+    //                 'clicks' => $newConnections,
+    //                 'text' => 'The total number of new connections that you gained by scanning a business card, having someone tap "Save Contact" on your profile, or by meeting another GOtaps user',
+    //             ],
+    //             [
+    //                 'label' => 'Tap Through Rate',
+    //                 'clicks' => $tapThroughRate,
+    //                 'text' => 'Your ratio of taps to views. Out of the total views you had on your digital business card, how many of those people actually tapped a link. This is important for maximizing your conversions and engagement.',
+    //             ]
+    //         ],
+    //         'platforms' => $platforms,
+    //         'chartData' => $chartData, // Include the general analytics chart data
+    //         'platformsChartData' => $platformsChartData // Include the platform clicks chart data
+    //     ]);
+    // }
+
 }

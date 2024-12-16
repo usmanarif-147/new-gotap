@@ -2,7 +2,6 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
-                {{ $heading }}
                 <span>
                     <h5 style="margin-top:10px"> Total: {{ $total }} </h4>
                 </span>
@@ -40,7 +39,7 @@
                 </div>
                 <div class="col-md-3">
                     <label> Search by Name or Email </label>
-                    <input class="form-control me-2" type="search" wire:model="search" placeholder="Search" disabled>
+                    <input class="form-control me-2" type="search" wire:model="search" placeholder="Search">
                 </div>
             </div>
         </div>

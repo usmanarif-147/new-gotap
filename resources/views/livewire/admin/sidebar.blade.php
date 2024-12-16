@@ -75,6 +75,12 @@
                 <div>Cards</div>
             </a>
         </li>
+        <li class="menu-item {{ request()->routeIs('admin.enterpriser.create') ? 'active' : '' }}">
+            <a href="{{ route('admin.enterpriser.create') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user-pin"></i>
+                <div>Add Enterpriser</div>
+            </a>
+        </li>
         <li class="menu-item">
             <a href="javascript:void(0)" onclick="changePassword()" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-key"></i>
