@@ -7,7 +7,7 @@
     @endif
     <div class="card" style="margin:0 15%">
         <div class="card-header">
-            <h2 class="text-center">Register</h2>
+            <h2 class="text-center">Register Enterprise</h2>
         </div>
         <div class="card-body">
             <form wire:submit.prevent="saveApplication">
