@@ -249,7 +249,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn" style="background: #0EA7C1; color:white">
+                        <button type="submit" class="btn btn-dark">
                             Update
                         </button>
                     </div>

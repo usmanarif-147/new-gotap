@@ -54,8 +54,7 @@
                     <h5 class="mb-0">Total: {{ $total }}</h5>
                 </div>
                 <div class="flex-grow-1 d-flex justify-content-center">
-                    <button type="button" class="btn" style="background: #0EA7C1; color:white" data-bs-toggle="modal"
-                        data-bs-target="#subteamModal">
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#subteamModal">
                         Create Sub Team
                     </button>
                 </div>

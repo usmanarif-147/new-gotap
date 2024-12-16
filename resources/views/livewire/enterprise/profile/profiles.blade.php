@@ -8,7 +8,7 @@
                 </span>
             </h2>
             <h5 class="card-header">
-                <a class="btn" style="background: #0EA7C1; color:white" href="{{ route('enterprise.profile.create') }}">
+                <a class="btn btn-dark" href="{{ route('enterprise.profile.create') }}">
                     Create Profile
                 </a>
             </h5>

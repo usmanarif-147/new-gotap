@@ -21,7 +21,7 @@
                                             <i class="fa fa-spinner fa-spin mt-2 ml-2"></i>
                                         </div>
 
-                                        <div class="icon-upload btn-sm" style="background: #0EA7C1; color:white">
+                                        <div class="icon-upload btn-sm btn-dark">
                                             <span>Upload logo</span>
                                             <input type="file" class="icon-input" wire:model="enterprise_logo"
                                                 accept="image/png, image/jpeg, image/jpg, image/webp">
@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn" style="background: #0EA7C1; color:white">
+                        <button type="submit" class="btn btn-dark">
                             Update
                         </button>
                     </div>

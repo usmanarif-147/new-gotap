@@ -28,38 +28,46 @@
     </style>
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link {{ $tab_change == 0 ? 'active' : '' }}" type="button"
-                wire:click="viewProfile()">Profile</button>
+            <button class="nav-link {{ $tab_change == 0 ? 'active' : '' }}"
+                style=" {{ $tab_change == 0 ? 'background-color:black;box-shadow:0 2px 4px 0 rgb(0,0,0)' : '' }}"
+                type="button" wire:click="viewProfile()">Profile</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link {{ $tab_change == 1 ? 'active' : '' }}" type="button"
-                wire:click="editProfile()">Edit
+            <button class="nav-link {{ $tab_change == 1 ? 'active' : '' }}"
+                style="{{ $tab_change == 1 ? 'background-color:black;box-shadow:0 2px 4px 0 rgb(0,0,0)' : '' }}"
+                type="button" wire:click="editProfile()">Edit
                 Profile</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $tab_change == 2 ? 'active' : '' }}" type="button"
+                style="{{ $tab_change == 2 ? 'background-color:black;box-shadow:0 2px 4px 0 rgb(0,0,0)' : '' }}"
                 wire:click="platformsLinks()">Add
                 Links</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $tab_change == 3 ? 'active' : '' }}" type="button"
+                style="{{ $tab_change == 3 ? 'background-color:black;box-shadow:0 2px 4px 0 rgb(0,0,0)' : '' }}"
                 wire:click="platformsProfile()">Profile
                 Links</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $tab_change == 4 ? 'active' : '' }}" type="button"
+                style="{{ $tab_change == 4 ? 'background-color:black;box-shadow:0 2px 4px 0 rgb(0,0,0)' : '' }}"
                 wire:click="profileLinkedUser()">Linked User</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $tab_change == 5 ? 'active' : '' }}" type="button"
+                style="{{ $tab_change == 5 ? 'background-color:black;box-shadow:0 2px 4px 0 rgb(0,0,0)' : '' }}"
                 wire:click="profileAnalytics()">Analytics</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $tab_change == 6 ? 'active' : '' }}" type="button"
+                style="{{ $tab_change == 6 ? 'background-color:black;box-shadow:0 2px 4px 0 rgb(0,0,0)' : '' }}"
                 wire:click="profileLeads()">Leads</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link {{ $tab_change == 7 ? 'active' : '' }}" type="button"
+                style="{{ $tab_change == 7 ? 'background-color:black;box-shadow:0 2px 4px 0 rgb(0,0,0)' : '' }}"
                 wire:click="profileConnects()">People</button>
         </li>
     </ul>

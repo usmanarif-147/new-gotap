@@ -13,7 +13,7 @@
                     <div class="d-flex justify-content-center mb-3">
                         <div class="btn-group">
                             <button wire:click="switchToViews"
-                                class="btn {{ $isActive === 'views' ? 'btn-primary' : 'btn-outline-primary' }}">
+                                class="btn {{ $isActive === 'views' ? 'btn-dark' : 'btn-outline-dark' }}">
                                 Views
                             </button>
 
