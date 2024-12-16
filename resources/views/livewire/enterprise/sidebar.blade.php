@@ -141,7 +141,7 @@
                 </li>
             </ul>
         </li>
-        {{-- <li class="menu-item">
+        <li class="menu-item">
             <a href="#" target="" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-bar-chart-alt-2"></i>
                 <div>Insights</div>
@@ -153,7 +153,7 @@
                 <i class="menu-icon tf-icons bx bx-mail-send"></i>
                 <div>Email Campaign</div>
             </a>
-        </li> --}}
+        </li>
         <li class="menu-item">
             <a href="https://gotaps.me/standard-products/" target="_blank" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-shopping-bag"></i>
