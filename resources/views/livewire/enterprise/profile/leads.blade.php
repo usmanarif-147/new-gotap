@@ -43,12 +43,25 @@
                                     <td style="width: 30%;">
                                         <div class="d-flex align-items-center">
                                             <!-- Profile Image -->
-                                            <div
+                                            {{-- <div
                                                 style="width: 30px; height: 30px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
                                                 <img src="{{ asset($lead->viewer_photo && file_exists(public_path('storage/' . $lead->viewer_photo)) ? Storage::url($lead->viewer_photo) : 'user.png') }}"
                                                     alt="Viewer Photo" class="img-fluid"
                                                     style="width: 100%; height: 100%; object-fit: cover;">
+                                            </div> --}}
+                                            <div
+                                                style="width: 30px; height: 30px; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; background: {{ $lead->viewer_photo && file_exists(public_path('storage/' . $lead->viewer_photo)) ? 'none' : '#000' }};">
+                                                @if ($lead->viewer_photo && file_exists(public_path('storage/' . $lead->viewer_photo)))
+                                                    <img src="{{ Storage::url($lead->viewer_photo) }}"
+                                                        alt="Viewer Photo" class="img-fluid"
+                                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                                @else
+                                                    <span style="color: #fff; font-weight: bold; font-size: 16px;">
+                                                        {{ $lead->name ? strtoupper(substr($lead->name, 0, 1)) : 'No' }}
+                                                    </span>
+                                                @endif
                                             </div>
+
                                             <!-- Name and Email -->
                                             <div style="margin-left: 5%;">
                                                 <span class="font-weight-bold text-dark"
