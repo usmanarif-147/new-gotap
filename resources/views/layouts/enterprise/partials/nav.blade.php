@@ -27,14 +27,14 @@
 
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- User -->
-            <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                    <div class="avatar avatar-online">
-                        <img src="{{ asset(auth()->user()->enterprise_logo && file_exists(public_path('storage/' . auth()->user()->enterprise_logo)) ? Storage::url(auth()->user()->enterprise_logo) : 'avatar.png') }}"
-                            alt class="rounded-circle" id="userImage" />
-                    </div>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
+            <li class="nav-item">
+                {{-- <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown"> --}}
+                <div class="avatar avatar-online">
+                    <img src="{{ asset(auth()->user()->enterprise_logo && file_exists(public_path('storage/' . auth()->user()->enterprise_logo)) ? Storage::url(auth()->user()->enterprise_logo) : 'avatar.png') }}"
+                        alt class="rounded-circle" id="userImage" />
+                </div>
+                {{-- </a> --}}
+                {{-- <ul class="dropdown-menu dropdown-menu-end">
                     <li>
                         <a class="dropdown-item" href="#">
                             <div class="d-flex">
@@ -50,15 +50,15 @@
                     <li>
                         <div class="dropdown-divider"></div>
                     </li>
-                    {{-- <li>
+                    <li>
                         <a class="dropdown-item" href="{{ url('admin/account') }}">
                             <i class="bx bx-cog me-2"></i>
                             <span class="align-middle">Manage Account</span>
                         </a>
-                    </li> --}}
-                    {{-- <li>
+                    </li>
+                    <li>
                         <div class="dropdown-divider"></div>
-                    </li> --}}
+                    </li>
                     <li>
                         <form method="POST" action="{{ route('enterprise.logout') }}">
                             @csrf
@@ -71,7 +71,7 @@
                             </a>
                         </form>
                     </li>
-                </ul>
+                </ul> --}}
             </li>
             <!--/ User -->
         </ul>

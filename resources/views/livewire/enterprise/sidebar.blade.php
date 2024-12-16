@@ -141,9 +141,22 @@
                 </li>
             </ul>
         </li>
+        {{-- <li class="menu-item">
+            <a href="#" target="" class="menu-link">
+                <i class="menu-icon tf-icons bx bxs-bar-chart-alt-2"></i>
+                <div>Insights</div>
+            </a>
+        </li>
+
+        <li class="menu-item">
+            <a href="#" target="" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-mail-send"></i>
+                <div>Email Campaign</div>
+            </a>
+        </li> --}}
         <li class="menu-item">
             <a href="https://gotaps.me/standard-products/" target="_blank" class="menu-link">
-                <i class="menu-icon tf-icons bx bxl-product-hunt"></i>
+                <i class="menu-icon tf-icons bx bxs-shopping-bag"></i>
                 <div>Accessories</div>
             </a>
         </li>
@@ -199,35 +212,76 @@
         <hr class="my-4 text-gray w-100 shadow">
         </hr>
         <li class="menu-item p-2">
-            <div class="card text-white p-2" style="background: #0EA7C1;">
+            <div class="card text-white p-2" style="background: #000000;">
                 <div class="d-flex align-items-center">
-                    <img src="{{ asset('logo.png') }}" alt="Card Logo" class="img-fluid me-3"
+                    <img src="{{ asset('gotapsteamlogo.png') }}" alt="Card Logo" class="img-fluid me-3"
                         style="width: 50px; height: auto;">
-                    <p class="card-title mb-0 text-wrap fw-bold text-black">Share Your Card on the GoTap</p>
+                    <p class="card-title mb-0 text-wrap fw-bold text-white">Share Your Card on the GoTap</p>
                 </div>
                 <hr class="my-3 border-white">
-                <a href="#" class="text-black text-decoration-none d-block text-center">
+                <a href="#" class="text-white text-decoration-none d-block text-center">
                     Click here to get the app
                     <i class='arrow bx bx-right-arrow-alt'></i>
                 </a>
             </div>
         </li>
         <li class="menu-item p-2 mt-4">
-            <div class="d-flex align-items-center">
-                <!-- Profile Image -->
-                <div
-                    style="width: 50px; height: 50px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
-                    <img src="{{ asset(auth()->user()->enterprise_logo && file_exists(public_path('storage/' . auth()->user()->enterprise_logo)) ? Storage::url(auth()->user()->enterprise_logo) : 'avatar.png') }}"
-                        alt="Viewer Photo" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+            <a class="dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                <div class="d-flex align-items-center">
+                    <!-- Profile Image -->
+                    <div
+                        style="width: 50px; height: 50px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
+                        <img src="{{ asset(auth()->user()->enterprise_logo && file_exists(public_path('storage/' . auth()->user()->enterprise_logo)) ? Storage::url(auth()->user()->enterprise_logo) : 'avatar.png') }}"
+                            alt="Viewer Photo" class="img-fluid"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <!-- Name and Email -->
+                    <div style="margin-left: 5%;">
+                        <span class="font-weight-bold text-dark"
+                            style="font-size: 15px;">{{ Auth::user()->name ? Auth::user()->name : 'Enterpriser' }}</span>
+                        <p class="mb-0 text-black" style="font-size: 12px;">
+                            {{ Auth::user()->email ? Auth::user()->email : 'N/A' }}</p>
+                    </div>
                 </div>
-                <!-- Name and Email -->
-                <div style="margin-left: 5%;">
-                    <span class="font-weight-bold text-dark"
-                        style="font-size: 15px;">{{ Auth::user()->name ? Auth::user()->name : 'Enterpriser' }}</span>
-                    <p class="mb-0" style="font-size: 12px;">
-                        {{ Auth::user()->email ? Auth::user()->email : 'N/A' }}</p>
-                </div>
-            </div>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0 me-3">
+                                <i class="bx bx-user me-2"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <div class="dropdown-divider"></div>
+                </li>
+                {{-- <li>
+                    <a class="dropdown-item" href="{{ url('admin/account') }}">
+                        <i class="bx bx-cog me-2"></i>
+                        <span class="align-middle">Manage Account</span>
+                    </a>
+                </li> --}}
+                {{-- <li>
+                    <div class="dropdown-divider"></div>
+                </li> --}}
+                <li>
+                    <form method="POST" action="{{ route('enterprise.logout') }}">
+                        @csrf
+
+                        <a class="dropdown-item" href="{{ route('enterprise.logout') }}"
+                            onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                            <i class="bx bx-power-off me-2"></i>
+                            <span class="align-middle">Log Out</span>
+                        </a>
+                    </form>
+                </li>
+            </ul>
         </li>
         <hr class="my-4 text-gray w-100 shadow">
         </hr>

@@ -244,8 +244,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="submit" class="btn" style="background: #0EA7C1; color:white"
-                            wire:loading.attr="disabled">Save</button>
+                        <button type="submit" class="btn btn-dark" wire:loading.attr="disabled">Save</button>
                         <!-- Loader for save operation -->
                         <div wire:loading wire:target="saveProfile" class="spinner-border text-light" role="status">
                             <span class="visually-hidden">Saving...</span>
