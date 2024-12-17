@@ -141,8 +141,8 @@
                 </li>
             </ul>
         </li>
-        <li class="menu-item">
-            <a href="#" target="" class="menu-link">
+        <li class="menu-item {{ request()->routeIs('enterprise.insights') ? 'active' : '' }}">
+            <a href="{{ route('enterprise.insights') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-bar-chart-alt-2"></i>
                 <div>Insights</div>
             </a>

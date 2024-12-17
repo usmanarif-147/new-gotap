@@ -33,6 +33,10 @@ Route::middleware('enterprise')->group(function () {
     //manage profile
     Route::view('enterprise/profile/{id}/manage', 'enterprise.profile.manageprofile')->name('enterprise.profile.manage');
 
+    //Insights
+
+    Route::view('enterprise/insights', 'enterprise.insights')->name('enterprise.insights');
+
     //edit Enterprise
     Route::view('enterprise/edit', 'enterprise.edit-enterprise')->name('enterprise.edit');
 

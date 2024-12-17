@@ -116,7 +116,7 @@ Route::get('/card_id/{uuid}', [UserProfileController::class, 'viewProfileByCardI
 
 // Profile using username
 // Route::view('/{username}', 'view');
-Route::get('/{username}', [UserProfileController::class, 'viewProfileByUsername']);
+Route::get('/{username}', [UserProfileController::class, 'viewProfileByUsername'])->name('viewProfileByUsername');
 
 //increment platform
 Route::post('/platform/increment', [UserProfileController::class, 'incrementPlatformClick'])->name('platform.increment');

@@ -34,10 +34,19 @@
                                     data-lng="{{ $lead->longitude }}" style="border-radius: 10px;">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ asset($lead->viewer_photo && Storage::disk('public')->exists($lead->viewer_photo) ? Storage::url($lead->viewer_photo) : 'user.png') }}"
-                                                alt="Lead Photo" class="rounded-circle"
-                                                style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px;">
-                                            <div>
+                                            <div
+                                                style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; background: {{ $lead->viewer_photo && file_exists(public_path('storage/' . $lead->viewer_photo)) ? 'none' : '#000' }};">
+                                                @if ($lead->viewer_photo && file_exists(public_path('storage/' . $lead->viewer_photo)))
+                                                    <img src="{{ Storage::url($lead->viewer_photo) }}"
+                                                        alt="Viewer Photo" class="img-fluid"
+                                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                                @else
+                                                    <span style="color: #fff; font-weight: bold; font-size: 16px;">
+                                                        {{ $lead->name ? strtoupper(substr($lead->name, 0, 1)) : 'No' }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            <div style="margin-left: 20px;">
                                                 <h6 class="card-title" style="font-size: 14px;">{{ $lead->name }}
                                                 </h6>
                                                 <p class="card-text" style="font-size: 12px; margin-bottom: 0;">
@@ -106,15 +115,35 @@
         @foreach ($leads as $user)
             @if ($user->latitude && $user->longitude)
                 // Use the viewer's photo if it exists, otherwise use a default image
-                var imageUrl =
-                    "{{ asset($user->viewer_photo && Storage::disk('public')->exists($user->viewer_photo) ? Storage::url($user->viewer_photo) : 'user.png') }}";
+                @php
+                    $hasPhoto = $user->viewer_photo && Storage::disk('public')->exists($user->viewer_photo);
+                    $photoUrl = $hasPhoto ? Storage::url($user->viewer_photo) : null;
+                    $initial = strtoupper(substr($user->name, 0, 1));
+                @endphp
+                var hasPhoto = @json($hasPhoto); // Pass boolean to JavaScript
+                var imageUrl = "{{ $photoUrl ?? '' }}";
+                var userInitial = "{{ $initial }}";
+                var customIcon;
+                if (hasPhoto && imageUrl) {
+                    customIcon = L.divIcon({
+                        html: `<div style="width: 30px;height: 30px;border-radius: 50%;background-image: url('${imageUrl}');background-size: cover;background-position: center;"></div>`,
+                        className: 'custom-marker',
+                        iconSize: [20, 20]
+                    });
+                } else {
+                    customIcon = L.divIcon({
+                        html: `<div style="width: 30px;height: 30px;border-radius: 50%;background-color: black;color: white;display: flex;align-items: center;justify-content: center;font-size: 16px;font-weight: bold;">${userInitial}</div>`,
+                        className: 'custom-marker',
+                        iconSize: [20, 20]
+                    });
+                }
 
                 // Create a custom divIcon with the photo
-                var customIcon = L.divIcon({
-                    html: `<div style="width: 30px; height: 30px; border-radius: 50%; background-image: url('${imageUrl}'); background-size: cover; background-position: center;"></div>`,
-                    className: 'custom-marker',
-                    iconSize: [20, 20]
-                });
+                // var customIcon = L.divIcon({
+                //     html: `<div style="width: 30px; height: 30px; border-radius: 50%; background-image: url('${imageUrl}'); background-size: cover; background-position: center;"></div>`,
+                //     className: 'custom-marker',
+                //     iconSize: [20, 20]
+                // });
 
                 // Create a marker using the custom icon
                 var marker = L.marker([{{ $user->latitude }}, {{ $user->longitude }}], {
