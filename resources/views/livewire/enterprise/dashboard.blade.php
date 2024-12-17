@@ -1,143 +1,203 @@
 <div>
-    <div class="row mb-5">
-
-        <x-custom.dashboard-card background="bg-label-info" icon="bx bx-user-pin" title="Profiles" :total="$totalProfiles" />
-        <x-custom.dashboard-card background="bg-label-primary" icon="bx bx-credit-card-alt" title="Active Cards"
-            :total="$activeCards" />
-        <x-custom.dashboard-card background="bg-label-warning" icon="bx bxs-group" title="Total Leads" :total="$leads" />
-
-        <div class="col-lg-12 col-md-12 col-12 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Top Performers</h5>
-                    <div class="d-flex justify-content-center mb-3">
-                        <div class="btn-group">
-                            <button wire:click="switchToViews"
-                                class="btn {{ $isActive === 'views' ? 'btn-dark' : 'btn-outline-dark' }}">
-                                Views
-                            </button>
-
-                            <button wire:click="switchToLeads"
-                                class="btn {{ $isActive === 'leads' ? 'btn-secondary' : 'btn-outline-secondary' }}">
-                                Leads
-                            </button>
+    <div class="container my-4">
+        <!-- Top Section -->
+        <div class="row mb-4">
+            <!-- Team Performance -->
+            <div class="col-md-8">
+                <div class="card p-4">
+                    <h5 class="section-title">Team Performance | Last 60 days</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div style="text-align: center;">
+                            <strong style="display: block;">4</strong>
+                            Leads Captured
+                        </div>
+                        <div
+                            style="border-left: 2px solid #000; margin-left: 20px; padding-left: 20px; text-align: center;">
+                            <strong style="display: block;">56</strong>
+                            Card Views
+                        </div>
+                        <div
+                            style="border-left: 2px solid #000; margin-left: 20px; padding-left: 20px; text-align: center;">
+                            <span class="text-primary" style="display: block;"><i
+                                    class="tf-icons bx bxs-bar-chart-alt-2"></i></span>
+                            <a href="{{ route('enterprise.insights') }}" class="text-primary">View All Insights ></a>
                         </div>
                     </div>
-                    <canvas id="profilePlatformChart" style="width:100%;max-width:600;"></canvas>
+                </div>
+                <div class="card p-4 mt-4" style="position: relative; text-align: center;">
+                    <!-- Group 3 Image (Small, Centered) -->
+                    <img src="{{ asset('Group 3.jpg') }}" alt="Goals Graph"
+                        style="width: 150px; position: relative; z-index: 0; margin: 0 auto; display: block;">
+
+                    <!-- Group 1 Image (Above Group 3, Centered) -->
+                    <img src="{{ asset('Group 1.jpg') }}"
+                        style="
+                        width: 300px; /* Larger size */
+                        position: absolute; 
+                        top: 30%; /* Center vertically */
+                        left: 50%; /* Center horizontally */
+                        transform: translate(-50%, -50%);
+                        z-index: 1;"
+                        alt="Goals Graph">
+
+                    <!-- Group 2 Image (Above Group 1, Further Up) -->
+                    <img src="{{ asset('Group 2.jpg') }}"
+                        style="
+                        width: 300px; /* Larger size */
+                        position: absolute; 
+                        top: 50%; /* Higher position above Group 1 */
+                        left: 50%; /* Center horizontally */
+                        transform: translate(-50%, -50%);
+                        z-index: 2;"
+                        alt="Goals Graph">
+
+                    <!-- Caption -->
+                    <p class="mt-5">Your campaign goals will appear here</p>
+                </div>
+            </div>
+            <!-- Recent Leads -->
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <!-- Section Title with Link and Right Aligned Link -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="section-title m-0">
+                            Recent Leads Captured
+                        </h5>
+                        <a href="{{ route('enterprise.leads') }}" class="text-primary text-decoration-none">View more
+                            ></a>
+                    </div>
+
+                    <!-- List Data -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <ul class="list-unstyled mb-0">
+                                <li class="d-flex justify-content-between mb-3">
+                                    <span>Connected with <strong>test 2</strong></span>
+                                    <span>Oct 18</span>
+                                </li>
+                                <li class="d-flex justify-content-between mb-3">
+                                    <span>Connected with <strong>Art</strong></span>
+                                    <span>Oct 18</span>
+                                </li>
+                                <li class="d-flex justify-content-between mb-3">
+                                    <span>Connected with <strong>Roger</strong></span>
+                                    <span>Oct 15</span>
+                                </li>
+                                <li class="d-flex justify-content-between mb-3">
+                                    <span>Connected with <strong>test 2</strong></span>
+                                    <span>Oct 18</span>
+                                </li>
+                                <li class="d-flex justify-content-between mb-3">
+                                    <span>Connected with <strong>Art</strong></span>
+                                    <span>Oct 18</span>
+                                </li>
+                                <li class="d-flex justify-content-between mb-3">
+                                    <span>Connected with <strong>Roger</strong></span>
+                                    <span>Oct 15</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Middle Section -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card p-4">
+                    <!-- Section Title -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="section-title mb-0">To Do</h5>
+                    </div>
+
+                    <!-- To Do List -->
+                    <ul class="list-unstyled todo-list mb-0">
+                        <li class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <span class="badge bg-primary me-2">TO DO</span>
+                                <span>Finish the "Get Started" steps above</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary">Finish Steps</button>
+                        </li>
+                        <li class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <span class="badge bg-primary me-2">TO DO</span>
+                                <span>Invite or assign another full team admin</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary">Add Admin</button>
+                        </li>
+                        <li class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <span class="badge bg-primary me-2">TO DO</span>
+                                <span>2 unsynced leads</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary">Sync Leads</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <h5 class="section-title">Become a Team Expert</h5>
+                    <p>Provide maximum value to your team by exploring all the features we have to offer.</p>
+                    <button class="btn btn-primary">View Tutorials</button>
                 </div>
             </div>
         </div>
 
+        <!-- Bottom Features Section -->
+        <div class="row text-center">
+            <!-- Feature 1 -->
+            <div class="col-md-4">
+                <div class="card feature-card p-4 text-center shadow-sm border position-relative"
+                    style="border-radius: 10px;">
+                    <!-- Centered Image -->
+                    <div class="text-center mb-4">
+                        <img src="{{ asset('emailsignature.jpg') }}" height="100" width="150" alt="Feature 1"
+                            class="img-fluid shadow" style="border-radius: 8px;">
+                    </div>
+                    <!-- Card Content -->
+                    <div>
+                        <h6>Email Signatures</h6>
+                        <p>Provide maximum value to your team by discovering all the features that Popi has to offer.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card p-4 text-center shadow-sm border position-relative"
+                    style="border-radius: 10px;">
+                    <!-- Centered Image -->
+                    <div class="text-center mb-4">
+                        <img src="{{ asset('virtual.jpg') }}" height="100" width="150" alt="Feature 1"
+                            class="img-fluid shadow" style="border-radius: 8px;">
+                    </div>
+                    <!-- Card Content -->
+                    <div>
+                        <h6>Virtual Background</h6>
+                        <p>Provide maximum value to your team by discovering all the features that Popi has to offer.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 feature-card p-4 text-center shadow-sm border position-relative"
+                    style="border-radius: 10px;">
+                    <!-- Centered Image -->
+                    <div class="text-center mb-4">
+                        <img src="{{ asset('dashboard.jpg') }}" height="120" width="150" alt="Feature 1"
+                            class="img-fluid shadow" style="border-radius: 8px;">
+                    </div>
+                    <!-- Card Content -->
+                    <div>
+                        <h6>Email Campaign</h6>
+                        <p>Provide maximum value to your team by discovering all the features that Popi has to offer.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    @section('script')
-        <script src="{{ asset('assets/js/chart.js') }}"></script>
-        <script>
-            document.addEventListener('livewire:load', function() {
-                const canvas = document.getElementById('profilePlatformChart');
-                const ctx = canvas.getContext('2d');
-                const chartData = @json($viewsData);
-
-
-                // Custom plugin to draw images next to labels
-                const imagePlugin = {
-                    id: 'imagePlugin',
-                    afterDatasetsDraw: function(chart) {
-                        const ctx = chart.ctx;
-                        const meta = chart.getDatasetMeta(0);
-
-                        const imgSize = 30;
-                        if (chartData.photos && chartData.photos.length > 0) {
-                            chartData.photos.forEach(function(photoUrl, index) {
-                                const dataPoint = meta.data[index];
-                                if (dataPoint) {
-                                    const img = new Image();
-                                    img.src = photoUrl;
-                                    img.onload = function() {
-                                        const position = dataPoint
-                                            .tooltipPosition();
-                                        const x = position.x - (imgSize - 5);
-                                        const y = chart.chartArea.bottom - 20;
-
-                                        // Create a circular clipping path
-                                        ctx.save();
-                                        ctx.beginPath();
-                                        ctx.arc(x + imgSize / 2, y + imgSize / 2, imgSize / 2, 0,
-                                            Math
-                                            .PI *
-                                            2);
-                                        ctx.closePath();
-                                        ctx.clip(); // Clip to the circular area
-
-                                        // Draw the image
-                                        ctx.drawImage(img, x, y, imgSize, imgSize);
-                                        ctx.restore(); // Restore the context
-                                    };
-                                }
-                            });
-                        }
-                    }
-                };
-
-                // Create the chart
-                let profilePlatformChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: chartData.labels,
-                        datasets: [{
-                            label: 'Total Views',
-                            data: chartData.data,
-                            borderRadius: 15,
-                            backgroundColor: [
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    display: false
-                                }
-                            },
-                            x: {
-                                ticks: {
-                                    autoSkip: false // Ensure all labels are displayed
-                                },
-                                grid: {
-                                    display: false
-                                }
-                            }
-                        }
-                    },
-                    plugins: [imagePlugin] // Add the custom image plugin
-                });
-                window.addEventListener('update-chart', event => {
-                    if (event.detail.isActive === 'views') {
-                        profilePlatformChart.data.datasets[0].label = 'Total Views';
-                    } else {
-                        profilePlatformChart.data.datasets[0].label = 'Total Leads';
-                    }
-                    profilePlatformChart.data.labels = event.detail.data.labels;
-                    profilePlatformChart.data.datasets[0].data = event.detail.data.data;
-                    profilePlatformChart.update();
-                });
-            });
-        </script>
-    @endsection
-</div>

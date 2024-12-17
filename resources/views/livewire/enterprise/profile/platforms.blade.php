@@ -58,6 +58,13 @@
                     </div>
                 </div>
                 <div class="col-xl-3 mt-3 d-none d-xl-block ms-xl-5" style="position: sticky;">
+                    <div class="text-center mb-2">
+                        <h5 class=" text-center text-black">Profile live Preview</h5>
+                        <a href="{{ route('viewProfileByUsername', $profile->username) }}" target="_blank">
+                            View Profile
+                            <i class='bx bx-link-external'></i>
+                        </a>
+                    </div>
                     <div class="mobile-frame"
                         style="position: relative; max-width: 400px; border-radius: 40px; border: 2px solid #ccc; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); overflow: hidden; padding: 15px 10px;">
 

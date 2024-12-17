@@ -96,14 +96,19 @@
                                                 <i class='bx bxs-comment-add'></i>
                                             </button>
                                         @elseif ($reqPro->status == 1)
-                                            <span class="badge bg-success">
-                                                Attached With Profile
+                                            <span class="badge bg-dark">
+                                                User Attached With Profile
                                             </span>
                                         @else
-                                            <span class="badge bg-danger">
-                                                User D-Link From Profile
+                                            <span class="badge bg-dark">
+                                                User D-Linked From Profile
                                             </span>
                                         @endif
+                                        <button class="btn btn-danger btn-sm mx-auto" data-bs-toggle="tooltip"
+                                            data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
+                                            title="Delete Request" wire:click="confirmModal( {{ $reqPro->id }} )">
+                                            <i class='bx bx-trash'></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -168,7 +173,7 @@
                                         </li>
                                     @empty
                                         <li class="list-group-item d-flex align-items-center justify-content-between">
-                                            <a class="btn" style="background: #0EA7C1; color:white"
+                                            <a class="btn btn-dark btn-outline-dark"
                                                 href="{{ route('enterprise.profile.create') }}">
                                                 Create Profile
                                             </a>
@@ -183,6 +188,7 @@
             </div>
         </div>
     </div>
+    @include('livewire.admin.confirm-modal')
     <script>
         window.addEventListener('swal:modal', event => {
             swal({
@@ -195,6 +201,13 @@
         });
         window.addEventListener('close-profile-modal', event => {
             $('#manageProfilesModal').modal('hide');
+        });
+        window.addEventListener('confirm-modal', event => {
+            $('#confirmModal').modal('show')
+        });
+
+        window.addEventListener('close-modal', event => {
+            $('#confirmModal').modal('hide')
         });
     </script>
 

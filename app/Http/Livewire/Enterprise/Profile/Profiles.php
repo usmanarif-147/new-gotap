@@ -19,7 +19,7 @@ class Profiles extends Component
     use WithFileUploads, WithPagination;
     protected $paginationTheme = 'bootstrap';
 
-    public $profileId, $userId;
+    public $profileId, $userId, $cardId;
 
     public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
 

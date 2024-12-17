@@ -18,7 +18,8 @@ class UserRequestProfile extends Component
     public $userId, $reqId;
 
     public $searchTerm = '', $sortBy, $filterByStatus = '', $statuses = [];
-    public $profiles = [];
+    public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
+    public $profiles = [], $total;
 
     public function mount()
     {
@@ -63,6 +64,39 @@ class UserRequestProfile extends Component
         $this->dispatchBrowserEvent('swal:modal', [
             'type' => 'success',
             'message' => 'Profile Attach with User successfully!',
+        ]);
+    }
+
+    //delete Request
+
+    public function confirmModal($id)
+    {
+        $this->reqId = $id;
+        $this->c_modal_heading = 'Are You Sure';
+        $this->c_modal_body = 'You want to delete this user Request!';
+        $this->c_modal_btn_text = 'delete';
+        $this->c_modal_btn_color = 'btn-danger';
+        $this->c_modal_method = 'deleteRequest';
+        $this->dispatchBrowserEvent('confirm-modal');
+    }
+
+    public function closeModal()
+    {
+        $this->c_modal_heading = '';
+        $this->c_modal_body = '';
+        $this->c_modal_btn_text = '';
+        $this->c_modal_btn_color = '';
+        $this->c_modal_method = '';
+        $this->dispatchBrowserEvent('close-modal');
+    }
+    public function deleteRequest()
+    {
+        $data = ProfileRequestUser::find($this->reqId);
+        $data->delete();
+        $this->closeModal();
+        $this->dispatchBrowserEvent('swal:modal', [
+            'type' => 'success',
+            'message' => 'User Request for Profile is Deleted Successfully!',
         ]);
     }
 
