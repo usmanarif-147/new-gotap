@@ -37,6 +37,16 @@ Route::middleware('enterprise')->group(function () {
 
     Route::view('enterprise/insights', 'enterprise.insights')->name('enterprise.insights');
 
+    //my subscription
+    Route::view('enterprise/mysubscription', 'enterprise.mysubscription')->name('enterprise.mysubscription');
+
+    //Accessories
+    Route::view('enterprise/accessories', 'enterprise.accessories')->name('enterprise.accessories');
+
+    //Email Compaign
+
+    Route::view('enterprise/emailcompaign', 'enterprise.email-compaign')->name('enterprise.emailcompaign');
+
     //edit Enterprise
     Route::view('enterprise/edit', 'enterprise.edit-enterprise')->name('enterprise.edit');
 

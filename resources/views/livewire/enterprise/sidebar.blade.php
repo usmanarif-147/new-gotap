@@ -148,14 +148,15 @@
             </a>
         </li>
 
-        <li class="menu-item">
-            <a href="#" target="" class="menu-link">
+        <li class="menu-item {{ request()->routeIs('enterprise.emailcompaign') ? 'active' : '' }}">
+            <a href="{{ route('enterprise.emailcompaign') }}" target="" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-mail-send"></i>
                 <div>Email Campaign</div>
             </a>
         </li>
-        <li class="menu-item">
-            <a href="https://gotaps.me/standard-products/" target="_blank" class="menu-link">
+        {{-- https://gotaps.me/standard-products/ --}}
+        <li class="menu-item {{ request()->routeIs('enterprise.accessories') ? 'active' : '' }}">
+            <a href="{{ route('enterprise.accessories') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bxs-shopping-bag"></i>
                 <div>Accessories</div>
             </a>
@@ -200,9 +201,11 @@
                 <div>Settings</div>
                 <i class='ms-auto arrow bx {{ Request::routeIs('') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
             </a>
-            <ul class="collapse submenu {{ Request::routeIs('') ? 'show' : '' }}" id="SettingSubmenu">
-                <li class="{{ Request::routeIs('') ? 'active bg-active' : '' }}">
-                    <a href="#" class="dropdown-item d-flex align-items-center">
+            <ul class="collapse submenu {{ Request::routeIs('enterprise.mysubscription') ? 'show' : '' }}"
+                id="SettingSubmenu">
+                <li class="{{ Request::routeIs('enterprise.mysubscription') ? 'active bg-active' : '' }}">
+                    <a href="{{ route('enterprise.mysubscription') }}"
+                        class="dropdown-item d-flex align-items-center">
                         <div class="vertical-line me-3"></div>
                         <div>My Subscription</div>
                     </a>
