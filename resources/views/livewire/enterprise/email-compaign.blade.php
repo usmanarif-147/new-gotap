@@ -49,12 +49,18 @@
                 <!-- Subject -->
                 <div class="mb-3">
                     <label class="form-label fw-bold">Subject *</label>
+                    @error('subject')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                     <input type="text" class="form-control" wire:model="subject" placeholder="Subject">
                 </div>
 
                 <!-- Message -->
                 <div class="mb-3">
                     <label class="form-label fw-bold">Message *</label>
+                    @error('message')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                     <textarea class="form-control" wire:model="message" rows="5" placeholder="Message..."></textarea>
                 </div>
 
@@ -63,40 +69,56 @@
 
             <!-- Right Section: Preview -->
             <div class="col-md-6 mt-3">
-                <div class="card shadow-sm border-0">
+                <div class="card shadow border-0">
                     <!-- Card Header -->
-                    <div class="card-header bg-white border-bottom">
+                    <div class="card-header bg-dark text-white d-flex align-items-center justify-content-between">
                         <h5 class="card-title mb-0">Email Preview</h5>
+                        <span class="badge bg-secondary">Preview Mode</span>
                     </div>
 
                     <!-- Card Body -->
                     <div class="card-body bg-light">
-                        <!-- From -->
-                        <div class="mb-3">
-                            <h6 class="text-muted">From</h6>
-                            <p class="fw-bold mb-0">You via Gotaps Teams</p>
+                        <!-- From Section -->
+                        <div class="mb-4">
+                            <h6 class="text-muted mb-1">From:</h6>
+                            <p class="fw-bold text-dark mb-0">You via Gotaps Teams</p>
                         </div>
 
-                        <hr class="my-2">
+                        <hr class="my-3">
 
-                        <!-- Subject -->
-                        <div class="mb-3">
-                            <h6 class="text-muted">Subject</h6>
-                            <p class="mb-0">{{ $subject ?? 'Subject' }}</p>
+                        <!-- Subject Section -->
+                        <div class="mb-4">
+                            <h6 class="text-muted mb-1">Subject:</h6>
+                            <p class="fw-semibold text-primary mb-0">{{ $subject ?? 'Subject' }}</p>
                         </div>
 
-                        <hr class="my-2">
+                        <hr class="my-3">
 
-                        <!-- Message -->
+                        <!-- Message Section -->
                         <div>
-                            <h6 class="text-muted">Message</h6>
-                            <p class="mb-0">{{ $message ?? 'Message...' }}</p>
+                            <h6 class="text-muted mb-1">Message:</h6>
+                            <p class="text-dark">{{ $message ?? 'Message...' }}</p>
                         </div>
+                    </div>
+
+                    <!-- Card Footer -->
+                    <div class="card-footer bg-white text-center border-top">
+                        <small class="text-muted">This is a preview of the email. Actual formatting may vary.</small>
                     </div>
                 </div>
             </div>
 
+
         </div>
     </div>
+
+    <script>
+        window.addEventListener('swal:modal', event => {
+            swal({
+                title: event.detail.message,
+                icon: event.detail.type,
+            });
+        });
+    </script>
 
 </div>
