@@ -3,14 +3,11 @@
 namespace App\Http\Livewire\Enterprise\Profile;
 
 use App\Models\User;
-use DB;
-use JeroenDesloovere\VCard\VCard;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Response;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\LeadEmail;
+use Illuminate\Support\Facades\DB;
 
 class Leads extends Component
 {
@@ -68,7 +65,7 @@ class Leads extends Component
         $leads = DB::table('leads')->whereIn('id', $this->selectedLeads)->get();
         foreach ($leads as $lead) {
             $enterpriser = User::find($lead->enterprise_id);
-            Mail::to($this->leadEmail)->send(new LeadEmail($lead, $this->subject, $this->customMessage, $enterpriser));
+            Mail::to($lead->email)->send(new LeadEmail($lead, $this->subject, $this->customMessage, $enterpriser));
         }
         $this->dispatchBrowserEvent('emailBulkSend');
         $this->selectedLeads = [];
