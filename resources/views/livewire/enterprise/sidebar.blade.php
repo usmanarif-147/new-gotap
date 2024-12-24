@@ -187,12 +187,18 @@
                 </li>
             </ul>
         </li>
-        <li class="menu-item">
-            <a href="https://gotaps.me/support/" target="_blank" class="menu-link">
+        <li class="menu-item {{ request()->routeIs('enterprise.support') ? 'active' : '' }}">
+            <a href="{{ route('enterprise.support') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-support"></i>
                 <div>Support</div>
             </a>
         </li>
+        {{-- <li class="menu-item">
+            <a href="https://gotaps.me/support/" target="_blank" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-support"></i>
+                <div>Support</div>
+            </a>
+        </li> --}}
         <li class="menu-item">
             <a class="menu-link {{ Request::routeIs('') ? '' : 'collapsed' }}" data-bs-toggle="collapse"
                 href="#SettingSubmenu" role="button" aria-expanded="{{ Request::routeIs('') ? 'true' : 'false' }}"

@@ -47,6 +47,10 @@ Route::middleware('enterprise')->group(function () {
 
     Route::view('enterprise/emailcompaign', 'enterprise.email-compaign')->name('enterprise.emailcompaign');
 
+    //Support Page
+
+    Route::view('enterprise/support', 'enterprise.supportpage')->name('enterprise.support');
+
     //edit Enterprise
     Route::view('enterprise/edit', 'enterprise.edit-enterprise')->name('enterprise.edit');
 
