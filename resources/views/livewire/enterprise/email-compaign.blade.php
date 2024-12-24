@@ -1,28 +1,35 @@
 <div>
+    <style>
+        .position-relative:hover .nested-dropdown {
+            display: block;
+        }
+    </style>
     <div class="container mt-4">
         <div class="row">
             <!-- Left Section: Form -->
             <div class="col-md-6">
                 <div class="mb-3 position-relative">
-                    <label class="form-label fw-bold">Profiles *</label>
+                    <label class="form-label fw-bold">Recipients *</label>
 
                     <!-- Input Field Showing Selected Names -->
                     <div class="form-control d-flex align-items-center flex-wrap" style="cursor: pointer;"
                         wire:click="toggleDropdown">
-                        @forelse ($selectedNames as $id => $name)
+                        @forelse ($selectedNames as $email => $name)
                             <span class="badge bg-dark text-white me-1 mb-1" style="cursor: pointer;"
-                                wire:click.stop="removeRecipient({{ $id }})">
+                                wire:click.stop="removeRecipient('{{ $email }}')">
                                 {{ $name }} &times;
                             </span>
                         @empty
-                            <span class="text-muted">Select profiles...</span>
+                            <span class="text-muted">Select profiles and leads...</span>
                         @endforelse
                     </div>
 
                     <!-- Dropdown List -->
+                    <!-- Dropdown List -->
                     @if ($showDropdown)
                         <div class="border position-absolute bg-white w-100 p-2 rounded shadow"
                             style="max-height: 200px; overflow-y: auto; z-index: 10;">
+
                             <!-- 'All Profiles' Option -->
                             <div class="d-flex align-items-center mb-2">
                                 <input type="checkbox" wire:model="selectAll" wire:change="toggleSelectAll"
@@ -30,10 +37,9 @@
                                 <span class="fw-bold">All Profiles</span>
                             </div>
 
-                            <!-- List of Profiles -->
                             @foreach ($profiles as $profile)
                                 <div class="d-flex align-items-center mb-2">
-                                    <input type="checkbox" wire:model="recipients" value="{{ $profile['id'] }}"
+                                    <input type="checkbox" wire:model="recipients" value="{{ $profile['email'] }}"
                                         class="form-check-input me-2" wire:change="updateInput">
                                     <img src="{{ asset($profile->photo && file_exists(public_path('storage/' . $profile->photo)) ? Storage::url($profile->photo) : 'user.png') }}"
                                         alt="{{ $profile['name'] }}" class="rounded-circle" width="30"
@@ -41,10 +47,29 @@
                                     <span class="ms-2">{{ $profile['name'] }}</span>
                                 </div>
                             @endforeach
+
+                            <!-- 'All Leads' Option -->
+                            <div class="d-flex align-items-center mb-2">
+                                <input type="checkbox" wire:model="selectAllLeads" wire:change="toggleSelectAllLeads"
+                                    class="form-check-input me-2">
+                                <span class="fw-bold">All Leads</span>
+                            </div>
+
+                            @foreach ($leads as $lead)
+                                <div class="d-flex align-items-center mb-2">
+                                    <input type="checkbox" wire:model="recipients" value="{{ $lead['email'] }}"
+                                        class="form-check-input me-2" wire:change="updateInput">
+                                    <span
+                                        style="color: #fff; font-weight: bold; font-size: 16px;background:#000;width: 30px; height: 30px; border-radius: 50%;justify-content: center; align-items: center;overflow: hidden; display: flex;">
+                                        {{ $lead['name'] ? strtoupper(substr($lead['name'], 0, 1)) : 'No' }}
+                                    </span>
+                                    <span class="ms-2">{{ $lead['name'] ? $lead['name'] : 'n/a' }}</span>
+                                </div>
+                            @endforeach
                         </div>
                     @endif
-                </div>
 
+                </div>
 
                 <!-- Subject -->
                 <div class="mb-3">
@@ -52,7 +77,7 @@
                     @error('subject')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
-                    <input type="text" class="form-control" wire:model="subject" placeholder="Subject">
+                    <input type="text" class="form-control" wire:model.live="subject" placeholder="Subject">
                 </div>
 
                 <!-- Message -->
@@ -61,25 +86,34 @@
                     @error('message')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
-                    <textarea class="form-control" wire:model="message" rows="5" placeholder="Message..."></textarea>
+                    <textarea class="form-control" wire:model.live="message" rows="5" placeholder="Message..."></textarea>
                 </div>
 
-                <button class="btn btn-dark" wire:click="sendEmail" @disabled(!$recipients)>Send email</button>
+                <button class="btn btn-dark" wire:click="sendEmail" @disabled(!$recipients)>
+                    <span wire:loading wire:target="sendEmail">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    </span>
+                    <span wire:loading.remove wire:target="sendEmail">
+                        Send Email
+                    </span>
+                </button>
+
             </div>
+
 
             <!-- Right Section: Preview -->
             <div class="col-md-6 mt-3">
                 <div class="card shadow border-0">
                     <!-- Card Header -->
                     <div class="card-header bg-dark text-white d-flex align-items-center justify-content-between">
-                        <h5 class="card-title mb-0">Email Preview</h5>
+                        <h5 class="card-title mb-0 text-white">Email Preview</h5>
                         <span class="badge bg-secondary">Preview Mode</span>
                     </div>
 
                     <!-- Card Body -->
                     <div class="card-body bg-light">
                         <!-- From Section -->
-                        <div class="mb-4">
+                        <div class="mb-4 mt-4">
                             <h6 class="text-muted mb-1">From:</h6>
                             <p class="fw-bold text-dark mb-0">You via Gotaps Teams</p>
                         </div>
@@ -89,7 +123,7 @@
                         <!-- Subject Section -->
                         <div class="mb-4">
                             <h6 class="text-muted mb-1">Subject:</h6>
-                            <p class="fw-semibold text-primary mb-0">{{ $subject ?? 'Subject' }}</p>
+                            <p class="fw-semibold text-dark mb-0">{{ $subject ?? 'Subject' }}</p>
                         </div>
 
                         <hr class="my-3">
@@ -111,13 +145,30 @@
 
         </div>
     </div>
-
+    <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
     <script>
         window.addEventListener('swal:modal', event => {
             swal({
                 title: event.detail.message,
                 icon: event.detail.type,
             });
+        });
+        document.addEventListener('livewire:load', function() {
+            if (document.querySelector('#message')) {
+                ClassicEditor
+                    .create(document.querySelector('#message'))
+                    .then(editor => {
+                        editor.model.document.on('change:data', () => {
+                            @this.set('message', editor.getData());
+                        });
+                        Livewire.on('refreshEditor', content => {
+                            editor.setData(content);
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
         });
     </script>
 

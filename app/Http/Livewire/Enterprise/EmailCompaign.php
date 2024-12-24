@@ -2,73 +2,101 @@
 
 namespace App\Http\Livewire\Enterprise;
 
+use App\Mail\CompaignEmail;
 use App\Mail\LeadEmail;
 use App\Models\Profile;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class EmailCompaign extends Component
 {
-
-
     public $showDropdown = false;
     public $recipients = [];
     public $selectedNames = [];
+    public $leadNames = [];
     public $selectAll = false;
+    public $selectAllLeads = false;
     public $profiles = [];
+    public $leads = [];
     public $subject, $message;
 
-    // Mount Function to Load Profiles
     public function mount()
     {
-        $this->profiles = Profile::select(
-            'profiles.id',
-            'profiles.name',
-            'profiles.email',
-            'profiles.username',
-            'profiles.photo',
-        )
-            ->where('profiles.enterprise_id', auth()->id())
-            ->orderBy('profiles.created_at', 'desc')->get();
+        $this->profiles = Profile::select('id', 'name', 'email', 'username', 'photo')
+            ->where('enterprise_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $this->leads = DB::table('leads')
+            ->select('leads.id', 'leads.name', 'leads.email')
+            ->leftJoin('profiles as viewingProfile', 'leads.viewing_id', '=', 'viewingProfile.id')
+            ->where('viewingProfile.enterprise_id', auth()->id())
+            ->orderBy('leads.created_at', 'desc')
+            ->get();
     }
 
-    // Toggle Dropdown Visibility
     public function toggleDropdown()
     {
         $this->showDropdown = !$this->showDropdown;
+    }
+
+    public function removeRecipient($email)
+    {
+        $this->recipients = array_diff($this->recipients, [$email]);
+        $this->updateInput();
     }
 
     // Update Selected Names
     public function updateInput()
     {
         $this->selectedNames = collect($this->profiles)
-            ->whereIn('id', $this->recipients)
-            ->pluck('name', 'id')
+            ->whereIn('email', $this->recipients)
+            ->pluck('name', 'email')
             ->toArray();
 
-        // Uncheck 'Select All' if some profiles are deselected
+        $this->leadNames = collect($this->leads)
+            ->whereIn('email', $this->recipients)
+            ->pluck('name', 'email')
+            ->toArray();
+
+        $this->selectedNames = array_merge($this->selectedNames, $this->leadNames);
+        // dd($this->selectedNames);
+
+        // Uncheck 'Select All' if some profiles or leads are deselected
         $this->selectAll = count($this->recipients) === count($this->profiles);
+        $this->selectAllLeads = count($this->recipients) === count($this->leads);
     }
 
-    // Remove Recipient from Selected
-    public function removeRecipient($id)
-    {
-        $this->recipients = array_diff($this->recipients, [$id]);
-        $this->updateInput();
-    }
-
-    // Toggle 'Select All' Option
+    // Toggle 'Select All' Option for Profiles
     public function toggleSelectAll()
     {
         if ($this->selectAll) {
-            $this->recipients = collect($this->profiles)->pluck('id')->toArray();
+            $this->recipients = collect($this->profiles)->pluck('email')->toArray();
         } else {
-            $this->recipients = [];
+            $this->recipients = array_diff($this->recipients, collect($this->profiles)->pluck('email')->toArray());
         }
 
         $this->updateInput();
     }
+
+    // Toggle 'Select All' Option for Leads
+    public function toggleSelectAllLeads()
+    {
+        if ($this->selectAllLeads) {
+            $this->recipients = array_merge(
+                $this->recipients,
+                collect($this->leads)->pluck('email')->toArray()
+            );
+        } else {
+            $this->recipients = array_diff($this->recipients, collect($this->leads)->pluck('email')->toArray());
+        }
+
+        $this->updateInput();
+    }
+
 
     protected function rules()
     {
@@ -98,19 +126,21 @@ class EmailCompaign extends Component
     public function sendEmail()
     {
         $data = $this->validate();
-        $profiles = Profile::whereIn('id', $data['recipients'])->get();
-        foreach ($profiles as $profile) {
-            $enterpriser = User::find($profile->enterprise_id);
-            Mail::to($profile->email)->send(new LeadEmail($profile, $this->subject, $this->message, $enterpriser));
+        $enterpriser = Auth::user();
+        foreach ($data['recipients'] as $email) {
+            Mail::to($email)->send(new CompaignEmail($this->subject, $this->message, $enterpriser));
         }
+
         $this->recipients = [];
         $this->selectedNames = [];
+        $this->leadNames = [];
         $this->selectAll = false;
+        $this->selectAllLeads = false;
         $this->subject = '';
         $this->message = '';
         $this->dispatchBrowserEvent('swal:modal', [
             'type' => 'success',
-            'message' => 'Emails sent successfully to Profiles.',
+            'message' => 'Emails sent successfully to Profiles and Leads.',
         ]);
     }
     public function render()
