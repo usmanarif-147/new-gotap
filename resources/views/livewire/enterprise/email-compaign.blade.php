@@ -144,31 +144,72 @@
 
 
         </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h3>Email Compaign Send</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="table-responsive text-nowrap">
+                        <table class="table admin-table table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th> Sr </th>
+                                    <th> Date </th>
+                                    <th> Subject </th>
+                                    <th> Message </th>
+                                    <th> Actions </th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-0">
+                                @foreach ($emails as $ind => $email)
+                                    <tr>
+                                        <td>
+                                            {{ $ind + 1 }}
+                                        </td>
+                                        <td>
+                                            {{ humanDateFormat($email->created_at) }}
+                                        </td>
+                                        <td>
+                                            {{ $email->subject }}
+                                        </td>
+                                        <td>
+                                            {{ $email->message }}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-dark btn-sm" data-bs-toggle="tooltip"
+                                                data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
+                                                title="View">
+                                                view
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="demo-inline-spacing">
+                            @if ($emails->count() > 0)
+                                {{ $emails->links() }}
+                            @else
+                                <p class="text-center"> No Record Found </p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
     <script>
         window.addEventListener('swal:modal', event => {
             swal({
                 title: event.detail.message,
                 icon: event.detail.type,
             });
-        });
-        document.addEventListener('livewire:load', function() {
-            if (document.querySelector('#message')) {
-                ClassicEditor
-                    .create(document.querySelector('#message'))
-                    .then(editor => {
-                        editor.model.document.on('change:data', () => {
-                            @this.set('message', editor.getData());
-                        });
-                        Livewire.on('refreshEditor', content => {
-                            editor.setData(content);
-                        });
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            }
         });
     </script>
 
