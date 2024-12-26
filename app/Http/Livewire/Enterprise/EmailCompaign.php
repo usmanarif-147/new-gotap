@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Enterprise;
 
 use App\Mail\CompaignEmail;
 use App\Mail\LeadEmail;
+use App\Models\CompaignEmail as ModelsCompaignEmail;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -127,24 +128,48 @@ class EmailCompaign extends Component
     {
         $data = $this->validate();
         $enterpriser = Auth::user();
-        foreach ($data['recipients'] as $email) {
-            Mail::to($email)->send(new CompaignEmail($this->subject, $this->message, $enterpriser));
-        }
+        try {
+            DB::beginTransaction();
+            foreach ($data['recipients'] as $email) {
+                Mail::to($email)->send(new CompaignEmail($this->subject, $this->message, $enterpriser));
+            }
+            ModelsCompaignEmail::create([
+                'subject' => $this->subject,
+                'message' => $this->message,
+            ]);
+            DB::commit();
 
-        $this->recipients = [];
-        $this->selectedNames = [];
-        $this->leadNames = [];
-        $this->selectAll = false;
-        $this->selectAllLeads = false;
-        $this->subject = '';
-        $this->message = '';
-        $this->dispatchBrowserEvent('swal:modal', [
-            'type' => 'success',
-            'message' => 'Emails sent successfully to Profiles and Leads.',
-        ]);
+            $this->recipients = [];
+            $this->selectedNames = [];
+            $this->leadNames = [];
+            $this->selectAll = false;
+            $this->selectAllLeads = false;
+            $this->subject = '';
+            $this->message = '';
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'success',
+                'message' => 'Emails sent successfully to Profiles and Leads.',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'error',
+                'message' => 'Failed to send emails. Please try again.',
+            ]);
+        }
+    }
+
+    public function getData()
+    {
+        $data = ModelsCompaignEmail::orderBy('created_at', 'desc');
+        return $data;
     }
     public function render()
     {
-        return view('livewire.enterprise.email-compaign');
+        $data = $this->getData();
+        $emails = $data->paginate(5);
+        return view('livewire.enterprise.email-compaign', [
+            'emails' => $emails,
+        ]);
     }
 }
