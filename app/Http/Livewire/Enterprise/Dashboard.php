@@ -30,7 +30,7 @@ class Dashboard extends Component
             ->leftJoin('profiles as viewerProfile', 'leads.viewer_id', '=', 'viewerProfile.id')
             ->where('viewingProfile.enterprise_id', auth()->id())
             ->whereBetween('leads.created_at', [Carbon::now()->subDays(60), Carbon::now()])
-            ->select('viewingProfile.username as viewing_name', 'leads.created_at')
+            ->select('viewingProfile.username as viewing_name', 'viewerProfile.username as viewer_name', 'leads.created_at')
             ->orderBy('leads.created_at', 'desc')
             ->take(5)
             ->get();

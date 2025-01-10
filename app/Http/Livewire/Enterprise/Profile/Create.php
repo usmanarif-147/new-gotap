@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Enterprise\Profile;
 
 use App\Models\Profile;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -13,7 +14,11 @@ class Create extends Component
 
     use WithFileUploads;
 
-    public $heading;
+    public $heading, $user;
+
+    public $maxProfiles;
+
+    public $showSubscriptionModal = false;
 
     public
     $name,
@@ -31,6 +36,38 @@ class Create extends Component
     $user_direct,
     $tiks,
     $private;
+
+    public function mount()
+    {
+        $this->user = auth()->user();
+
+        // if ($this->user->userSubscription && Carbon::parse($this->user->userSubscription->end_date)->lt(now())) {
+        //     $this->showSubscriptionModal = true;
+        //     return;
+        // }
+
+        $this->maxProfiles = $this->getProfileLimitBasedOnSubscription($this->user);
+        $currentProfileCount = Profile::where('enterprise_id', $this->user->id)->count();
+        // dd($currentProfileCount);
+        if ($currentProfileCount >= $this->maxProfiles) {
+            $this->showSubscriptionModal = true;
+            return;
+        }
+    }
+
+    private function getProfileLimitBasedOnSubscription($user)
+    {
+        switch ($user->userSubscription->enterprise_type) {
+            case '1':
+                return 6;
+            case '2':
+                return 20;
+            case '3':
+                return PHP_INT_MAX;
+            default:
+                return 0;
+        }
+    }
 
     protected function rules()
     {
@@ -89,6 +126,12 @@ class Create extends Component
     public function saveProfile()
     {
         $data = $this->validate();
+
+        $currentProfileCount = Profile::where('enterprise_id', $this->user->id)->count();
+        if ($currentProfileCount >= $this->maxProfiles) {
+            $this->showSubscriptionModal = true;
+            return;
+        }
 
         $data['enterprise_id'] = auth()->id();
         $data['type'] = 'enterprise';

@@ -1,4 +1,19 @@
 <div>
+    <style>
+        .profile-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 15px;
+            font-weight: bold;
+        }
+    </style>
     <div class="container my-4">
         @php
             $currentHour = now()->format('H');
@@ -92,6 +107,9 @@
                                 <ul class="list-unstyled mb-0">
                                     @foreach ($recentLeads as $leads)
                                         <li class="d-flex justify-content-between mb-3">
+                                            <span class="profile-photo">
+                                                {{ $leads->viewer_name ? strtoupper(substr($leads->viewer_name, 0, 1)) : 'No' }}
+                                            </span>
                                             <span>Connected with <strong
                                                     style="color: #000">{{ $leads->viewing_name }}</strong></span>
                                             <span>{{ \Carbon\Carbon::parse($leads->created_at)->format('M d') }}</span>

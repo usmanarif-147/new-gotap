@@ -61,12 +61,12 @@
                                         {{ $applicant->phone }}
                                     </td>
                                     <td>
-                                        @if ($applicant->enterprise_type == '10')
-                                            1-10 People
-                                        @elseif ($applicant->enterprise_type == '30')
-                                            1-30 People
-                                        @elseif ($applicant->enterprise_type == '31')
-                                            30+ People
+                                        @if ($applicant->enterprise_type == '1')
+                                            1-6 People
+                                        @elseif ($applicant->enterprise_type == '2')
+                                            1-20 People
+                                        @elseif ($applicant->enterprise_type == '3')
+                                            20+ People
                                         @else
                                             {{ $applicant->enterprise_type }}
                                         @endif

@@ -159,6 +159,16 @@ class EmailCompaign extends Component
         }
     }
 
+    public function deleteMessage($id)
+    {
+        $email = ModelsCompaignEmail::find($id);
+        $email->delete();
+        $this->dispatchBrowserEvent('swal:modal', [
+            'type' => 'success',
+            'message' => 'Email Delete successfully!.',
+        ]);
+    }
+
     public function getData()
     {
         $data = ModelsCompaignEmail::orderBy('created_at', 'desc');

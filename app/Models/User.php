@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Profile::class);
     }
+
+    public function userSubscription()
+    {
+        return $this->hasOne(UserSubscription::class, 'enterprise_id');
+    }
 }

@@ -445,6 +445,33 @@
 
     </div>
 
+    <!-- Modal for Subscription Expiry -->
+    @if ($showSubscriptionModal)
+        <div class="modal fade show" tabindex="-1" style="display: block;" aria-modal="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Limited Profiles</h5>
+                        <button type="button" class="btn-close"
+                            wire:click="$set('showSubscriptionModal', false)"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You have reached your profile creation limit. Please Upgrade your Plan to continue using this
+                            feature.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                            wire:click="$set('showSubscriptionModal', false)">Close</button>
+                        <a href="{{ route('enterprise.mysubscription') }}" class="btn btn-primary">Change
+                            Subscription</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-backdrop fade show"></div>
+    @endif
+
     <script>
         window.addEventListener('swal:modal', event => {
             swal({
