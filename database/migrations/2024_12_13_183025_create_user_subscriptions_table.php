@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('enterprise_id');
             $table->string('enterprise_type');
+            $table->string('description')->default('monthly');
             $table->string('file');
             $table->date('start_date');
             $table->date('end_date');

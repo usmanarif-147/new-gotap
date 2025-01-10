@@ -78,7 +78,7 @@
         <li class="menu-item {{ request()->routeIs('admin.enterpriser.create') ? 'active' : '' }}">
             <a href="{{ route('admin.enterpriser.create') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-user-pin"></i>
-                <div>Add Enterpriser</div>
+                <div>Enterprisers</div>
             </a>
         </li>
         <li class="menu-item">

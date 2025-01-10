@@ -95,9 +95,9 @@
                             </label>
                             <select class="form-control" wire:model="enterprise_type">
                                 <option value="">Select Enterprise Type</option>
-                                <option value="10">1-10 People</option>
-                                <option value="30">1-30 People</option>
-                                <option value="31">30+ People</option>
+                                <option value="1">1-6 People</option>
+                                <option value="2">1-20 People</option>
+                                <option value="3">20+ People</option>
                             </select>
                         </div>
                     </div>

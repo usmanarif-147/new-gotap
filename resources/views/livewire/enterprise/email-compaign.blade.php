@@ -81,12 +81,12 @@
                 </div>
 
                 <!-- Message -->
-                <div class="mb-3">
+                <div class="mb-3" wire:ignore>
                     <label class="form-label fw-bold">Message *</label>
                     @error('message')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
-                    <textarea class="form-control" wire:model.live="message" rows="5" placeholder="Message..."></textarea>
+                    <textarea class="form-control" id="customMessage" wire:model.defer="message" rows="5" placeholder="Message..."></textarea>
                 </div>
 
                 <button class="btn btn-dark" wire:click="sendEmail" @disabled(!$recipients)>
@@ -131,7 +131,7 @@
                         <!-- Message Section -->
                         <div>
                             <h6 class="text-muted mb-1">Message:</h6>
-                            <p class="text-dark">{{ $message ?? 'Message...' }}</p>
+                            <p class="text-dark">{!! $message ?? 'Message...' !!}</p>
                         </div>
                     </div>
 
@@ -175,13 +175,14 @@
                                             {{ $email->subject }}
                                         </td>
                                         <td>
-                                            {{ $email->message }}
+                                            {!! $email->message !!}
                                         </td>
                                         <td>
-                                            <button class="btn btn-dark btn-sm" data-bs-toggle="tooltip"
+                                            <button wire:click="deleteMessage({{ $email->id }})"
+                                                class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
                                                 data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
-                                                title="View">
-                                                view
+                                                title="delete">
+                                                Delete
                                             </button>
                                         </td>
                                     </tr>
@@ -204,7 +205,50 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function initializeEditor() {
+                const editorElement = document.querySelector('#customMessage');
+                if (editorElement) {
+                    ClassicEditor
+                        .create(editorElement)
+                        .then(editor => {
+                            // Bind CKEditor changes to Livewire property
+                            editor.model.document.on('change:data', () => {
+                                @this.set('message', editor.getData());
+                            });
+
+                            // Refresh editor content when Livewire emits an event
+                            Livewire.on('refreshEditor', content => {
+                                editor.setData(content);
+                            });
+
+                            // Store the editor instance globally if needed
+                            window.livewireEditorInstance = editor;
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                }
+            }
+
+            // Initialize editor on page load
+            initializeEditor();
+
+            // Re-initialize CKEditor after Livewire updates
+            Livewire.hook('message.processed', (message, component) => {
+                if (!document.querySelector('#customMessage')) {
+                    return; // Do nothing if the editor element is removed
+                }
+
+                if (!window.livewireEditorInstance || !window.livewireEditorInstance.ui.view.editable
+                    .element.isConnected) {
+                    initializeEditor(); // Reinitialize if the instance is destroyed
+                }
+            });
+        });
+
         window.addEventListener('swal:modal', event => {
             swal({
                 title: event.detail.message,

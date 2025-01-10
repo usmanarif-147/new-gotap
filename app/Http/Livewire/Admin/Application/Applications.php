@@ -6,7 +6,7 @@ use App\Mail\ApplicationApprovedMail;
 use App\Mail\ApplicationRejectedMail;
 use App\Models\Application;
 use App\Models\User;
-use App\Models\UserSubscription;
+use App\Mail\SubscriptionsMail;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -87,7 +87,6 @@ class Applications extends Component
     public function accept()
     {
         $application = Application::findOrFail($this->applicationId);
-        // dd($application);
         try {
             DB::beginTransaction();
             $user = User::create([
@@ -101,8 +100,7 @@ class Applications extends Component
                 'token' => Str::random(20) . '_' . Str::random(20)
             ]);
 
-            $sub = UserSubscription::create([
-                'enterprise_id' => $user->id,
+            $sub = $user->userSubscription()->create([
                 'enterprise_type' => $application->enterprise_type,
                 'file' => $application->file,
                 'start_date' => $application->start_date,
@@ -117,6 +115,7 @@ class Applications extends Component
 
             Mail::to($user->email)
                 ->send(new ApplicationApprovedMail($user->name, $user->token));
+            Mail::to($user->email)->send(new SubscriptionsMail($user->name, $sub));
 
             $this->closeModal();
 
