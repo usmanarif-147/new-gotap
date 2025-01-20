@@ -16,7 +16,7 @@ class CompaignEmail extends Mailable
 
     public $customMessage;
 
-    public $enterpriser;
+    public $enterpriser, $logo;
 
     public $subject;
 
@@ -30,21 +30,42 @@ class CompaignEmail extends Mailable
         $this->customMessage = $customMessage;
         $this->enterpriser = $enterpriser;
         $this->subject = $subject;
+        $this->logo = asset($this->enterpriser->enterpriser_logo && file_exists(public_path('storage/' . $this->enterpriser->enterpriser_logo)) ? Storage::url($this->enterpriser->enterpriser_logo) : 'logo.png');
     }
 
     /**
-     * Build the message.
+     * Get the message envelope.
      *
-     * @return $this
+     * @return \Illuminate\Mail\Mailables\Envelope
      */
-    public function build()
+    public function envelope()
     {
-        return $this->from($this->enterpriser->email, $this->enterpriser->name)
-            ->view('emails.compaign-email')
-            ->subject($this->subject)
-            ->with([
-                'customMessage' => $this->customMessage,
-                'logo' => asset($this->enterpriser->enterpriser_logo && file_exists(public_path('storage/' . $this->enterpriser->enterpriser_logo)) ? Storage::url($this->enterpriser->enterpriser_logo) : 'logo.png')
-            ]);
+        return new Envelope(
+            subject: $this->subject,
+        );
     }
+
+    /**
+     * Get the message content definition.
+     *
+     * @return \Illuminate\Mail\Mailables\Content
+     */
+    public function content()
+    {
+        return new Content(
+            view: 'emails.compaign-email',
+        );
+    }
+
+    /**
+     * Get the attachments for the message.
+     *
+     * @return array
+     */
+    public function attachments()
+    {
+        return [];
+    }
+
+
 }

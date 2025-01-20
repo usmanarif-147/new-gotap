@@ -9,12 +9,12 @@
 
     <title>{{ config('app.name', 'GoTap') }}</title>
 
-    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('gotapsteam.png') }}" />
 
 
     <meta name="description" content="" />
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('logo.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('gotapsteam.png') }}" />
     @include('layouts.enterprise.partials.css')
     @livewireStyles
     @yield('style')

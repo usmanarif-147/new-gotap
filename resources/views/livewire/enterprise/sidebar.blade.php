@@ -235,62 +235,65 @@
             </div>
         </li>
         <li class="menu-item p-2 mt-4">
-            <a class="dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                <div class="d-flex align-items-center">
-                    <!-- Profile Image -->
-                    <div
-                        style="width: 50px; height: 50px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
-                        <img src="{{ asset(auth()->user()->enterprise_logo && file_exists(public_path('storage/' . auth()->user()->enterprise_logo)) ? Storage::url(auth()->user()->enterprise_logo) : 'avatar.png') }}"
-                            alt="Viewer Photo" class="img-fluid"
-                            style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                    <!-- Name and Email -->
-                    <div style="margin-left: 5%;">
-                        <span class="font-weight-bold text-dark"
-                            style="font-size: 15px;">{{ Auth::user()->name ? Auth::user()->name : 'Enterpriser' }}</span>
-                        <p class="mb-0 text-black" style="font-size: 12px;">
-                            {{ Auth::user()->email ? Auth::user()->email : 'N/A' }}</p>
-                    </div>
+            <div class="d-flex align-items-center">
+                <!-- Profile Image -->
+                <div
+                    style="width: 35px; height: 35px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
+                    <img src="{{ asset(auth()->user()->enterprise_logo && file_exists(public_path('storage/' . auth()->user()->enterprise_logo)) ? Storage::url(auth()->user()->enterprise_logo) : 'avatar.png') }}"
+                        alt="Viewer Photo" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li>
-                    <a class="dropdown-item" href="#">
-                        <div class="d-flex">
-                            <div class="flex-shrink-0 me-3">
-                                <i class="bx bx-user me-2"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
-                            </div>
-                        </div>
+                <!-- Name and Email -->
+                <div style="margin-left: 5%;">
+                    <span class="font-weight-bold text-dark"
+                        style="font-size: 10px;">{{ Auth::user()->name ? Auth::user()->name : 'Enterpriser' }}</span>
+                    <p class="mb-0 text-black" style="font-size: 10px;">
+                        {{ Auth::user()->email ? Auth::user()->email : 'N/A' }}</p>
+                </div>
+                <div>
+                    <a style="color: #b0afaf" class="dropdown-toggle hide-arrow" href="javascript:void(0);"
+                        data-bs-toggle="dropdown">
+                        <i class='bx bx-dots-vertical-rounded'></i>
                     </a>
-                </li>
-                <li>
-                    <div class="dropdown-divider"></div>
-                </li>
-                {{-- <li>
-                    <a class="dropdown-item" href="{{ url('admin/account') }}">
-                        <i class="bx bx-cog me-2"></i>
-                        <span class="align-middle">Manage Account</span>
-                    </a>
-                </li> --}}
-                {{-- <li>
-                    <div class="dropdown-divider"></div>
-                </li> --}}
-                <li>
-                    <form method="POST" action="{{ route('enterprise.logout') }}">
-                        @csrf
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 me-3">
+                                        <i class="bx bx-user me-2"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="dropdown-divider"></div>
+                        </li>
+                        {{-- <li>
+                            <a class="dropdown-item" href="{{ url('admin/account') }}">
+                                <i class="bx bx-cog me-2"></i>
+                                <span class="align-middle">Manage Account</span>
+                            </a>
+                        </li> --}}
+                        {{-- <li>
+                            <div class="dropdown-divider"></div>
+                        </li> --}}
+                        <li>
+                            <form method="POST" action="{{ route('enterprise.logout') }}">
+                                @csrf
 
-                        <a class="dropdown-item" href="{{ route('enterprise.logout') }}"
-                            onclick="event.preventDefault();
-                                            this.closest('form').submit();">
-                            <i class="bx bx-power-off me-2"></i>
-                            <span class="align-middle">Log Out</span>
-                        </a>
-                    </form>
-                </li>
-            </ul>
+                                <a class="dropdown-item" href="{{ route('enterprise.logout') }}"
+                                    onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                    <i class="bx bx-power-off me-2"></i>
+                                    <span class="align-middle">Log Out</span>
+                                </a>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </li>
         <hr class="my-4 text-gray w-100 shadow">
         </hr>

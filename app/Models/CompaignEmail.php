@@ -10,6 +10,7 @@ class CompaignEmail extends Model
     use HasFactory;
     protected $fillable = [
         'subject',
+        'enterprise_id',
         'message',
     ];
 }

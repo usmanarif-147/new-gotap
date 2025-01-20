@@ -7,6 +7,7 @@ use App\Mail\LeadEmail;
 use App\Models\CompaignEmail as ModelsCompaignEmail;
 use App\Models\Profile;
 use App\Models\User;
+use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -14,6 +15,9 @@ use Livewire\Component;
 
 class EmailCompaign extends Component
 {
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
     public $showDropdown = false;
     public $recipients = [];
     public $selectedNames = [];
@@ -134,8 +138,10 @@ class EmailCompaign extends Component
                 Mail::to($email)->send(new CompaignEmail($this->subject, $this->message, $enterpriser));
             }
             ModelsCompaignEmail::create([
+                'enterprise_id' => auth()->id(),
                 'subject' => $this->subject,
                 'message' => $this->message,
+                'total' => count($data['recipients']),
             ]);
             DB::commit();
 
@@ -154,7 +160,7 @@ class EmailCompaign extends Component
             DB::rollBack();
             $this->dispatchBrowserEvent('swal:modal', [
                 'type' => 'error',
-                'message' => 'Failed to send emails. Please try again.',
+                'message' => $e,
             ]);
         }
     }

@@ -20,7 +20,9 @@
                                         <p class="text-muted mb-0">Average response time: 25 min</p>
                                     </div>
                                     <!-- Button -->
-                                    <button class="btn btn-sm btn-outline-dark">Start Chat</button>
+                                    <a href="https://gotaps.me/support/">
+                                        <button class="btn btn-sm btn-outline-dark">Start Chat</button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -35,7 +37,10 @@
                                         <p class="text-muted mb-0">Average response time: 2 hours</p>
                                     </div>
                                     <!-- Button -->
-                                    <button class="btn btn-sm btn-outline-dark">Send Email</button>
+                                    <a href="https://gotaps.me/support/">
+                                        <button class="btn btn-sm btn-outline-dark">Send Email</button>
+                                    </a>
+
                                 </div>
                             </div>
                         </div>
@@ -56,7 +61,7 @@
                                 <div class="card-body">
                                     <h6 class="card-title" style="color: black">{{ $article['title'] }}</h6>
                                     <p class="card-text">{{ $article['description'] }}</p>
-                                    <a href="#"
+                                    <a href="https://gotaps.me/support/"
                                         class="btn btn-sm btn-outline-dark rounded-pill px-4 py-2 text-center">
                                         View Article <i class="bx bx-right-arrow-alt"></i>
                                     </a>
