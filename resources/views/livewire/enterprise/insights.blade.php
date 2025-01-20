@@ -1,11 +1,14 @@
 <div>
     <div class="row mb-5">
 
-        <x-custom.dashboard-card background="bg-label-info" icon="bx bx-user-pin" title="Profiles" :total="$totalProfiles" />
-        <x-custom.dashboard-card background="bg-label-primary" icon="bx bx-credit-card-alt" title="Active Cards"
+        <x-custom.enterprise-dashboard-card background="bg-label-info" icon="bx bx-user-pin" title="Profiles"
+            :total="$totalProfiles" />
+        <x-custom.enterprise-dashboard-card background="bg-label-primary" icon="bx bx-credit-card-alt" title="Active Cards"
             :total="$activeCards" />
-        <x-custom.dashboard-card background="bg-label-warning" icon="bx bxs-group" title="Total Leads" :total="$leads" />
-
+        <x-custom.enterprise-dashboard-card background="bg-label-warning" icon="bx bxs-group" title="Total Leads"
+            :total="$leads" />
+        <x-custom.enterprise-dashboard-card background="bg-label-warning" icon="bx bxs-group" title="Total Subteams"
+            :total="$subteamsCount" />
         <div class="col-lg-12 col-md-12 col-12 mb-4">
             <div class="card h-100">
                 <div class="card-body">
@@ -81,6 +84,95 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-lg-6 col-md-6 col-12 mb-4">
+            <div class="card" style="height: 100%">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Sub Teams</h6>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Users</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if ($subteams->isNotEmpty())
+                                @foreach ($subteams as $ind => $subteam)
+                                    <tr>
+                                        <td>
+                                            <img src="{{ asset($subteam->logo && Storage::disk('public')->exists($subteam->logo) ? Storage::url($subteam->logo) : 'user.png') }}"
+                                                class="rounded-circle me-2" alt="Avatar" width="32"
+                                                height="32">
+                                            {{ $subteam->name ? $subteam->name : 'N/A' }}
+                                        </td>
+                                        <td>
+                                            <span>
+                                                <i class="bx bx-user"></i>
+                                                <span>{{ $subteam->profile_count }}</span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        <p class="mb-0">No Data Found</p>
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-12 mb-4">
+            <div class="card" style="height: 100%">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Email Compaigns</h6>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Nr</th>
+                                <th scope="col">Compaign Name</th>
+                                <th scope="col">Send</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if ($compaigns->isNotEmpty())
+                                @foreach ($compaigns as $ind => $compaign)
+                                    <tr>
+                                        <td>
+                                            {{ $ind + 1 }}
+                                        </td>
+                                        <td>
+                                            {{ $compaign->subject }}
+                                        </td>
+                                        <td>
+                                            {{ $compaign->total }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        <p class="mb-0">No Data Found</p>
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 

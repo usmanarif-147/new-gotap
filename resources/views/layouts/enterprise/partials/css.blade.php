@@ -1,5 +1,5 @@
 <!-- Favicon -->
-<link rel="icon" type="image/x-icon" href="{{ asset('logo.png') }}" />
+<link rel="icon" type="image/x-icon" href="{{ asset('gotapsteam.png') }}" />
 
 <!-- Fonts -->
 {{-- <link rel="preconnect" href="https://fonts.googleapis.com" />

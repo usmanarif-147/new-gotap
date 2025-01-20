@@ -4,13 +4,14 @@ namespace App\Http\Livewire\Enterprise;
 
 use Livewire\Component;
 use App\Models\Profile;
+use App\Models\subteams;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class Insights extends Component
 {
-    public $viewsData, $totalProfiles, $activeCards, $leads, $leadsData, $leadsGraphData;
+    public $viewsData, $totalProfiles, $activeCards, $leads, $leadsData, $leadsGraphData, $subteamsCount;
     public $chartType = 'views';
     public $isActive = 'views';
 
@@ -28,6 +29,7 @@ class Insights extends Component
             ->leftJoin('profiles as viewerProfile', 'leads.viewer_id', '=', 'viewerProfile.id')
             ->where('viewingProfile.enterprise_id', auth()->id())
             ->count();
+        $this->subteamsCount = subteams::where('enterprise_id', Auth::user()->id)->count();
         $leads = DB::table('leads')
             ->leftJoin('profiles as viewingProfile', 'leads.viewing_id', '=', 'viewingProfile.id')
             ->where('viewingProfile.enterprise_id', auth()->id())
@@ -127,11 +129,46 @@ class Insights extends Component
         return $profiles;
     }
 
+    public function getSubteams()
+    {
+        $subteams = DB::table('subteams')
+            ->select(
+                'subteams.id',
+                'subteams.name',
+                'subteams.description',
+                'subteams.logo',
+                'subteams.enterprise_id',
+                DB::raw('COUNT(subteam_profiles.profile_id) as profile_count'),
+            )
+            ->leftJoin('subteam_profiles', 'subteams.id', '=', 'subteam_profiles.subteam_id')
+            ->where('subteams.enterprise_id', auth()->id())
+            ->groupBy('subteams.id', 'subteams.name', 'subteams.description', 'subteams.logo', 'subteams.enterprise_id')
+            ->orderBy('subteams.created_at', 'desc')->take(5)->get();
+
+        return $subteams;
+    }
+
+    public function getEmailCompaign()
+    {
+        $data = DB::table('compaign_emails')
+            ->select(
+                'enterprise_id',
+                'subject',
+                'total',
+            )->where('enterprise_id', auth()->id())
+            ->take(5)->get();
+        return $data;
+    }
+
     public function render()
     {
         $data = $this->getProfiles();
+        $subteam = $this->getSubteams();
+        $compaign = $this->getEmailCompaign();
         return view('livewire.enterprise.insights', [
             'profiles' => $data,
+            'subteams' => $subteam,
+            'compaigns' => $compaign,
         ]);
     }
 }

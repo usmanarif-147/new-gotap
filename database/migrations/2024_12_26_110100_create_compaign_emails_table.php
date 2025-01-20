@@ -14,6 +14,7 @@ return new class extends Migration {
     {
         Schema::create('compaign_emails', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('enterprise_id')->constrained('users');
             $table->string('subject', 255)->nullable();
             $table->string('message', 255)->nullable();
             $table->timestamps();

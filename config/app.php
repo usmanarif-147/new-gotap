@@ -72,7 +72,7 @@ return [
     */
 
     // 'timezone' => 'UTC',
-    'timezone' => 'Asia/Karachi',
+    'timezone' => 'Europe/Rome',
 
     /*
     |--------------------------------------------------------------------------
