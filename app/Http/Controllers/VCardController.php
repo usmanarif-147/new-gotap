@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
-use DB;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use JeroenDesloovere\VCard\VCard;
-use Response;
 use Illuminate\Support\Facades\Storage;
 
 class VCardController extends Controller
@@ -97,5 +98,22 @@ class VCardController extends Controller
             'Content-Type' => 'text/vcard',
             'Content-Disposition' => "attachment; filename={$filename}",
         ]);
+    }
+
+    public function uploadImage(Request $request)
+    {
+
+        if ($request->hasFile('upload')) {
+
+            $originName = $request->file('upload')->getClientOriginalName();
+            $fileName = pathinfo($originName, PATHINFO_FILENAME);
+            $extension = $request->file('upload')->getClientOriginalExtension();
+            $fileName = $fileName . '_' . time() . '.' . $extension;
+            $request->file('upload')->move(public_path('media'), $fileName);
+            $url = asset('media/' . $fileName);
+            return response()->json(['fileName' => $fileName, 'uploaded' => 1, 'url' => $url]);
+
+        }
+
     }
 }
