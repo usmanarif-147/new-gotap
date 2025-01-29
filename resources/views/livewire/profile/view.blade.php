@@ -180,23 +180,16 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('.social').on('click', function() {
-                let url = $(this).data('url'); // Get URL from data attribute
-                if (url) {
-                    window.location.href = url; // Open in the same tab
-                }
-            });
-        });
+            let url = '{{ $redicretTo }}';
+            if (url) {
+                location.href = url;
+            }
+        })
 
         window.addEventListener('redirect', event => {
             let url = event.detail.url;
-
             if (url) {
-                $('.social').each(function() {
-                    $(this).on('click', function() {
-                        window.open(url, '_blank'); // Open in new tab on click
-                    });
-                });
+                window.open(event.detail.url, '_blank');
             }
         });
         window.addEventListener('closeModal', event => {
