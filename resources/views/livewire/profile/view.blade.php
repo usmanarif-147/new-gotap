@@ -180,21 +180,22 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            let url = '{{ $redicretTo }}';
-            if (url) {
-                // Trigger a user action to open the URL
-                $('body').on('click', function() {
-                    location.href = url;
-                });
-            }
+            $('.social').on('click', function() {
+                let url = $(this).data('url'); // Get URL from data attribute
+                if (url) {
+                    window.location.href = url; // Open in the same tab
+                }
+            });
         });
 
         window.addEventListener('redirect', event => {
             let url = event.detail.url;
+
             if (url) {
-                // Open in a new window only after a user action
-                document.querySelector('body').addEventListener('click', function() {
-                    window.open(url, '_blank');
+                $('.social').each(function() {
+                    $(this).on('click', function() {
+                        window.open(url, '_blank'); // Open in new tab on click
+                    });
                 });
             }
         });
