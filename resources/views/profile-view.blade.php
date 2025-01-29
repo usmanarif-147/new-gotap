@@ -291,11 +291,24 @@
                     // }
 
                     if (data.redirect) {
-                        let newTab = window.open('', '_blank');
-                        newTab.location.href = data.redirect;
+                        let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent); // Detect mobile
+
+                        if (isMobile) {
+                            window.location.href = data.redirect;
+                        } else {
+                            let newTab = window.open('', '_blank');
+                            newTab.location.href = data.redirect;
+                        }
                     } else if (data.error) {
-                        alert(data.error);
+                        alert("Error: " + data.error);
                     }
+
+                    // if (data.redirect) {
+                    //     let newTab = window.open('', '_blank');
+                    //     newTab.location.href = data.redirect;
+                    // } else if (data.error) {
+                    //     alert(data.error);
+                    // }
                 })
                 .catch(error => console.error('Error:', error));
         }
