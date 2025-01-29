@@ -278,14 +278,21 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    // if (data.redirect) {
+                    //     let link = document.createElement('a');
+                    //     link.href = data.redirect;
+                    //     link.target = '_blank';
+                    //     link.rel = 'noopener noreferrer';
+                    //     document.body.appendChild(link);
+                    //     link.click();
+                    //     document.body.removeChild(link);
+                    // } else if (data.error) {
+                    //     alert(data.error);
+                    // }
+
                     if (data.redirect) {
-                        let link = document.createElement('a');
-                        link.href = data.redirect;
-                        link.target = '_blank';
-                        link.rel = 'noopener noreferrer';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
+                        let newTab = window.open('', '_blank');
+                        newTab.location.href = data.redirect;
                     } else if (data.error) {
                         alert(data.error);
                     }

@@ -50,7 +50,7 @@ class ProfileAnalyticsChart extends Component
             )
             ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
             ->where('profile_id', $profile->id)
-            ->where('profile_platforms.created_at', '>=', $startDate)
+            // ->where('profile_platforms.created_at', '>=', $startDate)
             ->orderBy('profile_platforms.platform_order')
             ->get();
 

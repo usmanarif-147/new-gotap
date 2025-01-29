@@ -368,6 +368,10 @@ class UserProfileController extends Controller
         $platformId = $request->input('platform_id');
         $url = $request->input('url');
         $profile = Profile::find($request->input('id'));
+        $platform = DB::table('profile_platforms')
+            ->where('profile_id', $profile->id)
+            ->where('platform_id', $platformId)
+            ->first();
 
         if (!$profile->private) {
             DB::table('profile_platforms')
