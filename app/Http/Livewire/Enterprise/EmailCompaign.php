@@ -175,8 +175,8 @@ class EmailCompaign extends Component
             preg_match_all('/<img.*?src=["\'](.*?)["\'].*?>/', $email->message, $matches);
             if (!empty($matches[1])) {
                 foreach ($matches[1] as $imageUrl) {
-                    if (Str::startsWith($imageUrl, 'https://enterprise.gocoompany.com//media/')) {
-                        $imagePath = Str::after($imageUrl, 'https://enterprise.gocoompany.com//');
+                    if (Str::startsWith($imageUrl, 'https://enterprise.gocoompany.com/media/')) {
+                        $imagePath = Str::after($imageUrl, 'https://enterprise.gocoompany.com/');
                         File::delete($imagePath);
                     }
                 }
