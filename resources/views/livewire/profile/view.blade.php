@@ -182,14 +182,20 @@
         $(document).ready(function() {
             let url = '{{ $redicretTo }}';
             if (url) {
-                location.href = url;
+                // Trigger a user action to open the URL
+                $('body').on('click', function() {
+                    location.href = url;
+                });
             }
-        })
+        });
 
         window.addEventListener('redirect', event => {
             let url = event.detail.url;
             if (url) {
-                window.open(event.detail.url, '_blank');
+                // Open in a new window only after a user action
+                document.querySelector('body').addEventListener('click', function() {
+                    window.open(url, '_blank');
+                });
             }
         });
         window.addEventListener('closeModal', event => {
