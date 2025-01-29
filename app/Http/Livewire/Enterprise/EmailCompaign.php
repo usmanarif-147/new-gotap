@@ -10,8 +10,11 @@ use App\Models\User;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class EmailCompaign extends Component
 {
@@ -160,7 +163,7 @@ class EmailCompaign extends Component
             DB::rollBack();
             $this->dispatchBrowserEvent('swal:modal', [
                 'type' => 'error',
-                'message' => $e,
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -168,6 +171,17 @@ class EmailCompaign extends Component
     public function deleteMessage($id)
     {
         $email = ModelsCompaignEmail::find($id);
+        if ($email) {
+            preg_match_all('/<img.*?src=["\'](.*?)["\'].*?>/', $email->message, $matches);
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $imageUrl) {
+                    if (Str::startsWith($imageUrl, 'https://enterprise.gocoompany.com//media/')) {
+                        $imagePath = Str::after($imageUrl, 'https://enterprise.gocoompany.com//');
+                        File::delete($imagePath);
+                    }
+                }
+            }
+        }
         $email->delete();
         $this->dispatchBrowserEvent('swal:modal', [
             'type' => 'success',

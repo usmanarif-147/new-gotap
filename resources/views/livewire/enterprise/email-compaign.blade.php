@@ -131,7 +131,7 @@
                         <!-- Message Section -->
                         <div>
                             <h6 class="text-muted mb-1">Message:</h6>
-                            <p class="text-dark">{!! $message ?? 'Message...' !!}</p>
+                            <p class="text-dark"> {!! preg_replace('/<img[^>]+\>/i', '', $message) ?? 'Message...' !!}</p>
                         </div>
                     </div>
 
@@ -175,7 +175,8 @@
                                             {{ $email->subject }}
                                         </td>
                                         <td>
-                                            {!! $email->message !!}
+                                            {!! preg_replace('/<img[^>]+\>/i', '', $email->message) ?? 'Message...' !!}
+                                            {{-- {!! $email->message !!} --}}
                                         </td>
                                         <td>
                                             <button wire:click="deleteMessage({{ $email->id }})"
@@ -212,7 +213,11 @@
                 const editorElement = document.querySelector('#customMessage');
                 if (editorElement) {
                     ClassicEditor
-                        .create(editorElement)
+                        .create(editorElement, {
+                            ckfinder: {
+                                uploadUrl: '{{ route('ckeditor.upload') . '?_token=' . csrf_token() }}'
+                            }
+                        })
                         .then(editor => {
                             // Bind CKEditor changes to Livewire property
                             editor.model.document.on('change:data', () => {
@@ -248,6 +253,8 @@
                 }
             });
         });
+
+
 
         window.addEventListener('swal:modal', event => {
             swal({

@@ -24,6 +24,9 @@ Route::middleware('enterprise')->group(function () {
     Route::view('enterprise/leads/{id}/view', 'enterprise.profile.view-lead')->name('enterprise.leads.view');
     Route::get('/lead/download/{id}', [VCardController::class, 'downloadVCard'])->name('lead.download');
 
+    //imageUploade
+    Route::post('/upload-image', [VCardController::class, 'uploadImage'])->name('ckeditor.upload');
+
     //Request For Profile
     Route::view('enterprise/UserRequests', 'enterprise.profile.user-request-profile')->name('enterprise.requests');
 
