@@ -7,7 +7,11 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\LeadEmail;
+use App\Models\Profile;
 use Illuminate\Support\Facades\DB;
+use Exception;
+use App\Exports\LeadsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Leads extends Component
 {
@@ -21,7 +25,9 @@ class Leads extends Component
 
     public $total, $leadId;
 
-    public $note;
+    public $note, $profiles = [];
+
+    public $name, $email, $phone, $noteLead, $profileId;
 
     public $selectedLeads = [];
 
@@ -104,6 +110,68 @@ class Leads extends Component
         ]);
     }
 
+    public function showManualModel()
+    {
+        $this->profiles = Profile::select(
+            'profiles.id',
+            'profiles.username',
+        )
+            ->where('profiles.enterprise_id', auth()->id())->get();
+        $this->dispatchBrowserEvent('show-manual-add-modal');
+    }
+
+    public function addManualLead()
+    {
+        $data = $this->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'profileId' => 'required',
+            'noteLead' => 'nullable',
+        ], [
+            'name.required' => 'name is required',
+            'email.required' => 'email is required',
+            'phone' => 'Phone No is required',
+            'profileId' => 'Profile Name is required',
+        ]);
+        $profile = Profile::find($data['profileId']);
+        try {
+            DB::table('leads')->insert([
+                'enterprise_id' => $profile->enterprise_id,
+                'employee_id' => $profile->user_id,
+                'viewing_id' => $profile->id,
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'type' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            $this->dispatchBrowserEvent('leadSaved');
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'success',
+                'message' => 'Lead Manually Added successfully!',
+            ]);
+        } catch (Exception $e) {
+            $this->dispatchBrowserEvent('leadSaved');
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'success',
+                'message' => $e->getMessage(),
+            ]);
+        }
+        $this->profiles = [];
+        $this->name = '';
+        $this->email = '';
+        $this->phone = '';
+        $this->noteLead = '';
+        $this->profileId = null;
+    }
+
+    public function exportLeads()
+    {
+        return Excel::download(new LeadsExport, 'leads.xlsx');
+    }
+
     public function showNoteModal($id)
     {
         $this->leadId = $id;
@@ -132,6 +200,7 @@ class Leads extends Component
             'type' => 'success',
             'message' => 'Lead Note Updated successfully!',
         ]);
+        $this->note = '';
     }
 
     public function confirmModal($id)

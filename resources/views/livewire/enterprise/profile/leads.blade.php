@@ -11,6 +11,17 @@
                         Send Mails
                     </button>
                 </div>
+                <div class="flex-grow-1 d-flex justify-content-center">
+                    <button wire:click="showManualModel" class="btn btn-dark">
+                        Add Lead
+                    </button>
+                </div>
+                <div class="flex-grow-1 d-flex justify-content-center">
+                    <button wire:click="exportLeads" class="btn btn-dark">
+                        Export
+                        <span wire:loading wire:target="exportLeads" class="spinner-border spinner-border-sm"></span>
+                    </button>
+                </div>
                 <div class="d-flex align-items-center">
                     <label for="search" class="me-2 mb-0">Search</label>
                     <input id="search" class="form-control" type="search" wire:model.debounce.500ms="search"
@@ -241,6 +252,72 @@
         </div>
     </div>
 
+    <!--Manuall add Modal -->
+    <div wire:ignore.self class="modal fade" id="leadManualModal" tabindex="-1"
+        aria-labelledby="leadManualModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="leadManualModalLabel">Add Lead</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form wire:submit.prevent="addManualLead">
+                        <div class="mb-3">
+                            <label for="profileId" class="form-label">Name</label>
+                            <select wire:model="profileId" id="profileId" class="form-control">
+                                <option value="">Select Profile</option>
+                                @foreach ($profiles as $profile)
+                                    <option value="{{ $profile->id }}">{{ $profile->username }}</option>
+                                @endforeach
+                            </select>
+                            @error('profileId')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" id="name" wire:model="name" class="form-control">
+                            @error('name')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" id="email" wire:model="email" class="form-control">
+                            @error('email')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="text" id="phone" wire:model="phone" class="form-control">
+                            @error('phone')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="note" class="form-label">Note</label>
+                            <textarea class="form-control" id="note" rows="3" wire:model="noteLead"></textarea>
+                            @error('note')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">
+                                <span wire:loading wire:target="addManualLead"
+                                    class="spinner-border spinner-border-sm"></span>
+                                Save Lead</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     @include('livewire.admin.confirm-modal')
     <!-- CKEditor Script -->
@@ -298,6 +375,10 @@
             $('#leadNoteModal').modal('show')
         });
 
+        window.addEventListener('show-manual-add-modal', event => {
+            $('#leadManualModal').modal('show')
+        });
+
         window.addEventListener('show-email-modal', event => {
             $('#leadEmailModal').modal('show')
         });
@@ -312,6 +393,10 @@
 
         window.addEventListener('noteSaved', event => {
             $('#leadNoteModal').modal('hide')
+        });
+
+        window.addEventListener('leadSaved', event => {
+            $('#leadManualModal').modal('hide')
         });
 
         window.addEventListener('emailSend', event => {
