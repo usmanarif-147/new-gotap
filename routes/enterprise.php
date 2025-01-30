@@ -6,7 +6,10 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 
-
+// Route::domain('http://127.0.0.1:8000/')->group(function () {
+// Route::get('/admin/login', function () {
+//     abort(403, 'Unauthorized access');
+// });
 Route::middleware('enterprise')->group(function () {
 
     Route::view('enterprise/dashboard', 'enterprise.dashboard')->name('enterprise.dashboard');
@@ -69,3 +72,4 @@ Route::middleware('enterprise')->group(function () {
     Route::post('enterprise/logout', [AuthenticatedSessionController::class, 'destroyEnterprise'])
         ->name('enterprise.logout');
 });
+// });

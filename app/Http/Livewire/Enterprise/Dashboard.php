@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
-    public $leadCaptured, $cardViews, $recentLeads;
+    public $leadCaptured, $cardViews, $recentLeads, $compaigns;
 
     public function mount()
     {
@@ -34,6 +34,14 @@ class Dashboard extends Component
             ->orderBy('leads.created_at', 'desc')
             ->take(5)
             ->get();
+        $this->compaigns = DB::table('compaign_emails')
+            ->select(
+                'enterprise_id',
+                'subject',
+                'total',
+            )->where('enterprise_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->take(5)->get();
     }
 
     public function render()

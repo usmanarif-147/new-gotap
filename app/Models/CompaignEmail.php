@@ -12,5 +12,6 @@ class CompaignEmail extends Model
         'subject',
         'enterprise_id',
         'message',
+        'total',
     ];
 }
