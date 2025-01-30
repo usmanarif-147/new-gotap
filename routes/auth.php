@@ -5,22 +5,24 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\SetPasswordController;
 use Illuminate\Support\Facades\Route;
-
-Route::middleware('guest')->group(function () {
-    Route::get('admin/login', [AuthenticatedSessionController::class, 'createAdmin'])
-        ->name('admin.login.form');
-    Route::post('admin/login', [AuthenticatedSessionController::class, 'storeAdmin'])
-        ->name('admin.login');
-    Route::get('admin/forgot-password', [PasswordResetLinkController::class, 'createAdmin'])
-        ->name('admin.password.request');
-    Route::post('admin/forgot-password', [PasswordResetLinkController::class, 'storeAdmin'])
-        ->name('admin.password.email');
-    Route::get('admin/reset-password/{token}', [NewPasswordController::class, 'createAdmin'])
-        ->name('admin.password.reset');
-    Route::post('admin/reset-password', [NewPasswordController::class, 'storeAdmin'])
-        ->name('admin.password.store');
+Route::domain('app.gocoompany.com')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('admin/login', [AuthenticatedSessionController::class, 'createAdmin'])
+            ->name('admin.login.form');
+        Route::post('admin/login', [AuthenticatedSessionController::class, 'storeAdmin'])
+            ->name('admin.login');
+        Route::get('admin/forgot-password', [PasswordResetLinkController::class, 'createAdmin'])
+            ->name('admin.password.request');
+        Route::post('admin/forgot-password', [PasswordResetLinkController::class, 'storeAdmin'])
+            ->name('admin.password.email');
+        Route::get('admin/reset-password/{token}', [NewPasswordController::class, 'createAdmin'])
+            ->name('admin.password.reset');
+        Route::post('admin/reset-password', [NewPasswordController::class, 'storeAdmin'])
+            ->name('admin.password.store');
+    });
 });
 
+// Route::domain('http://127.0.0.1:8000/')->group(function () {
 Route::middleware('guest')->group(function () {
 
     Route::get('enterprise/set-password/{token}', [SetPasswordController::class, 'setPassword'])
@@ -41,3 +43,4 @@ Route::middleware('guest')->group(function () {
     Route::post('enterprise/reset-password', [NewPasswordController::class, 'storeEnterprise'])
         ->name('enterprise.password.store');
 });
+// });

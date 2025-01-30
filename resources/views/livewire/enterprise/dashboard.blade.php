@@ -53,36 +53,61 @@
                         </div>
                     </div>
                 </div>
-                <div class="card p-4 mt-5" style="position: relative; text-align: center;">
-                    <!-- Group 3 Image (Small, Centered) -->
-                    <img src="{{ asset('Group 3.jpg') }}" alt="Goals Graph"
-                        style="width: 150px; position: relative; z-index: 0; margin: 0 auto; display: block;">
+                @if ($compaigns->count() == 5)
+                    <div class="card p-4 mt-5" style="position: relative; text-align: center;">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Email Campaigns</h6>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Nr</th>
+                                        <th scope="col">Campaign Name</th>
+                                        <th scope="col">Send</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if ($compaigns->isNotEmpty())
+                                        @foreach ($compaigns as $ind => $compaign)
+                                            <tr>
+                                                <td>{{ $ind + 1 }}</td>
+                                                <td>{{ $compaign->subject }}</td>
+                                                <td>{{ $compaign->total }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="3" class="text-center">
+                                                <p class="mb-0">No Data Found</p>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @else
+                    <div class="card p-4 mt-5" style="position: relative; text-align: center;">
+                        <!-- Group 3 Image (Small, Centered) -->
+                        <img src="{{ asset('Group 3.jpg') }}" alt="Goals Graph"
+                            style="width: 150px; position: relative; z-index: 0; margin: 0 auto; display: block;">
 
-                    <!-- Group 1 Image (Above Group 3, Centered) -->
-                    <img src="{{ asset('Group 1.jpg') }}"
-                        style="
-                        width: 300px; /* Larger size */
-                        position: absolute; 
-                        top: 30%; /* Center vertically */
-                        left: 50%; /* Center horizontally */
-                        transform: translate(-50%, -50%);
-                        z-index: 1;"
-                        alt="Goals Graph">
+                        <!-- Group 1 Image (Above Group 3, Centered) -->
+                        <img src="{{ asset('Group 1.jpg') }}"
+                            style="width: 300px; position: absolute; top: 30%; left: 50%;transform: translate(-50%, -50%);z-index: 1;"
+                            alt="Goals Graph">
 
-                    <!-- Group 2 Image (Above Group 1, Further Up) -->
-                    <img src="{{ asset('Group 2.jpg') }}"
-                        style="
-                        width: 300px; /* Larger size */
-                        position: absolute; 
-                        top: 50%; /* Higher position above Group 1 */
-                        left: 50%; /* Center horizontally */
-                        transform: translate(-50%, -50%);
-                        z-index: 2;"
-                        alt="Goals Graph">
+                        <!-- Group 2 Image (Above Group 1, Further Up) -->
+                        <img src="{{ asset('Group 2.jpg') }}"
+                            style="width: 300px;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);z-index: 2;"
+                            alt="Goals Graph">
 
-                    <!-- Caption -->
-                    <p class="mt-5" style="color: #000">Your campaign goals will appear here</p>
-                </div>
+                        <!-- Caption -->
+                        <p class="mt-5" style="color: #000">Your campaign goals will appear here</p>
+                    </div>
+                @endif
+
             </div>
             <!-- Recent Leads -->
             <div class="col-md-4">

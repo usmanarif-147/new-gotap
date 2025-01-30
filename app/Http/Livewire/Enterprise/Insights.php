@@ -156,6 +156,7 @@ class Insights extends Component
                 'subject',
                 'total',
             )->where('enterprise_id', auth()->id())
+            ->orderBy('created_at', 'desc')
             ->take(5)->get();
         return $data;
     }

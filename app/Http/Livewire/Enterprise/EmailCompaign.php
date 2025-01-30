@@ -29,7 +29,7 @@ class EmailCompaign extends Component
     public $selectAllLeads = false;
     public $profiles = [];
     public $leads = [];
-    public $subject, $message;
+    public $subject, $message, $emailDetail;
 
     public function mount()
     {
@@ -134,6 +134,8 @@ class EmailCompaign extends Component
     public function sendEmail()
     {
         $data = $this->validate();
+        $data['recipients'] = array_unique($data['recipients']);
+        $total = count($data['recipients']);
         $enterpriser = Auth::user();
         try {
             DB::beginTransaction();
@@ -144,7 +146,7 @@ class EmailCompaign extends Component
                 'enterprise_id' => auth()->id(),
                 'subject' => $this->subject,
                 'message' => $this->message,
-                'total' => count($data['recipients']),
+                'total' => $total,
             ]);
             DB::commit();
 
@@ -166,6 +168,12 @@ class EmailCompaign extends Component
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    public function showModel($id)
+    {
+        $this->emailDetail = ModelsCompaignEmail::find($id);
+        $this->dispatchBrowserEvent('show-view-modal');
     }
 
     public function deleteMessage($id)

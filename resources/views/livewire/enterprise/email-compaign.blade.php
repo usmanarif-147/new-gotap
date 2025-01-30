@@ -3,6 +3,39 @@
         .position-relative:hover .nested-dropdown {
             display: block;
         }
+
+        .modal-body {
+            background-color: #f8f9fa;
+            /* Light background for the modal content */
+            padding: 2rem;
+            /* Additional padding inside the modal */
+            color: #495057;
+            /* Default text color */
+        }
+
+        .email-content img {
+            max-width: 100%;
+            /* Ensure images are responsive */
+            border-radius: 5px;
+            /* Optional: Round image corners */
+        }
+
+        .email-content a {
+            color: #007bff;
+            /* Color for links */
+            text-decoration: none;
+            /* Remove underline */
+        }
+
+        .email-content a:hover {
+            text-decoration: underline;
+            /* Underline on hover */
+        }
+
+        .ck-editor__editable {
+            max-height: 400px !important;
+            overflow-y: auto !important;
+        }
     </style>
     <div class="container mt-4">
         <div class="row">
@@ -86,7 +119,7 @@
                     @error('message')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
-                    <textarea class="form-control" id="customMessage" wire:model.defer="message" rows="5" placeholder="Message..."></textarea>
+                    <textarea class="form-control overflow-auto" id="customMessage" wire:model.defer="message" placeholder="Message..."></textarea>
                 </div>
 
                 <button class="btn btn-dark" wire:click="sendEmail" @disabled(!$recipients)>
@@ -129,9 +162,12 @@
                         <hr class="my-3">
 
                         <!-- Message Section -->
-                        <div>
-                            <h6 class="text-muted mb-1">Message:</h6>
-                            <p class="text-dark"> {!! preg_replace('/<img[^>]+\>/i', '', $message) ?? 'Message...' !!}</p>
+                        <h6 class="text-muted mb-1">Message:</h6>
+                        <div class="email-content">
+                            <div class="border p-3 rounded-3 shadow-sm bg-light"
+                                style="max-height: 400px; overflow-y: auto;">
+                                {!! $message !!}
+                            </div>
                         </div>
                     </div>
 
@@ -158,7 +194,7 @@
                                     <th> Sr </th>
                                     <th> Date </th>
                                     <th> Subject </th>
-                                    <th> Message </th>
+                                    <th> Total </th>
                                     <th> Actions </th>
                                 </tr>
                             </thead>
@@ -175,10 +211,16 @@
                                             {{ $email->subject }}
                                         </td>
                                         <td>
-                                            {!! preg_replace('/<img[^>]+\>/i', '', $email->message) ?? 'Message...' !!}
-                                            {{-- {!! $email->message !!} --}}
+                                            {{-- {!! preg_replace('/<img[^>]+\>/i', '', $email->message) ?? 'Message...' !!} --}}
+                                            {{ $email->total }}
                                         </td>
                                         <td>
+                                            <button wire:click="showModel({{ $email->id }})"
+                                                class="btn btn-dark btn-sm" data-bs-toggle="tooltip"
+                                                data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
+                                                title="view">
+                                                view
+                                            </button>
                                             <button wire:click="deleteMessage({{ $email->id }})"
                                                 class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
                                                 data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
@@ -206,6 +248,51 @@
             </div>
         </div>
     </div>
+
+    <!--Note Modal -->
+    <div wire:ignore.self class="modal fade" id="emailViewModal" tabindex="-1"
+        aria-labelledby="emailViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="emailViewModalLabel">View Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if ($emailDetail)
+                        <!-- Email Subject Section -->
+                        <div class="mb-3">
+                            <h5 class="fw-bold text-dark">{{ $emailDetail->subject }}</h5>
+                        </div>
+
+                        <!-- Total Sent Section -->
+                        <div class="mb-4">
+                            <p class="text-muted"><strong>Total Sent:</strong> {{ $emailDetail->total }}</p>
+                        </div>
+
+                        <!-- Divider -->
+                        <hr class="my-4">
+
+                        <!-- Email Message Section -->
+                        <div class="email-content">
+                            <div class="border p-3 rounded-3 shadow-sm bg-light"
+                                style="max-height: 400px; overflow-y: auto;">
+                                {!! $emailDetail->message !!}
+                            </div>
+                        </div>
+                    @else
+                        <!-- If no email selected -->
+                        <div class="text-center">
+                            <p class="mb-0 text-muted">No email selected.</p>
+                        </div>
+                    @endif
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
     <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -214,11 +301,13 @@
                 if (editorElement) {
                     ClassicEditor
                         .create(editorElement, {
+                            height: 50,
                             ckfinder: {
                                 uploadUrl: '{{ route('ckeditor.upload') . '?_token=' . csrf_token() }}'
                             }
                         })
                         .then(editor => {
+                            editor.ui.view.editable.element.style.overflowY = 'auto';
                             // Bind CKEditor changes to Livewire property
                             editor.model.document.on('change:data', () => {
                                 @this.set('message', editor.getData());
@@ -254,13 +343,14 @@
             });
         });
 
-
-
         window.addEventListener('swal:modal', event => {
             swal({
                 title: event.detail.message,
                 icon: event.detail.type,
             });
+        });
+        window.addEventListener('show-view-modal', event => {
+            $('#emailViewModal').modal('show')
         });
     </script>
 
