@@ -143,6 +143,7 @@ class Leads extends Component
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'phone' => $data['phone'],
+                'note' => $data['noteLead'],
                 'type' => 3,
                 'created_at' => now(),
                 'updated_at' => now(),
