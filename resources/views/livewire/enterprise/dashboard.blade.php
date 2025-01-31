@@ -133,7 +133,7 @@
                                     @foreach ($recentLeads as $leads)
                                         <li class="d-flex justify-content-between mb-3">
                                             <span class="profile-photo">
-                                                {{ $leads->viewer_name ? strtoupper(substr($leads->viewer_name, 0, 1)) : 'No' }}
+                                                {{ $leads->viewer_name ? strtoupper(substr($leads->viewer_name, 0, 1)) : strtoupper(substr($leads->name, 0, 1)) }}
                                             </span>
                                             <span>Connected with <strong
                                                     style="color: #000">{{ $leads->viewing_name }}</strong></span>
