@@ -29,7 +29,7 @@ class EmailCompaign extends Component
     public $selectAllLeads = false;
     public $profiles = [];
     public $leads = [];
-    public $subject, $message, $emailDetail;
+    public $subject, $body, $emailDetail;
 
     public function mount()
     {
@@ -110,7 +110,7 @@ class EmailCompaign extends Component
     {
         return [
             'subject' => ['required', 'string', 'max:255'],
-            'message' => ['required', 'string', 'min:20', 'max:5000'],
+            'body' => ['required', 'string', 'min:20', 'max:5000'],
             'recipients' => ['required'],
         ];
     }
@@ -120,9 +120,9 @@ class EmailCompaign extends Component
         return [
             'subject.required' => 'Subject is required',
             'subject.max' => 'Maximum 255 characters',
-            'message.required' => 'Message is required',
-            'message.min' => 'Minimum 20 characters',
-            'message.max' => 'Maximum 5000 characters',
+            'body.required' => 'Message is required',
+            'body.min' => 'Minimum 20 characters',
+            'body.max' => 'Maximum 5000 characters',
         ];
     }
 
@@ -145,7 +145,7 @@ class EmailCompaign extends Component
             ModelsCompaignEmail::create([
                 'enterprise_id' => auth()->id(),
                 'subject' => $this->subject,
-                'message' => $this->message,
+                'message' => $this->body,
                 'total' => $total,
             ]);
             DB::commit();
@@ -156,7 +156,7 @@ class EmailCompaign extends Component
             $this->selectAll = false;
             $this->selectAllLeads = false;
             $this->subject = '';
-            $this->message = '';
+            $this->body = '';
             $this->dispatchBrowserEvent('swal:modal', [
                 'type' => 'success',
                 'message' => 'Emails sent successfully to Profiles and Leads.',

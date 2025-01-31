@@ -390,22 +390,35 @@ class UserProfileController extends Controller
         $profile = Profile::find($request->input('id'));
         $ip = request()->ip();
         $locationData = $this->getUserLocation($ip);
-        if ($locationData && $request->input('latitude')) {
-            $country = $locationData['geoplugin_countryName'];
-            $ip_address = $locationData['geoplugin_request'];
-            $state = $locationData['geoplugin_region'];
-            $city = $locationData['geoplugin_city'];
-            $lat = $request->input('latitude');
-            $long = $request->input('longitude');
-        } else {
-            $country = null;
-            $ip_address = null;
-            $state = null;
-            $city = null;
-            $lat = null;
-            $long = null;
+
+        // Default NULL values
+        $country = $state = $city = $ip_address = $lat = $long = null;
+
+        if ($locationData) {
+            $country = $locationData['geoplugin_countryName'] ?? null;
+            $state = $locationData['geoplugin_region'] ?? null;
+            $city = $locationData['geoplugin_city'] ?? null;
+            $ip_address = $locationData['geoplugin_request'] ?? null;
         }
-        $data = ['name' => $request->input('name'), 'email' => $request->input('email'), 'phone' => $request->input('phone'), 'type' => $request->input('type')];
+
+        // Retrieve and sanitize latitude/longitude
+        $lat = $request->input('latitude');
+        $long = $request->input('longitude');
+
+        // Explicitly check for "null" string or empty values
+        $lat = ($lat === "null" || $lat === "") ? null : (float) $lat;
+        $long = ($long === "null" || $long === "") ? null : (float) $long;
+
+        // Debugging output (Remove after testing)
+        // dd(['latitude' => $lat, 'longitude' => $long]);
+
+        $data = [
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
+            'type' => $request->input('type'),
+        ];
+
         DB::table('leads')->insert([
             'enterprise_id' => $profile->enterprise_id,
             'employee_id' => $profile->user_id,
@@ -423,9 +436,11 @@ class UserProfileController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-        return response()->json(['message' => 'Details saved successfully!']);
 
+        return response()->json(['message' => 'Details saved successfully!']);
     }
+
+
 
     private function getUserLocation($ip = null)
     {

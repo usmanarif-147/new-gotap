@@ -298,9 +298,10 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
+
                         <div class="mb-3">
-                            <label for="note" class="form-label">Note</label>
-                            <textarea class="form-control" id="note" rows="3" wire:model="noteLead"></textarea>
+                            <label for="noteLead" class="form-label">Note</label>
+                            <textarea class="form-control" id="noteLead" rows="3" wire:model="noteLead"></textarea>
                             @error('note')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
