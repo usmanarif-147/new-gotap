@@ -116,13 +116,13 @@
                 <!-- Message -->
                 <div class="mb-3" wire:ignore>
                     <label class="form-label fw-bold">Message *</label>
-                    @error('message')
+                    @error('body')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
-                    <textarea class="form-control overflow-auto" id="customMessage" wire:model.defer="message" placeholder="Message..."></textarea>
+                    <textarea class="form-control overflow-auto" id="customMessage" wire:model.defer="body" placeholder="Message..."></textarea>
                 </div>
 
-                <button class="btn btn-dark" wire:click="sendEmail" @disabled(!$recipients)>
+                <button class="btn btn-dark" wire:click="sendEmail" @disabled($recipients == null || empty($recipients) || empty($body))>
                     <span wire:loading wire:target="sendEmail">
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     </span>
@@ -166,7 +166,7 @@
                         <div class="email-content">
                             <div class="border p-3 rounded-3 shadow-sm bg-light"
                                 style="max-height: 400px; overflow-y: auto;">
-                                {!! $message !!}
+                                {!! $body !!}
                             </div>
                         </div>
                     </div>
@@ -183,7 +183,7 @@
 
         <div class="card mt-3">
             <div class="card-header">
-                <h3>Email Compaign Send</h3>
+                <h3>Email Campaign Send</h3>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -191,7 +191,7 @@
                         <table class="table admin-table table-sm">
                             <thead class="table-light">
                                 <tr>
-                                    <th> Sr </th>
+                                    <th> Nr </th>
                                     <th> Date </th>
                                     <th> Subject </th>
                                     <th> Total </th>
@@ -310,7 +310,7 @@
                             editor.ui.view.editable.element.style.overflowY = 'auto';
                             // Bind CKEditor changes to Livewire property
                             editor.model.document.on('change:data', () => {
-                                @this.set('message', editor.getData());
+                                @this.set('body', editor.getData());
                             });
 
                             // Refresh editor content when Livewire emits an event

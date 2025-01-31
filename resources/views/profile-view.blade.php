@@ -250,12 +250,10 @@
                 locationReminder.style.display = 'none';
                 lat = position.coords.latitude;
                 long = position.coords.longitude;
-                console.log('Location sent to Livewire:', lat, long);
             },
             function(error) {
                 // Location denied
                 locationReminder.style.display = 'block';
-                console.error("Location permission denied:", error.message);
             }, {
                 enableHighAccuracy: true,
                 timeout: 5000,
@@ -278,17 +276,6 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    // if (data.redirect) {
-                    //     let link = document.createElement('a');
-                    //     link.href = data.redirect;
-                    //     link.target = '_blank';
-                    //     link.rel = 'noopener noreferrer';
-                    //     document.body.appendChild(link);
-                    //     link.click();
-                    //     document.body.removeChild(link);
-                    // } else if (data.error) {
-                    //     alert(data.error);
-                    // }
 
                     if (data.redirect) {
                         let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent); // Detect mobile
@@ -302,13 +289,6 @@
                     } else if (data.error) {
                         alert("Error: " + data.error);
                     }
-
-                    // if (data.redirect) {
-                    //     let newTab = window.open('', '_blank');
-                    //     newTab.location.href = data.redirect;
-                    // } else if (data.error) {
-                    //     alert(data.error);
-                    // }
                 })
                 .catch(error => console.error('Error:', error));
         }
@@ -334,7 +314,6 @@
                         sendFormData(formData);
                     },
                     (error) => {
-                        console.error('Error getting location:', error);
                         // Proceed without location if the user denies access or an error occurs
                         formData.append('latitude', null);
                         formData.append('longitude', null);
@@ -342,7 +321,6 @@
                     }
                 );
             } else {
-                console.error('Geolocation is not supported by this browser.');
                 sendFormData(formData); // Send the form without location data
             }
         }
@@ -358,7 +336,6 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.message);
 
                     // Hide the loading spinner and re-enable the button
                     document.getElementById('loadingSpinner').style.display = 'none';
@@ -369,7 +346,6 @@
                     $('#userDetails').hide();
                 })
                 .catch(error => {
-                    console.error('Error:', error);
 
                     // Hide the loading spinner and re-enable the button
                     document.getElementById('loadingSpinner').style.display = 'none';

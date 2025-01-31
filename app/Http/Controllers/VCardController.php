@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Profile;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Response;
 use Illuminate\Support\Facades\DB;
 use JeroenDesloovere\VCard\VCard;
 use Illuminate\Support\Facades\Storage;
