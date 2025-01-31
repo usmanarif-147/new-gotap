@@ -296,8 +296,11 @@
     <script src="{{ asset('assets/js/ckeditor.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            let editorInstance;
+
             function initializeEditor() {
                 const editorElement = document.querySelector('#customMessage');
+
                 if (editorElement) {
                     ClassicEditor
                         .create(editorElement, {
@@ -307,7 +310,9 @@
                             }
                         })
                         .then(editor => {
+                            editorInstance = editor;
                             editor.ui.view.editable.element.style.overflowY = 'auto';
+
                             // Bind CKEditor changes to Livewire property
                             editor.model.document.on('change:data', () => {
                                 @this.set('body', editor.getData());
@@ -318,8 +323,10 @@
                                 editor.setData(content);
                             });
 
-                            // Store the editor instance globally if needed
-                            window.livewireEditorInstance = editor;
+                            // Clear CKEditor content when Livewire emits the 'clearEditorContent' event
+                            Livewire.on('clearEditorContent', () => {
+                                editor.setData(''); // Clear the CKEditor content
+                            });
                         })
                         .catch(error => {
                             console.error(error);
@@ -327,21 +334,28 @@
                 }
             }
 
-            // Initialize editor on page load
+            // Initialize the editor when the page loads
             initializeEditor();
 
-            // Re-initialize CKEditor after Livewire updates
+            // Re-initialize CKEditor if the Livewire component is updated
             Livewire.hook('message.processed', (message, component) => {
                 if (!document.querySelector('#customMessage')) {
                     return; // Do nothing if the editor element is removed
                 }
 
-                if (!window.livewireEditorInstance || !window.livewireEditorInstance.ui.view.editable
-                    .element.isConnected) {
-                    initializeEditor(); // Reinitialize if the instance is destroyed
+                // Reinitialize if the editor instance is no longer available
+                if (!editorInstance || !editorInstance.ui.view.editable.element.isConnected) {
+                    initializeEditor();
                 }
             });
+            window.addEventListener('clearEditorContent', event => {
+                if (editorInstance) {
+                    editorInstance.setData('');
+                }
+
+            });
         });
+
 
         window.addEventListener('swal:modal', event => {
             swal({

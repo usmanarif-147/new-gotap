@@ -157,6 +157,7 @@ class EmailCompaign extends Component
             $this->selectAllLeads = false;
             $this->subject = '';
             $this->body = '';
+            $this->dispatchBrowserEvent('clearEditorContent');
             $this->dispatchBrowserEvent('swal:modal', [
                 'type' => 'success',
                 'message' => 'Emails sent successfully to Profiles and Leads.',

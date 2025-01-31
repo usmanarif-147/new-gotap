@@ -110,7 +110,7 @@
                                         </td>
                                         <td>
                                             <span>
-                                                <i class="bx bx-user"></i>
+                                                <i class="bx bx-group"></i>
                                                 <span>{{ $subteam->profile_count }}</span>
                                             </span>
                                         </td>
