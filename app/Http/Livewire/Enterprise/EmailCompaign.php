@@ -140,7 +140,7 @@ class EmailCompaign extends Component
         try {
             DB::beginTransaction();
             foreach ($data['recipients'] as $email) {
-                Mail::to($email)->send(new CompaignEmail($this->subject, $this->message, $enterpriser));
+                Mail::to($email)->send(new CompaignEmail($this->subject, $this->body, $enterpriser));
             }
             ModelsCompaignEmail::create([
                 'enterprise_id' => auth()->id(),
