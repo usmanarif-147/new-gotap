@@ -16,8 +16,9 @@
     <div class="app-brand demo mb-2 d-flex justify-content-center align-items-center">
         <a href="/admin/dashboard" class="app-brand-link">
             <span class="app-brand-logo demo " style="background:white">
-                <div class="custom-logo-width">
-                    <img src="{{ asset('logo.png') }}" class="img-fluid  " alt="Logo here">
+                <div class="d-flex align-items-center">
+                    <img src="{{ asset('gotapEnterprise.png') }}" class="img-fluid" height="100" width="100"
+                        alt="Logo here">
                 </div>
             </span>
         </a>
@@ -37,7 +38,7 @@
             </a>
         </li>
 
-        <li class="menu-item {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+        <li class="menu-item {{ request()->routeIs('admin.users', 'admin.user.edit') ? 'active' : '' }}">
             <a href="{{ route('admin.users') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-user-pin"></i>
                 <div>Users</div>

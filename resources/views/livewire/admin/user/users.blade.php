@@ -77,7 +77,11 @@
                                         {{ defaultDateFormat($user->created_at) }}
                                     </th>
                                     <td>
-
+                                        <a href="{{ route('admin.user.edit', [$user->id]) }}" class="btn btn-warning"
+                                            data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top"
+                                            data-bs-html="true" title="Edit">
+                                            <i class="bx bx-edit-alt"></i>
+                                        </a>
                                         <a class="btn btn-primary" href="{{ route('admin.user.view', [$user->id]) }}">
                                             <i class='bx bx-street-view'></i>
                                         </a>
