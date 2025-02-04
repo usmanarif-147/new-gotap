@@ -20,6 +20,7 @@ Route::domain('app.gocoompany.com')->group(function () {
         // users
         Route::view('admin/users', 'admin.user.users')->name('admin.users');
         Route::view('admin/user/{id}/view', 'admin.user.view')->name('admin.user.view');
+        Route::view('admin/user/{id}/edit', 'admin.user.edit')->name('admin.user.edit');
 
         // applications
         Route::view('admin/applications', 'admin.application.applications')->name('admin.applications');
