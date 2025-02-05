@@ -36,7 +36,6 @@ class Edit extends Component
     {
         $this->user_id = request()->id;
         $user = User::where('id', $this->user_id)->first();
-        dd($user);
         $this->name = $user->name;
         $this->username = $user->username;
         $this->email = $user->email;
