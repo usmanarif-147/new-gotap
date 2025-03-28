@@ -6,6 +6,7 @@ use App\Mail\ApplicationApprovedMail;
 use App\Mail\ApplicationRejectedMail;
 use App\Models\Application;
 use App\Models\User;
+use App\Mail\SubscriptionsMail;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -19,27 +20,27 @@ class Applications extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $search = '', $filterByStatus = '',  $sortBy = '';
+    public $search = '', $filterByStatus = '', $sortBy = '';
 
     public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
 
-    public $total, $heading;
+    public $total;
 
-    public $applicationId;
+    public $applicationId, $pdfFile;
 
     public $reason;
 
     protected function rules()
     {
         return [
-            'reason'  => ['required']
+            'reason' => ['required']
         ];
     }
 
     protected function messages()
     {
         return [
-            'reason.required'  => ['Reason is required']
+            'reason.required' => ['Reason is required']
         ];
     }
 
@@ -59,6 +60,15 @@ class Applications extends Component
     public function updatedSortBy()
     {
         $this->resetPage();
+    }
+
+    public function viewContract($id)
+    {
+        $app = Application::find($id);
+        if ($app) {
+            $this->pdfFile = $app->file;
+        }
+        $this->dispatchBrowserEvent('show-pdf-modal');
     }
 
     /**
@@ -82,12 +92,19 @@ class Applications extends Component
             $user = User::create([
                 'name' => $application->name,
                 'email' => $application->email,
-                'phone' => $application->email,
-                'enterprise_type' => $application->name,
+                'phone' => $application->phone,
+                'company_name' => $application->company_name,
                 'role' => 'enterpriser',
                 'status' => 1,
                 'verified' => 1,
-                'token' =>  Str::random(20) . '_' . Str::random(20)
+                'token' => Str::random(20) . '_' . Str::random(20)
+            ]);
+
+            $sub = $user->userSubscription()->create([
+                'enterprise_type' => $application->enterprise_type,
+                'file' => $application->file,
+                'start_date' => $application->start_date,
+                'end_date' => $application->end_date,
             ]);
 
             $application->update([
@@ -98,12 +115,13 @@ class Applications extends Component
 
             Mail::to($user->email)
                 ->send(new ApplicationApprovedMail($user->name, $user->token));
+            Mail::to($user->email)->send(new SubscriptionsMail($user->name, $sub));
 
             $this->closeModal();
 
             $this->dispatchBrowserEvent('swal:modal', [
                 'message' => 'Request Accepted. Email Sent Successfully',
-                'icon' => 'success'
+                'type' => 'success'
             ]);
 
             $this->emit('pendingApplications');
@@ -111,7 +129,7 @@ class Applications extends Component
             DB::rollBack();
             $this->dispatchBrowserEvent('swal:modal', [
                 'message' => $ex->getMessage(),
-                'icon' => 'error'
+                'type' => 'error'
             ]);
         }
     }
@@ -152,7 +170,7 @@ class Applications extends Component
 
         $this->dispatchBrowserEvent('swal:modal', [
             'message' => 'Request Rejected. Email Sent Successfully',
-            'icon' => 'success'
+            'type' => 'success'
         ]);
 
         $this->emit('pendingApplications');
@@ -196,8 +214,6 @@ class Applications extends Component
     public function render()
     {
         $data = $this->getData();
-
-        $this->heading = "Applications";
         $applications = $data->paginate(10);
 
         $this->total = $applications->total();

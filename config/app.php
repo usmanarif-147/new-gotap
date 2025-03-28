@@ -56,6 +56,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'mail_url' => env('URL_Mail', 'https://enterprise.gocoompany.com'),
+
     'asset_url' => env('ASSET_URL'),
 
     /*
@@ -70,7 +72,7 @@ return [
     */
 
     // 'timezone' => 'UTC',
-    'timezone' => 'Asia/Karachi',
+    'timezone' => 'Europe/Rome',
 
     /*
     |--------------------------------------------------------------------------

@@ -2,7 +2,6 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
-                {{ $heading }}
                 <span>
                     <h5 style="margin-top:10px"> Total: {{ $total }} </h4>
                 </span>
@@ -40,7 +39,7 @@
                 </div>
                 <div class="col-md-3">
                     <label> Search by Name or Email </label>
-                    <input class="form-control me-2" type="search" wire:model="search" placeholder="Search" disabled>
+                    <input class="form-control me-2" type="search" wire:model="search" placeholder="Search">
                 </div>
             </div>
         </div>
@@ -78,7 +77,11 @@
                                         {{ defaultDateFormat($user->created_at) }}
                                     </th>
                                     <td>
-
+                                        <a href="{{ route('admin.user.edit', [$user->id]) }}" class="btn btn-warning"
+                                            data-bs-toggle="tooltip" data-bs-offset="0,4" data-bs-placement="top"
+                                            data-bs-html="true" title="Edit">
+                                            <i class="bx bx-edit-alt"></i>
+                                        </a>
                                         <a class="btn btn-primary" href="{{ route('admin.user.view', [$user->id]) }}">
                                             <i class='bx bx-street-view'></i>
                                         </a>
