@@ -101,40 +101,48 @@ class Platforms extends Component
         $this->platform_id = $id;
         $this->methodType = 'delete';
         $this->modalTitle = 'Are you sure';
-        $this->modalBody = 'You want to deactivate this platform!';
+        $this->modalBody = 'You want to Delete this platform!';
         $this->modalActionBtnColor = 'btn-danger';
-        $this->modalActionBtnText = 'Deactivate';
+        $this->modalActionBtnText = 'Delete';
         $this->dispatchBrowserEvent('confirmModal');
+    }
+
+    public function closeModal()
+    {
+        $this->platform_id = null;
+        $this->methodType = null;
+        $this->modalTitle = null;
+        $this->modalBody = null;
+        $this->modalActionBtnColor = null;
+        $this->modalActionBtnText = null;
+        $this->dispatchBrowserEvent('close-modal');
     }
 
     public function delete()
     {
-
-        Platform::where('id', $this->platform_id)->update([
-            'status' => 0
-        ]);
-
-        $this->resetPage();
-        $this->dispatchBrowserEvent('swal:modal', [
-            'type' => 'success',
-            'message' => 'Platform deactivated successfully!',
-        ]);
-
-        // $platform = Platform::where('id', $this->platform_id)->first();
-
-        // if ($platform->icon) {
-        //     if (Storage::exists('public/' . $platform->icon)) {
-        //         Storage::delete('public/' . $platform->icon);
-        //     }
-        // }
-
-        // Platform::where('id', $this->platform_id)->delete();
-
-        // $this->resetPage();
-        // $this->dispatchBrowserEvent('swal:modal', [
-        //     'type' => 'success',
-        //     'message' => 'Platform deleted successfully!',
-        // ]);
+        $platform = Platform::find($this->platform_id);
+        if ($platform) {
+            // Delete the icon from storage if it exists
+            if ($platform->icon && Storage::disk('public')->exists($platform->icon)) {
+                Storage::disk('public')->delete($platform->icon);
+            }
+            $platform->delete();
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'success',
+                'message' => 'Platform Deleted successfully!',
+            ]);
+            $this->platform_id = null;
+            $this->methodType = null;
+            $this->modalTitle = null;
+            $this->modalBody = null;
+            $this->modalActionBtnColor = null;
+            $this->modalActionBtnText = null;
+        } else {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'error',
+                'message' => 'Platform not found!',
+            ]);
+        }
     }
 
     public function render()

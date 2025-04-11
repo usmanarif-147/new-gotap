@@ -43,8 +43,9 @@ Route::domain('app.gocoompany.com')->group(function () {
         Route::view('admin/card/create', 'admin.card.create')->name('admin.card.create');
         // Route::view('admin/card/{id}/edit', 'admin.card.edit')->name('admin.card.edit');
 
+        Route::get('/cards/export', [ProfileController::class, 'exportCsv'])->name('cards.export');
 
-        Route::view('/downloadCardsCSV', [Cards::class, 'downloadCsv'])->name('export');
+        Route::get('/downloadCardsCSV', [Cards::class, 'downloadCsv'])->name('export');
 
         // profile
         // Route::post('/changePassword', [ProfileController::class, 'changePassword'])->name('profile.change.password');

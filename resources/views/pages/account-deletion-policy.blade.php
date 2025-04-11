@@ -16,6 +16,11 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
+                <div class="d-flex align-items-center mb-4 justify-content-center">
+                    <img src="{{ asset('assets/icon.png') }}" alt="GoTaps Logo" class="me-2"
+                        style="width: 50px; height: 50px;">
+                    <h3 class="mb-0">GoTaps</h3>
+                </div>
                 <div class="card shadow-sm">
                     <div class="card-header bg-danger text-white">
                         <h4>Account Deletion Policy</h4>

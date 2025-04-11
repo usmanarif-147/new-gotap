@@ -30,12 +30,14 @@ class Edit extends Component
     $gender,
     $verified,
     $featured,
-    $deactivated_at;
+    $deactivated_at,
+    $user;
 
     public function mount()
     {
         $this->user_id = request()->id;
-        $user = User::where('id', $this->user_id)->first();
+        $user = User::with('profiles.cards')->findOrFail($this->user_id);
+        $this->user = $user;
         $this->name = $user->name;
         $this->username = $user->username;
         $this->email = $user->email;

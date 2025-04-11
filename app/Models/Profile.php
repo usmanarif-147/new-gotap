@@ -50,4 +50,9 @@ class Profile extends Model
         return $this->belongsToMany(subteams::class, 'subteam_profiles', 'profile_id', 'subteam_id');
     }
 
+    public function cards()
+    {
+        return $this->belongsToMany(Card::class, 'profile_cards');
+    }
+
 }
