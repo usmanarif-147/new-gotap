@@ -140,17 +140,28 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label class="form-label">
-                                        Email
-                                        @error('email')
+                                        Username <span class="text-danger"> * </span>
+                                        @error('username')
                                             <span class="text-danger error-message">{{ $message }}</span>
                                         @enderror
                                     </label>
-                                    <input type="email" wire:model="email" class="form-control"
-                                        placeholder="Enter email">
+                                    <input type="text" wire:model="username" class="form-control"
+                                        placeholder="Enter username">
                                 </div>
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Bio
+                                        @error('bio')
+                                            <span class="text-danger error-message">{{ $message }}</span>
+                                        @enderror
+                                    </label>
+                                    <input type="text" wire:model="bio" class="form-control" placeholder="Enter bio">
+                                </div>
+                            </div>
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label class="form-label">
@@ -161,18 +172,6 @@
                                     </label>
                                     <input type="tel" wire:model="phone" class="form-control"
                                         placeholder="Enter phone">
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        Username <span class="text-danger"> * </span>
-                                        @error('username')
-                                            <span class="text-danger error-message">{{ $message }}</span>
-                                        @enderror
-                                    </label>
-                                    <input type="text" wire:model="username" class="form-control"
-                                        placeholder="Enter username">
                                 </div>
                             </div>
                         </div>
@@ -232,13 +231,31 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label class="form-label">
-                                        Bio
-                                        @error('bio')
+                                        Email <span class="text-danger"> * </span>
+                                        @error('email')
                                             <span class="text-danger error-message">{{ $message }}</span>
                                         @enderror
                                     </label>
-                                    <input type="text" wire:model="bio" class="form-control"
-                                        placeholder="Enter bio">
+                                    <input type="email" wire:model="email" class="form-control"
+                                        placeholder="Enter email">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Password <span class="text-danger"> * </span>
+                                        @error('password')
+                                            <span class="text-danger error-message">{{ $message }}</span>
+                                        @enderror
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="password" id="password-input" wire:model="password"
+                                            class="form-control" placeholder="Enter password">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            id="toggle-password-btn">
+                                            <i id="password-icon" class="bx bx-show"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -493,6 +510,20 @@
                 mobilePreview.classList.add('d-none');
                 toggleBtn.textContent = 'Show Mobile Preview';
             }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password-input');
+            const toggleBtn = document.getElementById('toggle-password-btn');
+            const icon = document.getElementById('password-icon');
+
+            toggleBtn.addEventListener('click', function() {
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                icon.className = isPassword ? 'bx bx-hide' : 'bx bx-show';
+            });
         });
     </script>
 

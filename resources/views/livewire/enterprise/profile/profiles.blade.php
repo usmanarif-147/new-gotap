@@ -9,7 +9,7 @@
             </h2>
             <h5 class="card-header">
                 <a class="btn btn-dark" href="{{ route('enterprise.profile.create') }}">
-                    Create Profile
+                    Create User
                 </a>
             </h5>
         </div>

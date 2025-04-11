@@ -56,6 +56,7 @@
                     <table class="table admin-table">
                         <thead class="table-light">
                             <tr>
+                                <th> Sr </th>
                                 <th> Icon </th>
                                 <th> Title </th>
                                 <th> Category </th>
@@ -66,8 +67,9 @@
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
-                            @foreach ($platforms as $platform)
+                            @foreach ($platforms as $index => $platform)
                                 <tr>
+                                    <td>{{ $index + 1 }}</td>
                                     <td>
                                         <div class="img-holder">
                                             <img
@@ -100,6 +102,9 @@
                                             data-bs-placement="top" data-bs-html="true" title="Edit">
                                             <i class="bx bx-edit-alt"></i>
                                         </a>
+                                        <button class="btn btn-danger" wire:click ="confirmModal({{ $platform->id }})">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -135,6 +140,17 @@
 
         window.addEventListener('confirmModal', event => {
             $('#confirmModal').modal('show');
+        });
+
+        window.addEventListener('close-modal', event => {
+            $('#confirmModal').modal('hide');
+        });
+
+        window.addEventListener('swal:modal', event => {
+            swal({
+                title: event.detail.message,
+                icon: event.detail.type,
+            });
         });
     </script>
 

@@ -25,6 +25,21 @@
                                     <input type="number" wire:model="quantity" class="form-control"
                                         id="basic-default-company" placeholder="0">
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Type
+                                        <span class="text-danger"> * </span>
+                                        @error('type')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </label>
+                                    <select wire:model="type" class="form-control form-select me-2">
+                                        <option value="" selected> Select Type </option>
+                                        @foreach ($types as $val => $type)
+                                            <option value="{{ $val }}">{{ $type }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
 

@@ -184,6 +184,51 @@
                         </div>
 
                     </div>
+                    <div class="card mt-4 text-center w-50 mx-auto">
+                        <div class="card-header bg-primary text-white text-center">
+                            <h5 class="mb-0">User Cards Information</h5>
+                        </div>
+                        <div class="card-body mt-3">
+                            @if ($user->profiles->isNotEmpty())
+                                @foreach ($user->profiles as $profile)
+                                    <div class="mb-4">
+                                        @if ($profile->cards->isNotEmpty())
+                                            <div class="list-group">
+                                                @foreach ($profile->cards as $card)
+                                                    <div class="list-group-item">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-4">
+                                                                <strong>Profile UserName:</strong>
+                                                                {{ $profile->username ?? 'Unnamed Profile' }}
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <strong>Card Type:</strong> {{ ucfirst($card->type) }}
+                                                            </div>
+                                                            <div class="col-md-4 text-end">
+                                                                <strong>Status:</strong>
+                                                                <span
+                                                                    class="badge {{ $card->status ? 'bg-success' : 'bg-danger' }}">
+                                                                    {{ $card->status ? 'Active' : 'Inactive' }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="text-muted fst-italic">No cards linked to this profile.</p>
+                                        @endif
+                                    </div>
+                                    @if (!$loop->last)
+                                        <hr>
+                                    @endif
+                                @endforeach
+                            @else
+                                <p class="text-muted fst-italic">This user has no profiles.</p>
+                            @endif
+                        </div>
+                    </div>
+
                     <div class="card-footer">
                         <button type="submit" class="btn" style="background: #0EA7C1; color:white"
                             wire:loading.attr="disabled" wire:target="update">
@@ -195,7 +240,6 @@
                             Processing...
                         </span>
                     </div>
-
                 </form>
             </div>
         </div>

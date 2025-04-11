@@ -93,7 +93,7 @@
                 <li class="{{ Request::routeIs('enterprise.profile.create') ? 'active bg-active' : '' }}">
                     <a href="{{ route('enterprise.profile.create') }}" class="dropdown-item d-flex align-items-center">
                         <div class="vertical-line me-3"></div>
-                        <div>Create Profile</div>
+                        <div>Create User</div>
                     </a>
                 </li>
                 <li class="{{ $isActive || Request::routeIs('enterprise.requests') ? 'active bg-active' : '' }}">
