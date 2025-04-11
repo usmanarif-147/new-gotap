@@ -23,7 +23,7 @@
                 </div>
                 <div class="card shadow-sm">
                     <div class="card-header bg-danger text-white">
-                        <h4>Account Deletion Policy</h4>
+                        <h4>Account Deletion Policy - Gocoompany</h4>
                     </div>
                     <div class="card-body">
                         <p>
@@ -36,7 +36,7 @@
                         <p>
                             Users who wish to delete their account must submit a deletion request through their account
                             settings or by contacting our support team at <a
-                                href="https://app.gocoompany.com/">app.gocoompany.com</a>.
+                                href="mailto:support@gocoompany.com">support@gocoompany.com</a>.
                             Once the request is received, our team will process the deletion within the next 30 working
                             days.
                         </p>
@@ -62,7 +62,7 @@
                         <h5>5. Contact Information</h5>
                         <p>
                             For any questions or concerns regarding account deletion, please contact us at <a
-                                href="https://app.gocoompany.com">app.gocoompany.com</a>.
+                                href="mailto:support@gocoompany.com">support@gocoompany.com</a>.
                         </p>
                     </div>
                 </div>
