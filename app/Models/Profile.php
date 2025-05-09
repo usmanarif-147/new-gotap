@@ -28,6 +28,8 @@ class Profile extends Model
         'active',
         'user_direct',
         'tiks',
+        'taps',
+        'is_leads_enabled',
         'private'
     ];
 
@@ -41,6 +43,16 @@ class Profile extends Model
         return $this->belongsToMany(Platform::class, 'profile_platforms', 'profile_id', 'platform_id')
             ->withPivot('path', 'direct', 'platform_order', 'label')
             ->orderBy('platform_order');
+    }
+
+    public function subteams()
+    {
+        return $this->belongsToMany(subteams::class, 'subteam_profiles', 'profile_id', 'subteam_id');
+    }
+
+    public function cards()
+    {
+        return $this->belongsToMany(Card::class, 'profile_cards');
     }
 
 }

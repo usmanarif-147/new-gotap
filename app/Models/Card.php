@@ -15,5 +15,6 @@ class Card extends Model
         'uuid',
         'description',
         'status',
+        'type',
     ];
 }

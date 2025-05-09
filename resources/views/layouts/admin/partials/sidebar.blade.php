@@ -8,8 +8,8 @@
                     height="25px" width="25px" class="img-fluid rounded-circle" alt="">
             </div>
             <div>
-                <h6 class="text-white m-0 text-start" style="font-size: 12px">Haseeb</h6>
-                <p class="text-white m-0 text-truncate" style="font-size: 10px">haseeb@gmail.com</p>
+                <h6 class="text-white m-0 text-start" style="font-size: 12px">{{ auth()->user()->name }}</h6>
+                <p class="text-white m-0 text-truncate" style="font-size: 10px">{{ auth()->user()->email }}</p>
             </div>
         </button>
     </div>
@@ -26,7 +26,7 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label class="form-label">Password</label>
+                    <label class="form-label">New Password</label>
                     <input type="password" class="form-control" id="password" placeholder="Enter password">
                 </div>
             </div>

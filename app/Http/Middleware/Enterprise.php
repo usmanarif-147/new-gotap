@@ -15,9 +15,18 @@ class Enterprise
             return redirect()->route('enterprise.login');
         }
 
-        $userRole = Auth::user()->role;
-        if ($userRole == 'admin') {
+        $user = Auth::user();
+        if ($user->role == 'admin') {
             return redirect()->route('admin.dashboard');
+        }
+        if ($request->routeIs('enterprise.logout') || $request->routeIs('enterprise.mysubscription')) {
+            return $next($request);
+        }
+        if ($user->role === 'enterpriser') {
+            $subscription = $user->userSubscription;
+            if (!$subscription || now()->greaterThan($subscription->end_date)) {
+                return redirect()->route('enterprise.mysubscription')->with('message', 'Your subscription has expired.');
+            }
         }
 
         return $next($request);

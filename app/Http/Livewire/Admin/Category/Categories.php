@@ -19,7 +19,7 @@ class Categories extends Component
     // filter valriables
     public $searchQuery = '', $filterByStatus, $sortBy;
 
-    public $total, $heading, $statuses = [];
+    public $total, $statuses = [];
 
     public function mount()
     {
@@ -91,8 +91,6 @@ class Categories extends Component
     {
 
         $data = $this->getData();
-
-        $this->heading = "Categories";
         $categories = $data->paginate(10);
 
         $this->total = $categories->total();

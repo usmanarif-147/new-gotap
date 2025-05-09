@@ -2,7 +2,12 @@
 
 namespace App\Http\Livewire\Enterprise\Profile;
 
+use App\Mail\EnterpriserUserWelcomeMail;
 use App\Models\Profile;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -13,39 +18,77 @@ class Create extends Component
 
     use WithFileUploads;
 
-    public $heading;
+    public $heading, $user;
+
+    public $maxProfiles;
+
+    public $showSubscriptionModal = false;
 
     public
-        $name,
-        $email,
-        $username,
-        $work_position,
-        $job_title,
-        $company,
-        $address,
-        $bio,
-        $phone,
-        $photo,
-        $cover_photo,
-        $active,
-        $user_direct,
-        $tiks,
-        $private;
+    $name,
+    $email,
+    $username,
+    $work_position,
+    $job_title,
+    $company,
+    $address,
+    $bio,
+    $phone,
+    $photo,
+    $cover_photo,
+    $active,
+    $user_direct,
+    $tiks,
+    $private,
+    $password;
+
+    public function mount()
+    {
+        $this->user = auth()->user();
+
+        // if ($this->user->userSubscription && Carbon::parse($this->user->userSubscription->end_date)->lt(now())) {
+        //     $this->showSubscriptionModal = true;
+        //     return;
+        // }
+
+        $this->maxProfiles = $this->getProfileLimitBasedOnSubscription($this->user);
+        $currentProfileCount = Profile::where('enterprise_id', $this->user->id)->count();
+        // dd($currentProfileCount);
+        if ($currentProfileCount >= $this->maxProfiles) {
+            $this->showSubscriptionModal = true;
+            return;
+        }
+    }
+
+    private function getProfileLimitBasedOnSubscription($user)
+    {
+        switch ($user->userSubscription->enterprise_type) {
+            case '1':
+                return 6;
+            case '2':
+                return 20;
+            case '3':
+                return PHP_INT_MAX;
+            default:
+                return 0;
+        }
+    }
 
     protected function rules()
     {
         return [
-            'name'              => ['nullable', 'min:5', 'max:15'],
-            'email'             => ['nullable', 'email'],
-            'phone'             => ['nullable', 'min:5', 'max:15'],
-            'username'          => ['required', 'min:3', 'max:20', 'regex:/^[A-Za-z][A-Za-z0-9_.]{5,25}$/', Rule::unique(Profile::class)],
-            'work_position'     => ['nullable', 'min:3', 'max:20'],
-            'job_title'         => ['nullable', 'string'],
-            'company'           => ['nullable', 'string'],
-            'address'           => ['nullable'],
-            'bio'               => ['nullable'],
-            'cover_photo'       => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
-            'photo'             => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'name' => ['nullable', 'min:5', 'max:15'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8'],
+            'phone' => ['nullable', 'min:5', 'max:15'],
+            'username' => ['required', 'min:3', 'max:20', 'regex:/^[A-Za-z][A-Za-z0-9_.]{5,25}$/', Rule::unique(Profile::class)],
+            'work_position' => ['nullable', 'min:3', 'max:20'],
+            'job_title' => ['nullable', 'string'],
+            'company' => ['nullable', 'string'],
+            'address' => ['nullable'],
+            'bio' => ['nullable'],
+            'cover_photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ];
     }
 
@@ -54,8 +97,11 @@ class Create extends Component
         return [
             'name.min' => 'The name must be at least 5 characters long.',
             'name.max' => 'The name must not exceed 15 characters.',
-
+            'email.required' => 'The Email Address is required.',
             'email.email' => 'Please provide a valid email address.',
+
+            'password.required' => 'Password is required.',
+            'password.min' => 'Password must be at least :min characters.',
 
             'phone.min' => 'The phone number must be at least 5 characters long.',
             'phone.max' => 'The phone number must not exceed 15 characters.',
@@ -90,6 +136,12 @@ class Create extends Component
     {
         $data = $this->validate();
 
+        $currentProfileCount = Profile::where('enterprise_id', $this->user->id)->count();
+        if ($currentProfileCount >= $this->maxProfiles) {
+            $this->showSubscriptionModal = true;
+            return;
+        }
+
         $data['enterprise_id'] = auth()->id();
         $data['type'] = 'enterprise';
 
@@ -99,13 +151,45 @@ class Create extends Component
         if ($this->cover_photo) {
             $data['cover_photo'] = Storage::disk('public')->put('/uploads/coverPhotos', $this->cover_photo);
         }
+        DB::beginTransaction();
+        try {
+            $user = User::create([
+                'name' => $data['name'],
+                'username' => $data['username'],
+                'email' => $data['email'],
+                'password' => bcrypt($data['password']),
+            ]);
+            $data['user_id'] = $user->id;
 
-        Profile::create($data);
+            Profile::create($data);
+            DB::commit();
+            $this->reset([
+                'name',
+                'email',
+                'phone',
+                'username',
+                'work_position',
+                'job_title',
+                'company',
+                'address',
+                'bio',
+                'photo',
+                'cover_photo',
+                'password',
+            ]);
+            Mail::to($user->email)->send(new EnterpriserUserWelcomeMail($user, $data['password']));
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'success',
+                'message' => 'User and Related Profile created successfully!',
+            ]);
 
-        $this->dispatchBrowserEvent('swal:modal', [
-            'type' => 'success',
-            'message' => 'Profile created successfully!',
-        ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'error',
+                'message' => 'There was an error creating the user and profile. Please try again.',
+            ]);
+        }
     }
 
     public function render()

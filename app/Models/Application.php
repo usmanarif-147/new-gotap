@@ -14,6 +14,10 @@ class Application extends Model
         'email',
         'phone',
         'enterprise_type',
+        'company_name',
+        'start_date',
+        'end_date',
+        'file',
         'reason',
         'status'
     ];

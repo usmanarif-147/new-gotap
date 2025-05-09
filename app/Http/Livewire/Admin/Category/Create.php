@@ -8,14 +8,12 @@ use Livewire\Component;
 class Create extends Component
 {
 
-    public $heading;
-
     public $name, $name_sv, $status;
 
     protected function rules()
     {
         return [
-            'name'   => ['required'],
+            'name' => ['required'],
             'name_sv' => ['required'],
             'status' => ['required', 'not_in:'],
         ];
@@ -50,7 +48,6 @@ class Create extends Component
 
     public function render()
     {
-        $this->heading = "Create";
         return view('livewire.admin.category.create');
     }
 }

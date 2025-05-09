@@ -1,4 +1,4 @@
-<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme  ">
     <livewire:enterprise.sidebar />
 </aside>
 
@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label class="form-label">Password</label>
+                    <label class="form-label">New Password</label>
                     <input type="password" class="form-control" id="password" placeholder="Enter password">
                 </div>
             </div>

@@ -11,16 +11,27 @@ use Illuminate\Support\Str;
 class Create extends Component
 {
 
-    public $heading;
+    public $description, $quantity, $type;
 
-    public $description, $quantity;
+    public $types = [
+        'sticker' => 'Sticker',
+        'keychain' => 'Keychain',
+        'ebadge' => 'E-Badge',
+        'card' => 'Card',
+        'band' => 'Band',
+        'case' => 'Case',
+        'ring' => 'Ring',
+        'animal' => 'Animal',
+        'standard' => 'Standard',
+    ];
 
 
     protected function rules()
     {
         return [
             'description' => 'sometimes',
-            'quantity'    => 'numeric|required|min:1',
+            'quantity' => 'numeric|required|min:1',
+            'type' => 'required',
         ];
     }
 
@@ -28,9 +39,10 @@ class Create extends Component
     {
         return [
             'description.sometimes' => 'sometimes',
-            'quantity.required'     =>  'required',
-            'quantity.numeric'      => 'numeric',
-            'quantity.min'          => 'min:1',
+            'quantity.required' => 'Quantity is required',
+            'quantity.numeric' => 'Quantity should be numeric',
+            'quantity.min' => 'Quantity should be at least 1',
+            'type.required' => 'Type is required',
         ];
     }
 
@@ -50,6 +62,7 @@ class Create extends Component
             Card::create([
                 'uuid' => Str::uuid(),
                 'description' => $this->description,
+                'type' => $this->type,
                 'status' => 0,
             ]);
         }
@@ -62,9 +75,6 @@ class Create extends Component
 
     public function render()
     {
-
-        $this->heading = "Create";
-
         return view('livewire.admin.card.create');
     }
 }

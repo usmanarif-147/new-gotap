@@ -92,7 +92,10 @@
         <div class="content">
             <h1>Hello, {{ $name }}</h1>
             <p>{{ $body }}</p>
-            <a href="{{ route('enterprise.set.password', [$token]) }}"> Set New Password </a>
+            {{-- <a href="{{ route('enterprise.set.password', [$token]) }}"> --}}
+            <a href="{{ config('app.mail_url') . '/enterprise/set-password/' . $token }}">
+                Set New Password
+            </a>
         </div>
         <div class="footer">
             &copy; {{ date('Y') }} GoTap. All rights reserved. <br>
