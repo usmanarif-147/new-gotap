@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ $subject }}</title>
     <style>
-        /* Basic reset and font */
         body {
             margin: 0;
             padding: 0;
@@ -29,7 +28,6 @@
 
         p {
             white-space: pre-line;
-            /* preserve newlines and spaces */
         }
 
         .btn {
@@ -51,8 +49,7 @@
         <h1 style="margin: 0; font-size: 24px; text-transform: uppercase;">GoTap</h1>
     </div>
     <div class="email-container">
-        <h2>{{ $subject }}</h2>
-        <p>{{ $bodyText }}</p>
+        <div>{!! $bodyText !!}</div>
 
         @if ($buttonText && $buttonUrl)
             <div style="text-align: {{ $textAlign }};">

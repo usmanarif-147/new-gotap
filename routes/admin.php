@@ -7,6 +7,7 @@ use App\Http\Livewire\Admin\Card\Cards;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\VCardController;
 
 
 Route::domain('app.gocoompany.com')->group(function () {
@@ -30,6 +31,7 @@ Route::domain('app.gocoompany.com')->group(function () {
 
         // Add Compaign
         Route::view('admin/emailcompaign-create', 'admin.emailcompaign.create')->name('admin.emailcompaign.create');
+        // Route::view('admin/emailcompaign-new', 'admin.emailcompaign.new')->name('admin.emailcompaign.new');
 
         // categories
         Route::view('admin/categories', 'admin.category.categories')->name('admin.categories');
