@@ -9,6 +9,7 @@ use App\Http\Requests\SearchRequest;
 use App\Models\Profile;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ConnectController extends Controller
@@ -44,9 +45,23 @@ class ConnectController extends Controller
                 'message' => trans('backend.already_connected')
             ]);
         }
-
         // if not exist then make connection between user and profile
         try {
+            $profile = Profile::find($request->connect_id);
+            $user = Auth::user();
+            $active = Profile::where('user_id', $user->id)->where('active', 1)->first();
+            DB::table('leads')->insert([
+                'enterprise_id' => $profile->enterprise_id,
+                'employee_id' => $profile->user_id,
+                'viewing_id' => $profile->id,
+                'viewer_id' => $active->id,
+                'name' => $user->name ? $user->name : $user->username,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'type' => 4,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
             DB::table('connects')->insert([
                 'connected_id' => $request->connect_id,
                 'connecting_id' => auth()->id(),

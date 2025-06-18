@@ -97,7 +97,7 @@ hr:not([size]) {
 }
 
 .custom-text {
-    color: #6e39cb;
+    color: #000000;
 }
 
 h6,
@@ -15469,7 +15469,7 @@ body {
     justify-content: flex-start;
     margin: 0;
     padding: 0;
-    height: 100%;
+    min-height: 100vh;
 }
 
 .menu-inner-shadow {

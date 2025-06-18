@@ -13,8 +13,9 @@
 
 
     <meta name="description" content="" />
-
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
     @include('layouts.admin.partials.css')
+
 
     @yield('style')
     @livewireStyles

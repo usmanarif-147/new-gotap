@@ -2,7 +2,6 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
-                {{-- {{ $heading }} --}}
                 <span>
                     <h5 style="margin-top:10px"> Total: {{ $total }} </h4>
                 </span>
@@ -62,7 +61,15 @@
                                         {{ $applicant->phone }}
                                     </td>
                                     <td>
-                                        {{ $applicant->enterprise_type }}
+                                        @if ($applicant->enterprise_type == '1')
+                                            1-6 People
+                                        @elseif ($applicant->enterprise_type == '2')
+                                            1-20 People
+                                        @elseif ($applicant->enterprise_type == '3')
+                                            20+ People
+                                        @else
+                                            {{ $applicant->enterprise_type }}
+                                        @endif
                                     </td>
                                     <td>
                                         @if ($applicant->status == 0)
@@ -94,6 +101,13 @@
                                                 data-bs-placement="top" data-bs-html="true" title="Reject Request">
                                                 <i class='bx bxs-user-x'></i>
                                             </button>
+                                            @if ($applicant->file)
+                                                <button wire:click="viewContract({{ $applicant->id }})"
+                                                    class="btn btn-info" data-bs-toggle="tooltip" data-bs-offset="0,4"
+                                                    data-bs-placement="top" data-bs-html="true" title="View Contract">
+                                                    <i class='bx bx-street-view'></i>
+                                                </button>
+                                            @endif
                                         @else
                                             --
                                         @endif
@@ -153,6 +167,28 @@
         </div>
     </div>
 
+    <!-- Bootstrap Modal -->
+    <div wire:ignore.self class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pdfModalLabel">Contract View</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if ($pdfFile)
+                        <iframe src="{{ Storage::url($pdfFile) }}" frameborder="0" width="100%"
+                            height="500px"></iframe>
+                    @else
+                        <p>No PDF file selected.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     @include('livewire.admin.confirm-modal')
 
@@ -170,6 +206,10 @@
         });
         window.addEventListener('reason-modal', event => {
             $('#reasonModal').modal('show')
+        });
+
+        window.addEventListener('show-pdf-modal', event => {
+            $('#pdfModal').modal('show')
         });
         window.addEventListener('close-modal', event => {
             $('#confirmModal').modal('hide')
