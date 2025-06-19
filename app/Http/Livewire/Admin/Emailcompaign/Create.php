@@ -6,10 +6,15 @@ use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CustomTemplateMail;
+use App\Models\AdminEmailCompaign;
 use App\Models\EmailTemplate;
+use Livewire\WithPagination;
 
 class Create extends Component
 {
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
     public string $subject = '';
     public string $bodyText = '';
     public ?string $buttonText = null;
@@ -24,9 +29,8 @@ class Create extends Component
     public int $step = 1;
 
     public $templates;
-    public $selectedTemplateId;
+    public $selectedTemplateId, $emailDetail;
 
-    // Mount and preload templates
     public function mount(): void
     {
         $this->templates = EmailTemplate::all();
@@ -34,18 +38,15 @@ class Create extends Component
 
         if ($this->selectedTemplateId) {
             $this->bodyText = $this->templates->first()->html ?? '';
-            $this->dispatchBrowserEvent('refreshEditor', $this->bodyText);
         }
     }
 
-    // Update editor content when new template is selected
-    public function updatedSelectedTemplateId($id): void
+    public function goToStep(int $step): void
     {
-        $template = EmailTemplate::find($id);
+        $this->step = $step;
 
-        if ($template) {
-            $this->bodyText = $template->html;
-            $this->dispatchBrowserEvent('refreshEditor', $template->html);
+        if ($step === 2) {
+            $this->dispatchBrowserEvent('init-summernote', ['content' => $this->bodyText]);
         }
     }
 
@@ -55,32 +56,27 @@ class Create extends Component
 
         $template = EmailTemplate::find($id);
         if ($template) {
-            if ($this->step == 1) {
-                $this->bodyText = $template->html; // Move to step 2 if not already there
-            } else {
-                $this->bodyText = $template->html;
-                $this->dispatchBrowserEvent('refreshEditor', $template->html);
+            $this->bodyText = $template->html;
+            if ($this->step === 2) {
+                $this->dispatchBrowserEvent('init-summernote', ['content' => $this->bodyText]);
             }
         }
     }
 
-    // Select all users logic
     public function updatedSelectAll($value): void
     {
-        if ($value) {
-            $this->selectedUsers = ['all'];
-        } else {
-            $this->selectedUsers = [];
+        $this->selectedUsers = $value ? ['all'] : [];
+    }
+
+    public function updatedSelectedTemplateId($id): void
+    {
+        $template = EmailTemplate::find($id);
+        if ($template) {
+            $this->bodyText = $template->html;
+            $this->dispatchBrowserEvent('init-summernote', ['content' => $this->bodyText]);
         }
     }
 
-    // Step navigation methods
-    public function goToStep(int $step): void
-    {
-        $this->step = $step;
-    }
-
-    // Livewire computed property
     public function getFilteredUsersProperty()
     {
         return User::query()
@@ -90,38 +86,86 @@ class Create extends Component
             ->get();
     }
 
-    // Send email to selected users
     public function sendEmail(): void
     {
-        $recipients = collect();
-
-        if (in_array('all', $this->selectedUsers)) {
-            $recipients = User::pluck('email');
-        } else {
-            $recipients = User::whereIn('id', $this->selectedUsers)->pluck('email');
+        if (empty($this->selectedUsers)) {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'error',
+                'message' => 'Please select at least one user or all users.',
+            ]);
+            return;
         }
+        if (empty($this->subject) || empty($this->bodyText)) {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'error',
+                'message' => 'Subject and Body Text cannot be empty.',
+            ]);
+            return;
+        }
+        $recipients = in_array('all', $this->selectedUsers)
+            ? User::pluck('email')
+            : User::whereIn('id', $this->selectedUsers)->pluck('email');
         $bodyText = html_entity_decode($this->bodyText, ENT_QUOTES, 'UTF-8');
 
-        foreach ($recipients as $email) {
-            Mail::to($email)->queue(new CustomTemplateMail(
-                $this->subject,
-                $bodyText,
-                $this->buttonText,
-                $this->buttonUrl,
-                $this->bgColor,
-                $this->textColor,
-                $this->textAlign
-            ));
-        }
+        try {
+            AdminEmailCompaign::create([
+                'subject' => $this->subject,
+                'message' => $bodyText,
+                'total' => count($recipients),
+            ]);
+            foreach ($recipients as $email) {
+                Mail::to($email)->queue(new CustomTemplateMail(
+                    $this->subject,
+                    $bodyText,
+                    $this->buttonText,
+                    $this->buttonUrl,
+                    $this->bgColor,
+                    $this->textColor,
+                    $this->textAlign
+                ));
+            }
 
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'success',
+                'message' => 'Emails Sent Successfully!',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'error',
+                'message' => 'Failed to save email campaign: ' . $e->getMessage(),
+            ]);
+            return;
+        }
+    }
+
+    public function showModel($id)
+    {
+        $this->emailDetail = AdminEmailCompaign::find($id);
+        $this->dispatchBrowserEvent('show-view-modal');
+    }
+
+    public function deleteMessage($id)
+    {
+        $email = AdminEmailCompaign::find($id);
+        $email->delete();
         $this->dispatchBrowserEvent('swal:modal', [
             'type' => 'success',
-            'message' => 'Emails Sent Successfully!',
+            'message' => 'Email Delete successfully!.',
         ]);
+    }
+
+    public function getData()
+    {
+        $data = AdminEmailCompaign::orderBy('created_at', 'desc');
+        return $data;
     }
 
     public function render()
     {
-        return view('livewire.admin.emailcompaign.create');
+        $data = $this->getData();
+        $emails = $data->paginate(5);
+        return view('livewire.admin.emailcompaign.create', [
+            'emails' => $emails,
+        ]);
     }
 }
