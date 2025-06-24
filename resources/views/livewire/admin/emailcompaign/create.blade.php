@@ -44,14 +44,14 @@
                         </div>
                     @endif
 
-                    <div class="mb-3" wire:ignore>
-                        <label for="summernote-editor">Email Body</label>
-                        <textarea id="summernote-editor" class="form-control">{{ $bodyText }}</textarea>
-                    </div>
-
                     <div class="col-md-6 mb-3 mt-2">
                         <label>Subject<span class="text-danger"> * </span> </label>
                         <input type="text" wire:model.live="subject" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3" wire:ignore>
+                        <label for="summernote-editor">Email Body</label>
+                        <textarea id="summernote-editor" class="form-control">{{ $bodyText }}</textarea>
                     </div>
 
                     <div class="row">
