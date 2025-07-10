@@ -50,6 +50,15 @@ Route::get('/optimize', function () {
     dd("done");
 });
 
+Route::get('/clear-livewire', function () {
+    Artisan::call('view:clear');
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('livewire:discover');
+
+    return '✅ Livewire and Laravel cache cleared!';
+});
+
 Route::get('/connectsLeads', function () {
     $connections = Connect::all();
 
