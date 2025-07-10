@@ -90,9 +90,9 @@
                 <i class="menu-icon tf-icons bx bxs-user-detail"></i>
                 <div>Campaign</div>
                 <i
-                    class='ms-auto arrow bx {{ Request::routeIs('admin.emailcompaign.create') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
+                    class='ms-auto arrow bx {{ Request::routeIs('admin.emailcompaign.create', 'admin.pushnotification.create') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
             </a>
-            <ul class="collapse submenu {{ Request::routeIs('admin.emailcompaign.create') ? 'show' : '' }}"
+            <ul class="collapse submenu {{ Request::routeIs('admin.emailcompaign.create', 'admin.pushnotification.create') ? 'show' : '' }}"
                 id="CompaignSubmenu">
                 <li class="{{ Request::routeIs('admin.emailcompaign.create') ? 'active bg-active' : '' }}">
                     <a href="{{ route('admin.emailcompaign.create') }}"
@@ -103,8 +103,9 @@
                     </a>
                 </li>
 
-                <li class="{{ Request::routeIs('') ? 'active bg-active' : '' }}">
-                    <a href="#" class="dropdown-item d-flex align-items-center">
+                <li class="{{ Request::routeIs('admin.pushnotification.create') ? 'active' : '' }}">
+                    <a href="{{ route('admin.pushnotification.create') }}"
+                        class="dropdown-item d-flex align-items-center">
                         {{-- <i class='tf-icons bx bxs-map me-3'></i> --}}
                         <div class="vertical-line me-3"></div>
                         <div>Push Notification</div>

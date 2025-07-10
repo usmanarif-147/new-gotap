@@ -32,6 +32,9 @@ Route::domain('app.gocoompany.com')->group(function () {
         // Add Compaign
         Route::view('admin/emailcompaign-create', 'admin.emailcompaign.create')->name('admin.emailcompaign.create');
 
+        //Push Notification
+        Route::view('admin/push-notification', 'admin.pushnotification.create')->name('admin.pushnotification.create');
+
         // categories
         Route::view('admin/categories', 'admin.category.categories')->name('admin.categories');
         Route::view('admin/category/create', 'admin.category.create')->name('admin.category.create');
