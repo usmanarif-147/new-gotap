@@ -18,7 +18,7 @@ class Create extends Component
 
     use WithFileUploads;
 
-    public $heading, $user;
+    public $heading, $userId;
 
     public $maxProfiles;
 
@@ -44,25 +44,52 @@ class Create extends Component
 
     public function mount()
     {
-        $this->user = auth()->user();
+        $this->userId = auth()->id();
+        $user = User::with('userSubscription')->find($this->userId);
+        $this->maxProfiles = $this->getProfileLimitBasedOnSubscription($user);
+        $currentProfileCount = Profile::where('enterprise_id', $user->id)->count();
+
+        if ($currentProfileCount >= $this->maxProfiles) {
+            $this->showSubscriptionModal = true;
+            return;
+        }
 
         // if ($this->user->userSubscription && Carbon::parse($this->user->userSubscription->end_date)->lt(now())) {
         //     $this->showSubscriptionModal = true;
         //     return;
         // }
 
-        $this->maxProfiles = $this->getProfileLimitBasedOnSubscription($this->user);
-        $currentProfileCount = Profile::where('enterprise_id', $this->user->id)->count();
-        // dd($currentProfileCount);
-        if ($currentProfileCount >= $this->maxProfiles) {
-            $this->showSubscriptionModal = true;
-            return;
-        }
+        // $this->maxProfiles = $this->getProfileLimitBasedOnSubscription($this->user);
+        // $currentProfileCount = Profile::where('enterprise_id', $this->user->id)->count();
+        // // dd($currentProfileCount);
+        // if ($currentProfileCount >= $this->maxProfiles) {
+        //     $this->showSubscriptionModal = true;
+        //     return;
+        // }
     }
+
+    // private function getProfileLimitBasedOnSubscription($user)
+    // {
+    //     switch ($user->userSubscription->enterprise_type) {
+    //         case '1':
+    //             return 6;
+    //         case '2':
+    //             return 20;
+    //         case '3':
+    //             return PHP_INT_MAX;
+    //         default:
+    //             return 0;
+    //     }
+    // }
 
     private function getProfileLimitBasedOnSubscription($user)
     {
-        switch ($user->userSubscription->enterprise_type) {
+        $subscription = $user->userSubscription;
+
+        if (!$subscription)
+            return 0;
+
+        switch ($subscription->enterprise_type) {
             case '1':
                 return 6;
             case '2':
@@ -73,6 +100,7 @@ class Create extends Component
                 return 0;
         }
     }
+
 
     protected function rules()
     {
