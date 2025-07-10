@@ -7,6 +7,7 @@ use App\Models\Profile;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -31,8 +32,8 @@ class Create extends Component
     $address,
     $bio,
     $phone,
-    $photo,
-    $cover_photo,
+    $photo = null,
+    $cover_photo = null,
     $password;
 
     public function mount()
@@ -53,6 +54,13 @@ class Create extends Component
         if ($currentProfileCount >= $this->maxProfiles) {
             $this->showSubscriptionModal = true;
         }
+    }
+
+    public function hydrate()
+    {
+        Log::info('Component hydrating', [
+            'name' => $this->name,
+        ]);
     }
 
     private function getProfileLimitBasedOnSubscription($user)
