@@ -46,6 +46,11 @@ class Create extends Component
     {
         $this->userId = auth()->id();
         $user = User::with('userSubscription')->find($this->userId);
+        if (!$user || !$user->userSubscription) {
+            $this->showSubscriptionModal = true;
+            $this->maxProfiles = 0;
+            return;
+        }
         $this->maxProfiles = $this->getProfileLimitBasedOnSubscription($user);
         $currentProfileCount = Profile::where('enterprise_id', $user->id)->count();
 
@@ -89,16 +94,12 @@ class Create extends Component
         if (!$subscription)
             return 0;
 
-        switch ($subscription->enterprise_type) {
-            case '1':
-                return 6;
-            case '2':
-                return 20;
-            case '3':
-                return PHP_INT_MAX;
-            default:
-                return 0;
-        }
+        return match ($subscription->enterprise_type) {
+            '1' => 6,
+            '2' => 20,
+            '3' => PHP_INT_MAX,
+            default => 0,
+        };
     }
 
 
@@ -164,13 +165,15 @@ class Create extends Component
     {
         $data = $this->validate();
 
-        $currentProfileCount = Profile::where('enterprise_id', $this->user->id)->count();
+        $user = User::with('userSubscription')->find($this->userId);
+
+        $currentProfileCount = Profile::where('enterprise_id', $user->id)->count();
         if ($currentProfileCount >= $this->maxProfiles) {
             $this->showSubscriptionModal = true;
             return;
         }
 
-        $data['enterprise_id'] = auth()->id();
+        $data['enterprise_id'] = $user->id();
         $data['type'] = 'enterprise';
 
         if ($this->photo) {
