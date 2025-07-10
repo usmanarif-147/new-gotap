@@ -1,8 +1,6 @@
 <div>
     @php
-        if (session()->has('_previous')) {
-            session()->forget('_previous'); // Prevent corrupt back history from interfering
-        }
+        session()->forget('_previous');
     @endphp
     <style>
         /* Camera icon for cover photo */
