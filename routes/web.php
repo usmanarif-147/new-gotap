@@ -54,7 +54,6 @@ Route::get('/clear-livewire', function () {
     Artisan::call('view:clear');
     Artisan::call('config:clear');
     Artisan::call('cache:clear');
-    Artisan::call('livewire:discover');
 
     return '✅ Livewire and Laravel cache cleared!';
 });

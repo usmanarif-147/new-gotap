@@ -15,13 +15,10 @@ use Livewire\WithFileUploads;
 
 class Create extends Component
 {
-
     use WithFileUploads;
 
-    public $heading, $userId;
-
+    public $userId;
     public $maxProfiles;
-
     public $showSubscriptionModal = false;
 
     public
@@ -36,56 +33,27 @@ class Create extends Component
     $phone,
     $photo,
     $cover_photo,
-    $active,
-    $user_direct,
-    $tiks,
-    $private,
     $password;
 
     public function mount()
     {
         $this->userId = auth()->id();
+
         $user = User::with('userSubscription')->find($this->userId);
+
         if (!$user || !$user->userSubscription) {
             $this->showSubscriptionModal = true;
             $this->maxProfiles = 0;
             return;
         }
-        $this->maxProfiles = $this->getProfileLimitBasedOnSubscription($user);
-        $currentProfileCount = Profile::where('enterprise_id', $user->id)->count();
 
+        $this->maxProfiles = $this->getProfileLimitBasedOnSubscription($user);
+
+        $currentProfileCount = Profile::where('enterprise_id', $user->id)->count();
         if ($currentProfileCount >= $this->maxProfiles) {
             $this->showSubscriptionModal = true;
-            return;
         }
-
-        // if ($this->user->userSubscription && Carbon::parse($this->user->userSubscription->end_date)->lt(now())) {
-        //     $this->showSubscriptionModal = true;
-        //     return;
-        // }
-
-        // $this->maxProfiles = $this->getProfileLimitBasedOnSubscription($this->user);
-        // $currentProfileCount = Profile::where('enterprise_id', $this->user->id)->count();
-        // // dd($currentProfileCount);
-        // if ($currentProfileCount >= $this->maxProfiles) {
-        //     $this->showSubscriptionModal = true;
-        //     return;
-        // }
     }
-
-    // private function getProfileLimitBasedOnSubscription($user)
-    // {
-    //     switch ($user->userSubscription->enterprise_type) {
-    //         case '1':
-    //             return 6;
-    //         case '2':
-    //             return 20;
-    //         case '3':
-    //             return PHP_INT_MAX;
-    //         default:
-    //             return 0;
-    //     }
-    // }
 
     private function getProfileLimitBasedOnSubscription($user)
     {
@@ -101,7 +69,6 @@ class Create extends Component
             default => 0,
         };
     }
-
 
     protected function rules()
     {
@@ -121,51 +88,21 @@ class Create extends Component
         ];
     }
 
-    protected function messages()
+    public function updated($property)
     {
-        return [
-            'name.min' => 'The name must be at least 5 characters long.',
-            'name.max' => 'The name must not exceed 15 characters.',
-            'email.required' => 'The Email Address is required.',
-            'email.email' => 'Please provide a valid email address.',
-
-            'password.required' => 'Password is required.',
-            'password.min' => 'Password must be at least :min characters.',
-
-            'phone.min' => 'The phone number must be at least 5 characters long.',
-            'phone.max' => 'The phone number must not exceed 15 characters.',
-
-            'username.required' => 'The username is required.',
-            'username.min' => 'The username must be at least 3 characters long.',
-            'username.max' => 'The username must not exceed 20 characters.',
-            'username.regex' => 'The username must start with a letter and can contain letters, numbers, underscores, and periods.',
-            'username.unique' => 'This username is already taken. Please choose another one.',
-
-            'work_position.min' => 'The work position must be at least 3 characters long.',
-            'work_position.max' => 'The work position must not exceed 20 characters.',
-
-            'job_title.string' => 'The job title must be a valid string.',
-
-            'company.string' => 'The company name must be a valid string.',
-
-            'cover_photo.mimes' => 'The cover photo must be a file of type: jpg, jpeg, png, or webp.',
-            'cover_photo.max' => 'The cover photo must not exceed 4MB.',
-
-            'photo.mimes' => 'The profile photo must be a file of type: jpg, jpeg, png, or webp.',
-            'photo.max' => 'The profile photo must not exceed 4MB.',
-        ];
-    }
-
-    public function updated($fields)
-    {
-        $this->validateOnly($fields);
+        $this->validateOnly($property);
     }
 
     public function saveProfile()
     {
-        $data = $this->validate();
+        $this->validate();
 
         $user = User::with('userSubscription')->find($this->userId);
+
+        if (!$user || !$user->userSubscription) {
+            $this->showSubscriptionModal = true;
+            return;
+        }
 
         $currentProfileCount = Profile::where('enterprise_id', $user->id)->count();
         if ($currentProfileCount >= $this->maxProfiles) {
@@ -173,27 +110,44 @@ class Create extends Component
             return;
         }
 
-        $data['enterprise_id'] = $user->id();
-        $data['type'] = 'enterprise';
+        $data = [
+            'enterprise_id' => $user->id,
+            'type' => 'enterprise',
+            'name' => $this->name,
+            'email' => $this->email,
+            'username' => $this->username,
+            'work_position' => $this->work_position,
+            'job_title' => $this->job_title,
+            'company' => $this->company,
+            'address' => $this->address,
+            'bio' => $this->bio,
+            'phone' => $this->phone,
+        ];
 
         if ($this->photo) {
             $data['photo'] = Storage::disk('public')->put('/uploads/photos', $this->photo);
         }
+
         if ($this->cover_photo) {
             $data['cover_photo'] = Storage::disk('public')->put('/uploads/coverPhotos', $this->cover_photo);
         }
+
         DB::beginTransaction();
+
         try {
-            $user = User::create([
+            $createdUser = User::create([
                 'name' => $data['name'],
                 'username' => $data['username'],
                 'email' => $data['email'],
-                'password' => bcrypt($data['password']),
+                'password' => bcrypt($this->password),
             ]);
-            $data['user_id'] = $user->id;
+
+            $data['user_id'] = $createdUser->id;
 
             Profile::create($data);
+
             DB::commit();
+
             $this->reset([
                 'name',
                 'email',
@@ -208,12 +162,13 @@ class Create extends Component
                 'cover_photo',
                 'password',
             ]);
-            Mail::to($user->email)->send(new EnterpriserUserWelcomeMail($user, $data['password']));
+
+            Mail::to($createdUser->email)->send(new EnterpriserUserWelcomeMail($createdUser, $this->password));
+
             $this->dispatchBrowserEvent('swal:modal', [
                 'type' => 'success',
                 'message' => 'User and Related Profile created successfully!',
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             $this->dispatchBrowserEvent('swal:modal', [
@@ -225,7 +180,6 @@ class Create extends Component
 
     public function render()
     {
-        $this->heading = 'Create';
         return view('livewire.enterprise.profile.create');
     }
 }
