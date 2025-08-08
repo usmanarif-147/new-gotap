@@ -139,15 +139,22 @@ class EmailCompaign extends Component
         $enterpriser = Auth::user();
         try {
             DB::beginTransaction();
-            foreach ($data['recipients'] as $email) {
-                Mail::to($email)->send(new CompaignEmail($this->subject, $this->body, $enterpriser));
-            }
-            ModelsCompaignEmail::create([
+            $compaign = ModelsCompaignEmail::create([
                 'enterprise_id' => auth()->id(),
                 'subject' => $this->subject,
                 'message' => $this->body,
                 'total' => $total,
             ]);
+            foreach ($data['recipients'] as $email) {
+                Mail::to($email)->send(new CompaignEmail(
+                    $compaign->subject,
+                    $compaign->message,
+                    $enterpriser,
+                    $email,
+                    $compaign->id
+                ));
+                // Mail::to($email)->send(new CompaignEmail($this->subject, $this->body, $enterpriser));
+            }
             DB::commit();
 
             $this->recipients = [];

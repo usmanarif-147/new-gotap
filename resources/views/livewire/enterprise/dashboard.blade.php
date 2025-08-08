@@ -53,7 +53,7 @@
                         </div>
                     </div>
                 </div>
-                @if ($compaigns->count() == 5)
+                @if ($compaigns->count() >= 5)
                     <div class="card p-4 mt-5" style="position: relative; text-align: center;">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h6 class="mb-0">Email Campaigns</h6>
@@ -65,6 +65,7 @@
                                         <th scope="col">Nr</th>
                                         <th scope="col">Campaign Name</th>
                                         <th scope="col">Send</th>
+                                        <th scope="col">Read</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -74,6 +75,7 @@
                                                 <td>{{ $ind + 1 }}</td>
                                                 <td>{{ $compaign->subject }}</td>
                                                 <td>{{ $compaign->total }}</td>
+                                                <td>{{ $compaign->reads_count }}</td>
                                             </tr>
                                         @endforeach
                                     @else

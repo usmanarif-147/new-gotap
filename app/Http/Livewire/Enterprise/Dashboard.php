@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Enterprise;
 
+use App\Models\CompaignEmail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -9,6 +10,7 @@ use Livewire\Component;
 class Dashboard extends Component
 {
     public $leadCaptured, $cardViews, $recentLeads, $compaigns;
+    public $virtualBackgroundStats;
 
     public function mount()
     {
@@ -34,14 +36,33 @@ class Dashboard extends Component
             ->orderBy('leads.created_at', 'desc')
             ->take(5)
             ->get();
-        $this->compaigns = DB::table('compaign_emails')
-            ->select(
-                'enterprise_id',
-                'subject',
-                'total',
-            )->where('enterprise_id', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->take(5)->get();
+        $this->compaigns = CompaignEmail::withCount('reads')
+            ->where('enterprise_id', auth()->id())
+            ->whereBetween('created_at', [Carbon::now()->subDays(360), Carbon::now()])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // Virtual Background Statistics
+        $this->virtualBackgroundStats = [
+            'total_profiles_with_backgrounds' => DB::table('profiles')
+                ->where('enterprise_id', auth()->id())
+                ->whereNotNull('virtual_background')
+                ->count(),
+            'enabled_backgrounds' => DB::table('profiles')
+                ->where('enterprise_id', auth()->id())
+                ->where('virtual_background_enabled', 1)
+                ->count(),
+            'generated_backgrounds' => DB::table('profiles')
+                ->where('enterprise_id', auth()->id())
+                ->whereNotNull('virtual_background')
+                ->count(),
+            'recent_generations' => DB::table('profiles')
+                ->where('enterprise_id', auth()->id())
+                ->whereNotNull('virtual_background')
+                ->where('updated_at', '>=', Carbon::now()->subDays(7))
+                ->count()
+        ];
     }
 
     public function render()

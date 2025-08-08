@@ -30,7 +30,11 @@ class Edit extends Component
     $phone,
     $photo,
     $is_leads_enabled,
-    $cover_photo;
+    $cover_photo,
+    $email_signature,
+    $email_signature_enabled,
+    $virtual_background,
+    $virtual_background_enabled;
 
     public function mount($id)
     {
@@ -47,6 +51,9 @@ class Edit extends Component
         $this->bio = $profile->bio;
         $this->phone = $profile->phone;
         $this->is_leads_enabled = $profile->is_leads_enabled;
+        $this->email_signature = $profile->email_signature;
+        $this->email_signature_enabled = $profile->email_signature_enabled;
+        $this->virtual_background_enabled = $profile->virtual_background_enabled;
         if ($profile->photo) {
             $this->old_photo = $profile->photo;
         }
@@ -79,6 +86,10 @@ class Edit extends Component
             'is_leads_enabled' => 'required|boolean',
             'cover_photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'email_signature' => ['nullable', 'string'],
+            'email_signature_enabled' => ['nullable', 'boolean'],
+            'virtual_background' => ['nullable', 'mimes:jpg,jpeg,png,webp,gif', 'max:5120'],
+            'virtual_background_enabled' => ['nullable', 'boolean'],
         ];
     }
 
@@ -125,6 +136,9 @@ class Edit extends Component
         $data['enterprise_id'] = auth()->id();
         $data['photo'] = $this->old_photo;
         $data['cover_photo'] = $this->old_cover_photo;
+        $data['email_signature'] = $this->email_signature;
+        $data['email_signature_enabled'] = $this->email_signature_enabled;
+        $data['virtual_background_enabled'] = $this->virtual_background_enabled;
 
         if ($this->cover_photo) {
             if ($this->old_cover_photo) {
@@ -138,6 +152,15 @@ class Edit extends Component
                 Storage::disk('public')->delete($this->old_photo);
             }
             $data['photo'] = Storage::disk('public')->put('uploads/photos', $this->photo);
+        }
+
+        if ($this->virtual_background) {
+            // Delete old virtual background if exists
+            $profile = Profile::find($this->profile_id);
+            if ($profile && $profile->virtual_background) {
+                Storage::disk('public')->delete($profile->virtual_background);
+            }
+            $data['virtual_background'] = Storage::disk('public')->put('uploads/virtual-backgrounds', $this->virtual_background);
         }
 
         Profile::where('id', $this->profile_id)->update($data);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmailTrackingController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\VCardController;
 use App\Models\Connect;
@@ -10,8 +11,10 @@ use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\DB;
-
-Route::view('/', 'welcome');
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+Route::domain(env('ENTERPRISE_DOMAIN'))->group(function () {
+    Route::view('/', 'welcome');
+});
 
 Route::get('/set/default/profile', function () {
 
@@ -83,6 +86,8 @@ Route::get('/connectsLeads', function () {
     return 'Leads created successfully for all connections!';
 });
 
+Route::get('/email/read/{compaignId}/{recipientEmail}', [EmailTrackingController::class, 'track'])->name('email.track');
+
 // Route::get('/key', function () {
 //     Artisan::call('key:generate');
 //     dd("key generated");
@@ -140,5 +145,48 @@ Route::get('/account-deletion/policy', function () {
 Route::post('/changePassword', [ProfileController::class, 'changePassword'])->name('profile.change.password');
 
 Route::get('save_contact/{id}', [VCardController::class, 'saveContact'])->name('save.contact');
+
+// Serve temporary banner files for email signature preview
+Route::get('/temp-banner/{filename}', function ($filename) {
+    $tempPath = storage_path('app/livewire-tmp/' . $filename);
+    if (file_exists($tempPath)) {
+        return response()->file($tempPath);
+    }
+    return response('File not found', 404);
+})->name('temp.banner');
+
+// QR Code generation for email signatures (without Imagick requirement)
+Route::get('/qr-code/{profileId}', function ($profileId) {
+    try {
+        // Try to generate QR code with available backends
+        $qrCode = QrCode::format('png')
+            ->size(200)
+            ->margin(1)
+            ->generate(config('app.url') . '/profile/' . $profileId);
+
+        return response($qrCode)
+            ->header('Content-Type', 'image/png')
+            ->header('Cache-Control', 'public, max-age=31536000');
+    } catch (\Exception $e) {
+        // If QR code generation fails, return a simple SVG QR code
+        $url = config('app.url') . '/profile/' . $profileId;
+        $svg = '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+            <rect width="200" height="200" fill="#ffffff" stroke="#000000" stroke-width="1"/>
+            <text x="100" y="90" text-anchor="middle" font-family="Arial" font-size="12" fill="#000000">QR Code</text>
+            <text x="100" y="110" text-anchor="middle" font-family="Arial" font-size="10" fill="#666666">Scan to connect</text>
+            <text x="100" y="130" text-anchor="middle" font-family="Arial" font-size="8" fill="#999999">' . substr($url, 0, 30) . '...</text>
+        </svg>';
+
+        return response($svg)
+            ->header('Content-Type', 'image/svg+xml')
+            ->header('Cache-Control', 'public, max-age=31536000');
+    }
+})->name('qr-code.generate');
+
+// Test route for virtual background generation (remove in production)
+Route::get('/test-virtual-background/{profileId}', function ($profileId) {
+    $controller = new \App\Http\Controllers\VirtualBackgroundGeneratorController();
+    return $controller->generateBackground($profileId);
+});
 
 require __DIR__ . '/auth.php';

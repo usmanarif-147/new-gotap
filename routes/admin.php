@@ -10,7 +10,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\VCardController;
 
 
-Route::domain('app.gocoompany.com')->group(function () {
+Route::domain(env('ADMIN_DOMAIN'))->group(function () {
     Route::get('/', function () {
         return redirect()->route('admin.login');
     });
@@ -26,7 +26,7 @@ Route::domain('app.gocoompany.com')->group(function () {
         // applications
         Route::view('admin/applications', 'admin.application.applications')->name('admin.applications');
 
-        //Add Enterpriser 
+        //Add Enterpriser
         Route::view('admin/enterpriser-create', 'admin.enterpriser.create')->name('admin.enterpriser.create');
 
         // Add Compaign

@@ -154,6 +154,18 @@
                 <div>Email Campaign</div>
             </a>
         </li>
+        <li class="menu-item {{ request()->routeIs('enterprise.email-signature') ? 'active' : '' }}">
+            <a href="{{ route('enterprise.email-signature') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-mail-send"></i>
+                <div>Email Signature</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('enterprise.virtual-background') ? 'active' : '' }}">
+            <a href="{{ route('enterprise.virtual-background') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-image"></i>
+                <div>Virtual Background</div>
+            </a>
+        </li>
         {{-- https://gotaps.me/standard-products/ --}}
         <li class="menu-item {{ request()->routeIs('enterprise.accessories') ? 'active' : '' }}">
             <a href="{{ route('enterprise.accessories') }}" class="menu-link">

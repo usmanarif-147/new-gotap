@@ -5,7 +5,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\SetPasswordController;
 use Illuminate\Support\Facades\Route;
-Route::domain('app.gocoompany.com')->group(function () {
+Route::domain(env('ADMIN_DOMAIN'))->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('admin/login', [AuthenticatedSessionController::class, 'createAdmin'])
             ->name('admin.login.form');
@@ -22,25 +22,25 @@ Route::domain('app.gocoompany.com')->group(function () {
     });
 });
 
-// Route::domain('http://127.0.0.1:8000/')->group(function () {
-Route::middleware('guest')->group(function () {
+Route::domain(env('ENTERPRISE_DOMAIN'))->group(function () {
+    Route::middleware('guest')->group(function () {
 
-    Route::get('enterprise/set-password/{token}', [SetPasswordController::class, 'setPassword'])
-        ->name('enterprise.set.password');
-    Route::post('enterprise/save-password', [SetPasswordController::class, 'saveNewPassword'])
-        ->name('enterprise.save.password');
+        Route::get('enterprise/set-password/{token}', [SetPasswordController::class, 'setPassword'])
+            ->name('enterprise.set.password');
+        Route::post('enterprise/save-password', [SetPasswordController::class, 'saveNewPassword'])
+            ->name('enterprise.save.password');
 
-    Route::get('enterprise/login', [AuthenticatedSessionController::class, 'createEnterprise'])
-        ->name('enterprise.login.form');
-    Route::post('enterprise/login', [AuthenticatedSessionController::class, 'storeEnterprise'])
-        ->name('enterprise.login');
-    Route::get('enterprise/forgot-password', [PasswordResetLinkController::class, 'createEnterprise'])
-        ->name('enterprise.password.request');
-    Route::post('enterprise/forgot-password', [PasswordResetLinkController::class, 'storeEnterprise'])
-        ->name('enterprise.password.email');
-    Route::get('enterprise/reset-password/{token}', [NewPasswordController::class, 'createEnterprise'])
-        ->name('enterprise.password.reset');
-    Route::post('enterprise/reset-password', [NewPasswordController::class, 'storeEnterprise'])
-        ->name('enterprise.password.store');
+        Route::get('enterprise/login', [AuthenticatedSessionController::class, 'createEnterprise'])
+            ->name('enterprise.login.form');
+        Route::post('enterprise/login', [AuthenticatedSessionController::class, 'storeEnterprise'])
+            ->name('enterprise.login');
+        Route::get('enterprise/forgot-password', [PasswordResetLinkController::class, 'createEnterprise'])
+            ->name('enterprise.password.request');
+        Route::post('enterprise/forgot-password', [PasswordResetLinkController::class, 'storeEnterprise'])
+            ->name('enterprise.password.email');
+        Route::get('enterprise/reset-password/{token}', [NewPasswordController::class, 'createEnterprise'])
+            ->name('enterprise.password.reset');
+        Route::post('enterprise/reset-password', [NewPasswordController::class, 'storeEnterprise'])
+            ->name('enterprise.password.store');
+    });
 });
-// });

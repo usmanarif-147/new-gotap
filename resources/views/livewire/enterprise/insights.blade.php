@@ -142,6 +142,7 @@
                                 <th scope="col">Nr</th>
                                 <th scope="col">Compaign Name</th>
                                 <th scope="col">Send</th>
+                                <th scope="col">Read</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -157,6 +158,7 @@
                                         <td>
                                             {{ $compaign->total }}
                                         </td>
+                                        <td>{{ $compaign->reads_count }}</td>
                                     </tr>
                                 @endforeach
                             @else

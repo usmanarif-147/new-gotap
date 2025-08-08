@@ -34,6 +34,10 @@ class Create extends Component
     $phone,
     $photo = null,
     $cover_photo = null,
+    $email_signature = null,
+    $email_signature_enabled = false,
+    $virtual_background = null,
+    $virtual_background_enabled = false,
     $password;
 
     public function mount()
@@ -93,6 +97,10 @@ class Create extends Component
             'bio' => ['nullable'],
             'cover_photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'email_signature' => ['nullable', 'string'],
+            'email_signature_enabled' => ['nullable', 'boolean'],
+            'virtual_background' => ['nullable', 'mimes:jpg,jpeg,png,webp,gif', 'max:5120'],
+            'virtual_background_enabled' => ['nullable', 'boolean'],
         ];
     }
 
@@ -130,6 +138,9 @@ class Create extends Component
             'address' => $this->address,
             'bio' => $this->bio,
             'phone' => $this->phone,
+            'email_signature' => $this->email_signature,
+            'email_signature_enabled' => $this->email_signature_enabled,
+            'virtual_background_enabled' => $this->virtual_background_enabled,
         ];
 
         if ($this->photo) {
@@ -138,6 +149,10 @@ class Create extends Component
 
         if ($this->cover_photo) {
             $data['cover_photo'] = Storage::disk('public')->put('/uploads/coverPhotos', $this->cover_photo);
+        }
+
+        if ($this->virtual_background) {
+            $data['virtual_background'] = Storage::disk('public')->put('/uploads/virtual-backgrounds', $this->virtual_background);
         }
 
         DB::beginTransaction();
@@ -168,6 +183,10 @@ class Create extends Component
                 'bio',
                 'photo',
                 'cover_photo',
+                'email_signature',
+                'email_signature_enabled',
+                'virtual_background',
+                'virtual_background_enabled',
                 'password',
             ]);
 

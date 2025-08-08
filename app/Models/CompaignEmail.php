@@ -14,4 +14,9 @@ class CompaignEmail extends Model
         'message',
         'total',
     ];
+
+    public function reads()
+    {
+        return $this->hasMany(EmailRead::class, 'compaign_id');
+    }
 }
