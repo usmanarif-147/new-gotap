@@ -20,16 +20,21 @@ class CompaignEmail extends Mailable
 
     public $subject;
 
+    public $compaignId;
+    public $recipientEmail;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($subject, $customMessage, $enterpriser)
+    public function __construct($subject, $customMessage, $enterpriser, $compaignId, $recipientEmail)
     {
         $this->customMessage = $customMessage;
         $this->enterpriser = $enterpriser;
         $this->subject = $subject;
+        $this->compaignId = $compaignId;
+        $this->recipientEmail = $recipientEmail;
         $this->logo = asset($this->enterpriser->enterpriser_logo && file_exists(public_path('storage/' . $this->enterpriser->enterpriser_logo)) ? Storage::url($this->enterpriser->enterpriser_logo) : 'logo.png');
     }
 

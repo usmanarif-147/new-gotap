@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Enterprise;
 
+use App\Models\CompaignEmail;
 use Livewire\Component;
 use App\Models\Profile;
 use App\Models\subteams;
@@ -150,14 +151,11 @@ class Insights extends Component
 
     public function getEmailCompaign()
     {
-        $data = DB::table('compaign_emails')
-            ->select(
-                'enterprise_id',
-                'subject',
-                'total',
-            )->where('enterprise_id', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->take(5)->get();
+        $data = CompaignEmail::withCount('reads')
+            ->where('enterprise_id', auth()->id())
+            ->latest()
+            ->take(5)
+            ->get();
         return $data;
     }
 

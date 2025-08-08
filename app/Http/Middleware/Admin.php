@@ -31,9 +31,9 @@ class Admin
     public function handle(Request $request, Closure $next)
     {
         // Ensure admin routes are only accessible via app.gocoompany.com
-        if ($request->is('admin/*') && $request->getHost() !== 'app.gocoompany.com') {
-            abort(403, 'Unauthorized access');
-        }
+        // if ($request->is('admin/*') && $request->getHost() !== 'app.gocoompany.com') {
+        //     abort(403, 'Unauthorized access');
+        // }
 
         // Allow unauthenticated users to reach admin login page
         if ($request->is('admin/login')) {

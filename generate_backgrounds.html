@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Background Templates</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .template { margin: 20px 0; }
+        canvas { border: 1px solid #ccc; }
+        button { margin: 10px; padding: 10px 20px; }
+    </style>
+</head>
+<body>
+    <h1>Generate Background Templates</h1>
+    <p>Click the buttons below to generate background template images:</p>
+    
+    <div class="template">
+        <h3>Professional Background</h3>
+        <canvas id="professional" width="1920" height="1080"></canvas>
+        <br>
+        <button onclick="generateProfessional()">Generate Professional</button>
+        <button onclick="downloadCanvas('professional', 'professional-bg.jpg')">Download</button>
+    </div>
+    
+    <div class="template">
+        <h3>Creative Background</h3>
+        <canvas id="creative" width="1920" height="1080"></canvas>
+        <br>
+        <button onclick="generateCreative()">Generate Creative</button>
+        <button onclick="downloadCanvas('creative', 'creative-bg.jpg')">Download</button>
+    </div>
+    
+    <div class="template">
+        <h3>Minimal Background</h3>
+        <canvas id="minimal" width="1920" height="1080"></canvas>
+        <br>
+        <button onclick="generateMinimal()">Generate Minimal</button>
+        <button onclick="downloadCanvas('minimal', 'minimal-bg.jpg')">Download</button>
+    </div>
+    
+    <div class="template">
+        <h3>Gradient Background</h3>
+        <canvas id="gradient" width="1920" height="1080"></canvas>
+        <br>
+        <button onclick="generateGradient()">Generate Gradient</button>
+        <button onclick="downloadCanvas('gradient', 'gradient-bg.jpg')">Download</button>
+    </div>
+    
+    <div class="template">
+        <h3>Abstract Background</h3>
+        <canvas id="abstract" width="1920" height="1080"></canvas>
+        <br>
+        <button onclick="generateAbstract()">Generate Abstract</button>
+        <button onclick="downloadCanvas('abstract', 'abstract-bg.jpg')">Download</button>
+    </div>
+
+    <script>
+        function generateProfessional() {
+            const canvas = document.getElementById('professional');
+            const ctx = canvas.getContext('2d');
+            
+            // Professional gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 1080);
+            gradient.addColorStop(0, '#2980b9');
+            gradient.addColorStop(1, '#2c3e50');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1920, 1080);
+        }
+        
+        function generateCreative() {
+            const canvas = document.getElementById('creative');
+            const ctx = canvas.getContext('2d');
+            
+            // Creative gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 1080);
+            gradient.addColorStop(0, '#9b59b6');
+            gradient.addColorStop(1, '#8e44ad');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1920, 1080);
+        }
+        
+        function generateMinimal() {
+            const canvas = document.getElementById('minimal');
+            const ctx = canvas.getContext('2d');
+            
+            // Minimal gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 1080);
+            gradient.addColorStop(0, '#ecf0f1');
+            gradient.addColorStop(1, '#bdc3c7');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1920, 1080);
+        }
+        
+        function generateGradient() {
+            const canvas = document.getElementById('gradient');
+            const ctx = canvas.getContext('2d');
+            
+            // Multi-color gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 1080);
+            gradient.addColorStop(0, '#e74c3c');
+            gradient.addColorStop(0.25, '#9b59b6');
+            gradient.addColorStop(0.5, '#3498db');
+            gradient.addColorStop(0.75, '#2ecc71');
+            gradient.addColorStop(1, '#f1c40f');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1920, 1080);
+        }
+        
+        function generateAbstract() {
+            const canvas = document.getElementById('abstract');
+            const ctx = canvas.getContext('2d');
+            
+            // Abstract background
+            const gradient = ctx.createLinearGradient(0, 0, 0, 1080);
+            gradient.addColorStop(0, '#34495e');
+            gradient.addColorStop(1, '#2c3e50');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1920, 1080);
+            
+            // Add abstract shapes
+            for (let i = 0; i < 10; i++) {
+                ctx.fillStyle = `rgb(${Math.random() * 155 + 100}, ${Math.random() * 155 + 100}, ${Math.random() * 155 + 100})`;
+                ctx.beginPath();
+                ctx.arc(Math.random() * 1920, Math.random() * 1080, Math.random() * 100 + 50, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+        
+        function downloadCanvas(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/jpeg', 0.8);
+            link.click();
+        }
+        
+        // Generate all backgrounds on load
+        window.onload = function() {
+            generateProfessional();
+            generateCreative();
+            generateMinimal();
+            generateGradient();
+            generateAbstract();
+        };
+    </script>
+</body>
+</html> 
