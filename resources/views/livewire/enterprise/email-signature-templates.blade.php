@@ -8,7 +8,7 @@
                         <div class="col-md-6">
                             @if ($step === 'list')
                                 <div class="fw-bold mb-3" style="font-size:1.1rem;">Email Signature Templates</div>
-                                
+
                                 <!-- Profile Selection Dropdown -->
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Select Profile</label>
@@ -19,11 +19,11 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                
+
                                 <button class="btn btn-dark rounded-pill px-4 mb-3" wire:click="showCreate">+ Create
                                     Email Signature</button>
-                                
-                                @if($selectedProfileId)
+
+                                @if ($selectedProfileId)
                                     <table class="table table-hover align-middle">
                                         <thead>
                                             <tr>
@@ -36,7 +36,7 @@
                                                 <tr>
                                                     <td>{{ $template->name }}</td>
                                                     <td>
-                                                        <button class="btn btn-sm btn-outline-primary"
+                                                        <button class="btn btn-sm btn-outline-dark"
                                                             wire:click="showView({{ $template->id }})">View</button>
                                                         <button class="btn btn-sm btn-outline-secondary"
                                                             wire:click="showEdit({{ $template->id }})">Edit</button>
@@ -177,7 +177,7 @@
                                         <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
                                             wire:click="showList">Cancel</button>
                                         <button type="submit"
-                                            class="btn btn-primary rounded-pill px-4">{{ $editMode ? 'Update' : 'Save' }}</button>
+                                            class="btn btn-dark rounded-pill px-4">{{ $editMode ? 'Update' : 'Save' }}</button>
                                     </div>
                                 </form>
                             @endif
@@ -185,7 +185,7 @@
                         <!-- Right: Card Preview -->
                         <div class="col-md-6">
                             <div class="text-center mb-2 fw-bold" style="font-size:1.1rem;">Signature Preview</div>
-                            @if($selectedProfileId && $this->selectedProfile)
+                            @if ($selectedProfileId && $this->selectedProfile)
                                 <div class="d-flex justify-content-center">
                                     <div class="bg-white rounded-4 shadow-sm p-4 position-relative"
                                         style="min-width: 370px; min-height: 270px; display: flex; flex-direction: column; align-items: center; @if (($images['banner'] ?? false) && $imageFiles['banner']) background: url('{{ $imageFiles['banner']->temporaryUrl() }}') center/cover no-repeat;@elseif(($images['banner'] ?? false) && ($previewData['banner_path'] ?? null))background: url('{{ asset('storage/' . ($previewData['banner_path'] ?? '')) }}') center/cover no-repeat; @endif">
@@ -213,7 +213,8 @@
                                         <div class="d-flex w-100 align-items-start justify-content-between mb-2 position-relative"
                                             style="z-index:2;">
                                             <!-- Fields -->
-                                            <div class="d-flex flex-column align-items-start" style="min-width: 80px;">
+                                            <div class="d-flex flex-column align-items-start"
+                                                style="min-width: 80px;">
                                                 @if (($images['company_logo'] ?? false) && auth()->user()->enterprise_logo)
                                                     <img class="rounded-circle"
                                                         src="{{ asset('storage/' . auth()->user()->enterprise_logo) }}"
@@ -241,7 +242,8 @@
                                             <!-- QR/GOCode Area -->
                                             <div class="flex-grow-1 d-flex flex-column align-items-center"
                                                 style="min-width: 150px;">
-                                                <div class="fw-normal text-muted mb-1" style="font-size:0.95em;">Connect
+                                                <div class="fw-normal text-muted mb-1" style="font-size:0.95em;">
+                                                    Connect
                                                     with Me</div>
                                                 <div class="d-flex align-items-center justify-content-center position-relative"
                                                     style="height:110px;width:110px;">
@@ -259,9 +261,9 @@
                                                     @if ($images['gocode'] ?? false)
                                                         <div style="position:relative;width:100px;height:100px;">
                                                             {{-- @if ($profileImagePath)
-                                                                {!! QrCode::format('png')->size(100)->margin(1)->merge($profileImagePath, 0.3, true)->generate(config('app.url') . '/profile/' . ($this->selectedProfile ? $this->selectedProfile->id : '')) !!}
+                                                                {!! QrCode::format('png')->size(100)->margin(1)->merge($profileImagePath, 0.3, true)->generate(config('app.profile_url') . '/profile/' . ($this->selectedProfile ? $this->selectedProfile->id : '')) !!}
                                                             @else --}}
-                                                            {!! QrCode::size(100)->margin(1)->generate(config('app.url') . '/' . ($this->selectedProfile ? $this->selectedProfile->username : '')) !!}
+                                                            {!! QrCode::size(100)->margin(1)->generate(config('app.profile_url') . '/' . ($this->selectedProfile ? $this->selectedProfile->username : '')) !!}
                                                             {{-- @endif --}}
                                                         </div>
                                                     @else
@@ -270,7 +272,7 @@
                                                     @endif
                                                 </div>
                                                 <div class="mt-2">
-                                                    <a href="{{ config('app.url') . '/' . ($this->selectedProfile ? $this->selectedProfile->username : '') }}"
+                                                    <a href="{{ config('app.profile_url') . '/' . ($this->selectedProfile ? $this->selectedProfile->username : '') }}"
                                                         class="text-primary"
                                                         style="font-weight: 500; font-size:0.98em;">My Digital Business
                                                         card</a>
@@ -282,19 +284,21 @@
                                 <div class="text-center mt-2 text-muted" style="font-size:0.98em;">
                                     Preview based on {{ $previewData['email'] ?? '' }}
                                 </div>
-                                @if($step === 'list')
+                                @if ($step === 'list')
                                     <div class="text-center mt-3">
                                         <small class="text-muted">
-                                            <strong>Tip:</strong> Select a template and click "View" to see the full signature with copy functionality.
+                                            <strong>Tip:</strong> Select a template and click "View" to see the full
+                                            signature with copy functionality.
                                         </small>
                                     </div>
                                 @else
                                     <div class="d-flex justify-content-center mt-3">
-                                        <button id="copyRichBtn" class="btn btn-outline-primary"
+                                        <button id="copyRichBtn" class="btn btn-outline-dark"
                                             onclick="copyRichSignature()">Copy Signature
                                             <span id="richTooltip" class="tooltip-text">Copied!</span>
                                         </button>
-                                        <div id="signatureContainer" style="display:none; position:absolute; left:-9999px;">
+                                        <div id="signatureContainer"
+                                            style="display:none; position:absolute; left:-9999px;">
                                             @include('livewire.enterprise.signature-html', [
                                                 'preview' => $previewData,
                                                 'profile' => $this->selectedProfile,
@@ -303,7 +307,9 @@
                                     </div>
                                     <div class="text-center mt-3">
                                         <small class="text-muted">
-                                            <strong>How to use:</strong> Click "Copy Rich Text" to copy your email signature with QR code, then paste it directly into Gmail's signature settings.
+                                            <strong>How to use:</strong> Click "Copy Rich Text" to copy your email
+                                            signature with QR code, then paste it directly into Gmail's signature
+                                            settings.
                                         </small>
                                     </div>
                                 @endif
@@ -341,26 +347,26 @@
                                 function copyRichSignature() {
                                     const signatureContainer = document.getElementById('signatureContainer');
                                     const btn = document.getElementById('copyRichBtn');
-                                    
+
                                     // Show the container temporarily
                                     signatureContainer.style.display = 'block';
-                                    
+
                                     try {
                                         // Create a range and selection
                                         const range = document.createRange();
                                         range.selectNodeContents(signatureContainer);
-                                        
+
                                         const selection = window.getSelection();
                                         selection.removeAllRanges();
                                         selection.addRange(range);
-                                        
+
                                         // Copy the selection
                                         const successful = document.execCommand('copy');
-                                        
+
                                         if (successful) {
                                             // Show success tooltip
                                             btn.classList.add('show-tooltip');
-                                            
+
                                             // Hide tooltip after 2 seconds
                                             setTimeout(() => {
                                                 btn.classList.remove('show-tooltip');
@@ -374,10 +380,10 @@
                                             textarea.select();
                                             document.execCommand('copy');
                                             document.body.removeChild(textarea);
-                                            
+
                                             // Show success tooltip
                                             btn.classList.add('show-tooltip');
-                                            
+
                                             // Hide tooltip after 2 seconds
                                             setTimeout(() => {
                                                 btn.classList.remove('show-tooltip');
@@ -393,10 +399,10 @@
                                         textarea.select();
                                         document.execCommand('copy');
                                         document.body.removeChild(textarea);
-                                        
+
                                         // Show success tooltip
                                         btn.classList.add('show-tooltip');
-                                        
+
                                         // Hide tooltip after 2 seconds
                                         setTimeout(() => {
                                             btn.classList.remove('show-tooltip');
@@ -404,7 +410,7 @@
                                     } finally {
                                         // Clear selection
                                         window.getSelection().removeAllRanges();
-                                        
+
                                         // Hide the container
                                         signatureContainer.style.display = 'none';
                                     }

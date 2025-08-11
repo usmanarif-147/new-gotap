@@ -133,7 +133,7 @@ class VirtualBackground extends Component
                 'job_title' => $this->selectedProfile->job_title,
                 'company' => $this->selectedProfile->company,
                 'photo' => $this->selectedProfile->photo ? Storage::url($this->selectedProfile->photo) : null,
-                'profile_url' => config('app.url') . '/' . $this->selectedProfile->username
+                'profile_url' => config('app.profile_url') . '/' . $this->selectedProfile->username
             ],
             'settings' => [
                 'showUsername' => $this->showUsername,
@@ -301,7 +301,7 @@ class VirtualBackground extends Component
                 'job_title' => $this->selectedProfile->job_title,
                 'company' => $this->selectedProfile->company,
                 'photo' => $this->selectedProfile->photo ? Storage::url($this->selectedProfile->photo) : null,
-                'profile_url' => config('app.url') . '/' . $this->selectedProfile->username
+                'profile_url' => config('app.profile_url') . '/' . $this->selectedProfile->username
             ],
             'settings' => [
                 'showUsername' => $this->showUsername,

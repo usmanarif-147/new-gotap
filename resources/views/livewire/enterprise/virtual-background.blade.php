@@ -165,7 +165,7 @@
                                                 class="text-muted">{{ $profile->job_title ?: 'No job title' }}</small>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                    <button type="button" class="btn btn-sm btn-outline-dark"
                                         wire:click="selectProfile({{ $profile->id }})">
                                         Select
                                     </button>
@@ -288,7 +288,7 @@
 
                                 <!-- Hidden QR Code for canvas use -->
                                 <div id="qr-code-container" style="display: none;">
-                                    {!! QrCode::size(200)->margin(1)->generate(config('app.url') . '/' . ($this->selectedProfile ? $this->selectedProfile->username : '')) !!}
+                                    {!! QrCode::size(200)->margin(1)->generate(config('app.profile_url') . '/' . ($this->selectedProfile ? $this->selectedProfile->username : '')) !!}
                                 </div>
                             </div>
 
