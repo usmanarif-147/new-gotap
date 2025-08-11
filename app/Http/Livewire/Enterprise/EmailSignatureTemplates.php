@@ -126,7 +126,7 @@ class EmailSignatureTemplates extends Component
             $this->templateName = $template->name;
             $this->fields = array_merge($this->defaultFields, $template->fields ?? []);
             $this->images = array_merge($this->defaultImages, $template->images ?? []);
-            
+
             // Initialize previewData with default values and merge with saved data
             $defaultPreviewData = [
                 'name' => null,
@@ -218,7 +218,7 @@ class EmailSignatureTemplates extends Component
         if (!$profile) {
             return [];
         }
-        
+
         $previewData = [
             'name' => $this->fields['name'] ? $profile->name : null,
             'pronouns' => $this->fields['pronouns'] ? ($profile->pronouns ?? null) : null,
@@ -249,7 +249,7 @@ class EmailSignatureTemplates extends Component
     {
         $profile = $this->selectedProfile;
         $preview = $this->generatePreviewData();
-        $qr = \QrCode::size(90)->margin(1)->generate(config('app.url').'/profile/'.($profile ? $profile->id : ''));
+        $qr = \QrCode::size(90)->margin(1)->generate(config('app.profile_url') . '/' . ($profile ? $profile->username : ''));
         return view('livewire.enterprise.signature-html', compact('preview', 'profile', 'qr'))->render();
     }
 
@@ -257,4 +257,4 @@ class EmailSignatureTemplates extends Component
     {
         return view('livewire.enterprise.email-signature-templates');
     }
-} 
+}
