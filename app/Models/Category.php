@@ -14,4 +14,9 @@ class Category extends Model
         'name_sv',
         'status'
     ];
+
+    public function platforms()
+    {
+        return $this->hasMany(Platform::class);
+    }
 }

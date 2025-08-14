@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Group\AddGroupRequest;
 use App\Http\Requests\Api\Group\ContactInGroupRequest;
+use App\Http\Requests\Api\Group\LeadInGroupRequest;
 use App\Http\Requests\Api\Group\UserInGroupRequest;
 use App\Http\Requests\Api\Group\GroupDetailsRequest;
 use App\Http\Requests\Api\Group\UpdateGroupRequest;
 use App\Http\Resources\Api\ContactResource;
 use App\Http\Resources\Api\GroupResource;
+use App\Http\Resources\Api\LeadResource;
 use App\Http\Resources\Api\UserProfileResource;
 use App\Http\Resources\Api\UserResource;
 use App\Models\Group;
@@ -68,14 +70,22 @@ class GroupController extends Controller
             ->where('groups.user_id', auth()->id())
             ->get();
 
+        $groupLeads = Group::select('leads.*')
+            ->join('group_leads', 'group_leads.group_id', 'groups.id')
+            ->join('leads', 'leads.id', 'group_leads.lead_id')
+            ->where('groups.id', $request->group_id)
+            ->where('groups.user_id', auth()->id())
+            ->get();
+
         return response()->json(
             [
                 'data' =>
-                [
-                    'group' => new GroupResource($group),
-                    'group_profiles' => $groupProfiles,
-                    'group_contacts' => ContactResource::collection($groupContacts)
-                ]
+                    [
+                        'group' => new GroupResource($group),
+                        'group_profiles' => $groupProfiles,
+                        'group_contacts' => ContactResource::collection($groupContacts),
+                        'group_leads' => LeadResource::collection($groupLeads),
+                    ]
             ]
         );
     }
@@ -138,6 +148,7 @@ class GroupController extends Controller
         // remove all data related to group
         try {
             DB::table('group_contacts')->where('group_id', $request->group_id)->delete();
+            DB::table('group_leads')->where('group_id', $request->group_id)->delete();
             DB::table('user_groups')->where('group_id', $request->group_id)->delete();
             Group::where('user_id', auth()->id())->where('id', $request->group_id)->delete();
             return response()->json([
@@ -395,6 +406,126 @@ class GroupController extends Controller
         }
     }
 
+    /**
+     * Add lead in group
+     */
+    public function addLeadIntoGroup(LeadInGroupRequest $request)
+    {
+        $lead = DB::table('leads')
+            ->where('id', $request->lead_id)
+            ->first();
+
+        // is contact exist
+        if (!$lead) {
+            return response()->json([
+                'message' => 'Lead Not Found',
+            ]);
+        }
+
+        $profile = getActiveProfile();
+
+        // Is phone contact belongs to the logged in user
+        $isBelongsToLoggedInUser = DB::table('leads')->where('id', $request->lead_id)
+            ->where('employee_id', auth()->id())
+            ->where('viewing_id', $profile->id)
+            ->exists();
+
+        if (!$isBelongsToLoggedInUser) {
+            return response()->json([
+                'message' => 'Please enter valid Lead Id'
+            ]);
+        }
+
+        // is group belongs to the logged in user
+        $group = Group::where('user_id', auth()->id())
+            ->where('id', $request->group_id)
+            ->first();
+        if (!$group) {
+            return response()->json([
+                'message' => trans('backend.group_not_found')
+            ]);
+        }
+
+        // check contact is already exist into the group
+        $checkContactInGroup = DB::table('group_leads')
+            ->where('lead_id', $request->lead_id)
+            ->where('group_id', $request->group_id)
+            ->first();
+
+        if ($checkContactInGroup) {
+            return response()->json([
+                'message' => 'Lead Already Exist In Group',
+            ]);
+        }
+
+        // insert record into the group_contacts
+        try {
+            DB::table('group_leads')->insert([
+                'lead_id' => $request->lead_id,
+                'group_id' => $request->group_id,
+                'created_at' => now()
+            ]);
+
+            Group::where('user_id', auth()->id())->where('id', $request->group_id)->increment('total_leads');
+            return response()->json([
+
+                'message' => 'Lead Added Into Group Successfully',
+                'data' => new LeadResource($lead)
+            ]);
+        } catch (Exception $ex) {
+            return response()->json([
+                'message' => $ex->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Remove contact from group
+     */
+    public function removeLeadFromGroup(LeadInGroupRequest $request)
+    {
+        // check group belongs to the user
+        $group = Group::where('user_id', auth()->id())
+            ->where('id', $request->group_id)
+            ->first();
+        if (!$group) {
+            return response()->json([
+                'message' => trans('backend.group_not_found')
+            ]);
+        }
+
+        // check contact belongs to this group
+        $leadInGroup = DB::table('group_leads')
+            ->where('lead_id', $request->lead_id)
+            ->where('group_id', $request->group_id)
+            ->first();
+        if (!$leadInGroup) {
+            return response()->json([
+                'message' => 'Can Not Delete Lead From Group'
+            ]);
+        }
+
+        // remove contact from group
+        try {
+            DB::table('group_leads')
+                ->where('lead_id', $request->lead_id)
+                ->where('group_id', $request->group_id)
+                ->delete();
+
+            Group::where('user_id', auth()->id())
+                ->where('id', $request->group_id)
+                ->decrement('total_leads');
+            return response()->json([
+
+                'message' => 'Lead Remove Successfully From Group',
+            ]);
+        } catch (Exception $ex) {
+            return response()->json([
+                'message' => $ex->getMessage()
+            ]);
+        }
+    }
+
     public function groupDetail($id)
     {
         // Check if the group exists
@@ -413,12 +544,27 @@ class GroupController extends Controller
                 ->join('phone_contacts', 'phone_contacts.id', '=', 'group_contacts.contact_id')
                 ->where('group_contacts.group_id', $id)
                 ->get();
+            $leads = DB::table('group_leads')
+                ->select(
+                    'leads.id',
+                    'leads.name',
+                    'leads.email',
+                    'leads.phone',
+                    'leads.note',
+                    'leads.country',
+                    'leads.state',
+                    'leads.city',
+                )
+                ->join('leads', 'leads.id', '=', 'group_leads.lead_id')
+                ->where('group_leads.group_id', $id)
+                ->get();
 
             return response()->json([
 
-                'message' => 'Group Detail with user and contact details',
+                'message' => 'Group Detail with user , Lead and contact details',
                 'users' => $users,
-                'contacts' => $contacts
+                'contacts' => $contacts,
+                'leads' => $leads
             ], 200);
         }
 

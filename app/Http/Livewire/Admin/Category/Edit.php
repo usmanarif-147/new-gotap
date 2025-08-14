@@ -8,25 +8,23 @@ use App\Models\Category;
 class Edit extends Component
 {
 
-    public $heading;
-
     public $category_id, $name, $name_sv, $status;
 
     protected function rules()
     {
         return [
-            'name'    => ['required'],
+            'name' => ['required'],
             'name_sv' => ['required'],
-            'status'  => ['required', 'not_in:'],
+            'status' => ['required', 'not_in:'],
         ];
     }
 
     protected function messages()
     {
         return [
-            'name.required'    => 'required',
+            'name.required' => 'required',
             'name_sv.required' => 'required',
-            'status.required'  => 'required',
+            'status.required' => 'required',
             'status.not_in' => 'Invalid status selected',
 
         ];
@@ -61,7 +59,6 @@ class Edit extends Component
 
     public function render()
     {
-        $this->heading = "Edit";
         return view('livewire.admin.category.edit');
     }
 }

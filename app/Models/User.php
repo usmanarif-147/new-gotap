@@ -17,7 +17,8 @@ class User extends Authenticatable
         'username',
         'email',
         'phone',
-        'enterpirse_type',
+        'company_name',
+        'enterprise_logo',
         'photo',
         'role',
         'status',
@@ -48,5 +49,10 @@ class User extends Authenticatable
     public function profiles()
     {
         return $this->hasMany(Profile::class);
+    }
+
+    public function userSubscription()
+    {
+        return $this->hasOne(UserSubscription::class, 'enterprise_id');
     }
 }

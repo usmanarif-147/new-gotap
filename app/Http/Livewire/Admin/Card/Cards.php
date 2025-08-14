@@ -16,7 +16,9 @@ class Cards extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $total, $heading;
+    public $card_id, $methodType, $modalTitle, $modalBody, $modalActionBtnColor, $modalActionBtnText;
+
+    public $total;
 
     public $searchQuery = '', $filterByType, $filterByStatus;
 
@@ -30,15 +32,62 @@ class Cards extends Component
         ];
     }
 
+    // public function exportCsv()
+
+    // {
+    //     $fileName = 'cards.csv';
+    //     $cards = $this->getData()->get();
+
+    //     $headers = [
+    //         'Content-Type' => 'application/csv',
+    //         'Content-Disposition' => "attachment; filename=\"$fileName\"",
+    //         'Cache-Control' => 'no-store, no-cache',
+    //         'Pragma' => 'no-cache',
+    //     ];
+
+    //     $output = fopen('php://output', 'w');
+    //     ob_start();
+
+    //     fputcsv($output, ['ID', 'UUID', 'Description', 'Status', 'Type', 'Username']);
+
+    //     foreach ($cards as $card) {
+    //         fputcsv($output, [
+    //             $card->id,
+    //             $card->uuid,
+    //             $card->description,
+    //             $card->status == 1 ? 'Active' : 'Inactive',
+    //             $card->type,
+    //             $card->username,
+    //         ]);
+    //     }
+
+    //     fclose($output);
+    //     $csvContent = ob_get_clean();
+
+    //     return response($csvContent, 200, $headers);
+    // }
+
     public function exportCsv()
     {
-        return redirect()->route('export')->with(
-            [
-                'file_name' => 'cards.csv',
-                'data' => $this->getData()->get()
-            ]
-        );
+        $queryParams = http_build_query([
+            'searchQuery' => $this->searchQuery,
+            'filterByStatus' => $this->filterByStatus,
+        ]);
+
+        $this->dispatchBrowserEvent('download-csv', [
+            'url' => route('cards.export') . '?' . $queryParams,
+        ]);
     }
+
+    // public function exportCsv()
+    // {
+    //     return redirect()->route('export')->with(
+    //         [
+    //             'file_name' => 'cards.csv',
+    //             'data' => $this->getData()->get()
+    //         ]
+    //     );
+    // }
 
     public function updatingSearchQuery()
     {
@@ -52,6 +101,7 @@ class Cards extends Component
             'cards.uuid',
             'cards.description',
             'cards.status',
+            'cards.type',
             'profiles.username',
         )
             ->leftJoin('profile_cards', 'profile_cards.card_id', 'cards.id')
@@ -74,10 +124,54 @@ class Cards extends Component
         return $filteredData;
     }
 
+    public function confirmModal($id)
+    {
+        $this->card_id = $id;
+        $this->methodType = 'delete';
+        $this->modalTitle = 'Are you sure';
+        $this->modalBody = 'You want to Delete this platform!';
+        $this->modalActionBtnColor = 'btn-danger';
+        $this->modalActionBtnText = 'Delete';
+        $this->dispatchBrowserEvent('confirmModal');
+    }
+
+    public function delete()
+    {
+        $card = Card::find($this->card_id);
+        if ($card) {
+            $card->delete();
+            $this->card_id = null;
+            $this->methodType = null;
+            $this->modalTitle = null;
+            $this->modalBody = null;
+            $this->modalActionBtnColor = null;
+            $this->modalActionBtnText = null;
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'success',
+                'message' => 'Card deleted successfully!',
+            ]);
+        } else {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'error',
+                'message' => 'Card not found!',
+            ]);
+        }
+    }
+
+    public function closeModal()
+    {
+        $this->card_id = null;
+        $this->methodType = null;
+        $this->modalTitle = null;
+        $this->modalBody = null;
+        $this->modalActionBtnColor = null;
+        $this->modalActionBtnText = null;
+        $this->dispatchBrowserEvent('close-modal');
+    }
+
     public function render()
     {
         $data = $this->getData();
-        $this->heading = "Cards";
         $cards = $data->paginate(10);
         $this->total = $cards->total();
 

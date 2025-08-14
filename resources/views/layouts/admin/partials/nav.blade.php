@@ -5,13 +5,22 @@
         </a>
     </div>
 
-
-
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
         <!-- Search -->
         <div class="navbar-nav align-items-center">
             <div class="nav-item justify-content-middle display-6 custom-text">
-                {{ ucfirst(request()->segment(2)) }}
+                @if (request()->segment(4))
+                    <a
+                        href="{{ url(request()->segment(1) . '/' . Str::plural(request()->segment(2))) }}">{{ ucfirst(Str::plural(request()->segment(2))) }}</a>
+                    /{{ ucfirst(request()->segment(4)) }}
+                @elseif (request()->segment(3))
+                    <a
+                        href="{{ url(request()->segment(1) . '/' . Str::plural(request()->segment(2))) }}">{{ ucfirst(Str::plural(request()->segment(2))) }}</a>
+                    /{{ ucfirst(request()->segment(3)) }}
+                @elseif (request()->segment(2))
+                    {{ ucfirst(request()->segment(2)) }}
+                @endif
+
             </div>
         </div>
         <!-- /Search -->

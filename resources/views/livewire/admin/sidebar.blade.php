@@ -16,8 +16,9 @@
     <div class="app-brand demo mb-2 d-flex justify-content-center align-items-center">
         <a href="/admin/dashboard" class="app-brand-link">
             <span class="app-brand-logo demo " style="background:white">
-                <div class="custom-logo-width">
-                    <img src="{{ asset('logo.png') }}" class="img-fluid  " alt="Logo here">
+                <div class="d-flex align-items-center">
+                    <img src="{{ asset('gotapEnterprise.png') }}" class="img-fluid" height="100" width="100"
+                        alt="Logo here">
                 </div>
             </span>
         </a>
@@ -37,7 +38,7 @@
             </a>
         </li>
 
-        <li class="menu-item {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+        <li class="menu-item {{ request()->routeIs('admin.users', 'admin.user.edit') ? 'active' : '' }}">
             <a href="{{ route('admin.users') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-user-pin"></i>
                 <div>Users</div>
@@ -75,14 +76,55 @@
                 <div>Cards</div>
             </a>
         </li>
+        <li class="menu-item {{ request()->routeIs('admin.enterpriser.create') ? 'active' : '' }}">
+            <a href="{{ route('admin.enterpriser.create') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user-pin"></i>
+                <div>Enterprisers</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a class="menu-link {{ Request::routeIs('admin.emailcompaign.create') ? '' : 'collapsed' }}"
+                data-bs-toggle="collapse" href="#CompaignSubmenu" role="button"
+                aria-expanded="{{ Request::routeIs('admin.emailcompaign.create') ? 'true' : 'false' }}"
+                aria-controls="CompaignSubmenu">
+                <i class="menu-icon tf-icons bx bxs-user-detail"></i>
+                <div>Campaign</div>
+                <i
+                    class='ms-auto arrow bx {{ Request::routeIs('admin.emailcompaign.create', 'admin.pushnotification.create') ? 'bx-up-arrow-alt' : 'bx-down-arrow-alt' }}'></i>
+            </a>
+            <ul class="collapse submenu {{ Request::routeIs('admin.emailcompaign.create', 'admin.pushnotification.create') ? 'show' : '' }}"
+                id="CompaignSubmenu">
+                <li class="{{ Request::routeIs('admin.emailcompaign.create') ? 'active bg-active' : '' }}">
+                    <a href="{{ route('admin.emailcompaign.create') }}"
+                        class="dropdown-item d-flex align-items-center">
+                        {{-- <i class='tf-icons bx bxs-group me-3'></i> --}}
+                        <div class="vertical-line me-3"></div>
+                        <div>Email Compaign</div>
+                    </a>
+                </li>
+
+                <li class="{{ Request::routeIs('admin.pushnotification.create') ? 'active' : '' }}">
+                    <a href="{{ route('admin.pushnotification.create') }}"
+                        class="dropdown-item d-flex align-items-center">
+                        {{-- <i class='tf-icons bx bxs-map me-3'></i> --}}
+                        <div class="vertical-line me-3"></div>
+                        <div>Push Notification</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
         <li class="menu-item">
             <a href="javascript:void(0)" onclick="changePassword()" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-key"></i>
                 <div>Change Password</div>
             </a>
         </li>
-
-
     </ul>
-
+    <script>
+        const settingsLinkLeads = document.querySelector('[href="#CompaignSubmenu"]');
+        settingsLinkLeads?.addEventListener('click', function() {
+            const arrowLeads = settingsLinkLeads.querySelector('.arrow');
+            arrowLeads.classList.toggle('rotate-180'); // Toggle rotation class
+        });
+    </script>
 </div>

@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Card;
+use App\Models\Platform;
 use App\Models\Profile;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class UserProfileController extends Controller
 {
@@ -231,10 +235,233 @@ class UserProfileController extends Controller
             array_push($userPlatforms, $platforms[$i]);
         }
 
-        // dd($userPlatforms);
-
         $userPlatforms = array_chunk($userPlatforms, 4);
 
         return view('profile', compact('user', 'userPlatforms', 'is_private', 'directPath'));
     }
+
+    //view by username
+    public function viewProfileByUsername()
+    {
+        $identifier = request()->username;
+        $profile = Profile::select(
+            'id',
+            'username',
+            'type',
+            'job_title',
+            'work_position',
+            'bio',
+            'company',
+            'photo',
+            'cover_photo',
+            'user_direct',
+            'user_id',
+            'enterprise_id',
+            'is_leads_enabled',
+            'private'
+        )
+            ->where('username', $identifier)
+            ->first();
+        $platforms = $this->getProfileData($profile);
+        $profileCheck = $this->userdetail($profile);
+        return view('profile-view', ['profile' => $profile, 'platforms' => $platforms['platforms'], 'profilecheck' => $profileCheck, 'redicretTo' => $platforms['redirect'], 'type' => 2]);
+    }
+
+    //view by card Id
+
+    public function viewProfileByCardId()
+    {
+        $identifier = request()->uuid;
+        $profile = Card::join('profile_cards', 'cards.id', '=', 'profile_cards.card_id')
+            ->join('profiles', 'profiles.id', '=', 'profile_cards.profile_id')
+            ->where('cards.uuid', $identifier)
+            ->select('profiles.*', 'profile_cards.status as card_status')
+            ->first();
+        $platforms = $this->getProfileData($profile);
+        $profileCheck = $this->userdetail($profile);
+        return view('profile-view', ['profile' => $profile, 'platforms' => $platforms['platforms'], 'profilecheck' => $profileCheck, 'redicretTo' => $platforms['redirect'], 'type' => 1]);
+    }
+
+    //get profile data
+    protected function getProfileData($profile)
+    {
+        $platforms = [];
+        if (!$profile) {
+            return abort(404);
+        }
+        if ($profile->user_id != null) {
+            User::where('id', $profile->user_id)->increment('tiks');
+        }
+        Profile::where('id', $profile->id)->increment('tiks');
+
+
+        if ($profile->user_direct) {
+            $redirect = $this->isProfileDirect($profile);
+        } else {
+            $redirect = null;
+        }
+
+        $platforms = DB::table('profile_platforms')
+            ->select(
+                'platforms.id as platform_id',
+                'platforms.title',
+                'platforms.icon',
+                'platforms.input',
+                'platforms.baseUrl as base_url',
+                'profile_platforms.user_id as user_id',
+                'profile_platforms.created_at',
+                'profile_platforms.path',
+                'profile_platforms.label',
+                'profile_platforms.platform_order',
+                'profile_platforms.direct',
+            )
+            ->join('platforms', 'platforms.id', 'profile_platforms.platform_id')
+            ->join('profiles', 'profile_platforms.profile_id', 'profiles.id')
+            ->where('profile_id', $profile->id)
+            ->orderBy('profile_platforms.platform_order')
+            ->get();
+
+        return ['platforms' => $platforms->chunk(4), 'redirect' => $redirect];
+    }
+
+    protected function isProfileDirect($profile)
+    {
+        $userPlatform = DB::table('profile_platforms')
+            ->where('profile_id', $profile->id)
+            ->orderBy('platform_order')
+            ->first();
+
+        if ($userPlatform) {
+            $platform = Platform::where('id', $userPlatform->platform_id)->first();
+            if ($platform) {
+                DB::table('profile_platforms')
+                    ->where('profile_id', $profile->id)
+                    ->where('platform_id', $userPlatform->platform_id)
+                    ->increment('clicks');
+                if (!str_contains($userPlatform->path, 'https') && !str_contains($userPlatform->path, 'http')) {
+                    $redicretTo = 'https://' . $userPlatform->path;
+                } else {
+                    $redicretTo = $userPlatform->path;
+                }
+
+                if ($platform->baseURL) {
+                    $redicretTo = $platform->baseURL . '/' . $userPlatform->path;
+                }
+            }
+        }
+        return $redicretTo;
+    }
+
+    protected function userdetail($profile)
+    {
+        $user = auth()->user();
+        if ($user) {
+            $profileCheck = Profile::where('user_id', $user->id)->orwhere('enterprise_id', $user->id)->where('id', $profile->id)->exists();
+        } else {
+            $profileCheck = false;
+        }
+        return $profileCheck;
+    }
+
+    public function incrementPlatformClick(Request $request)
+    {
+        $platformId = $request->input('platform_id');
+        $url = $request->input('url');
+        $profile = Profile::find($request->input('id'));
+        $platform = DB::table('profile_platforms')
+            ->where('profile_id', $profile->id)
+            ->where('platform_id', $platformId)
+            ->first();
+
+        if (!$profile->private) {
+            DB::table('profile_platforms')
+                ->where('profile_id', $profile->id)
+                ->where('platform_id', $platformId)
+                ->increment('clicks');
+
+            return response()->json(['redirect' => $url]);
+        }
+
+        return response()->json(['error' => 'Profile is private'], 403);
+    }
+
+    public function viewerDetail(Request $request)
+    {
+        $profile = Profile::find($request->input('id'));
+        $ip = request()->ip();
+        $locationData = $this->getUserLocation($ip);
+
+        // Default NULL values
+        $country = $state = $city = $ip_address = $lat = $long = null;
+
+        if ($locationData) {
+            $country = $locationData['geoplugin_countryName'] ?? null;
+            $state = $locationData['geoplugin_region'] ?? null;
+            $city = $locationData['geoplugin_city'] ?? null;
+            $ip_address = $locationData['geoplugin_request'] ?? null;
+        }
+
+        // Retrieve and sanitize latitude/longitude
+        $lat = $request->input('latitude');
+        $long = $request->input('longitude');
+
+        // Explicitly check for "null" string or empty values
+        $lat = ($lat === "null" || $lat === "") ? null : (float) $lat;
+        $long = ($long === "null" || $long === "") ? null : (float) $long;
+
+        // Debugging output (Remove after testing)
+        // dd(['latitude' => $lat, 'longitude' => $long]);
+
+        $data = [
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
+            'type' => $request->input('type'),
+        ];
+
+        DB::table('leads')->insert([
+            'enterprise_id' => $profile->enterprise_id,
+            'employee_id' => $profile->user_id,
+            'viewing_id' => $profile->id,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'type' => $data['type'],
+            'ip_address' => $ip_address,
+            'country' => $country,
+            'state' => $state,
+            'city' => $city,
+            'latitude' => $lat,
+            'longitude' => $long,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['message' => 'Details saved successfully!']);
+    }
+
+
+
+    private function getUserLocation($ip = null)
+    {
+        $client = new Client();
+
+        try {
+            // Make the API call to GeoPlugin
+            $response = $client->get("http://www.geoplugin.net/json.gp?ip={$ip}");
+
+            // Decode the JSON response
+            $locationData = json_decode($response->getBody(), true);
+
+            if (isset($locationData['geoplugin_countryName'])) {
+                return $locationData; // Return the array data directly
+            } else {
+                return 0;
+            }
+
+        } catch (RequestException $e) {
+            return 0;
+        }
+    }
+
 }
