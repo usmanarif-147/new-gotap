@@ -93,10 +93,10 @@ Route::get('/email/read/{compaignId}/{recipientEmail}', [EmailTrackingController
 //     dd("key generated");
 // });
 
-// Route::get('/storage-link', function () {
-//     Artisan::call('storage:link');
-//     dd("storage linked");
-// });
+Route::get('/storage-link', function () {
+    Artisan::call('storage:link');
+    dd("storage linked");
+});
 
 // Route::get('/user-new-group', function () {
 //     $users = User::where('role', 'user')->pluck('id');
