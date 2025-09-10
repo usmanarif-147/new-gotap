@@ -13,7 +13,10 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 Route::domain(env('ENTERPRISE_DOMAIN'))->group(function () {
-    Route::view('/', 'welcome');
+    Route::view('/enterprise/register', 'welcome')->name('enterprise.register');
+    Route::get('/', function () {
+        return redirect()->route('enterprise.login');
+    });
 });
 
 Route::get('/set/default/profile', function () {

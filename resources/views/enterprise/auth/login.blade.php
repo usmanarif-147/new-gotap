@@ -100,6 +100,13 @@
                                             </div>
                                         </div>
                                     </form>
+                                    <p class="mt-4 text-center text-sm text-gray-600">
+                                        Don’t have an account?
+                                        <a href="{{ route('enterprise.register') }}"
+                                            class="text-blue-600 hover:text-blue-800 font-medium">
+                                            Sign up
+                                        </a>
+                                    </p>
                                     <div class="row">
                                         <div class="col-12">
                                             <div
