@@ -2,14 +2,14 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
-                {{ $heading }}
+                {{-- {{ $heading }} --}}
                 <span>
                     <h5 style="margin-top:10px"> Total: {{ $total }} </h4>
                 </span>
             </h2>
             <h5 class="card-header">
-                <a class="btn" style="background: #0EA7C1; color:white" href="{{ route('enterprise.profile.create') }}">
-                    Create Profile
+                <a class="btn btn-dark" href="{{ route('enterprise.profile.create') }}">
+                    Create User
                 </a>
             </h5>
         </div>
@@ -27,7 +27,7 @@
                         @endforeach
                     </select>
                 </div> --}}
-                <div class="col-md-3 offset-6">
+                <div class="col-md-3 ms-auto">
                     <label for=""> Sort by </label>
                     <select wire:model="sortBy" class="form-control form-select me-2">
                         <option value="" selected> Select Sort </option>
@@ -48,11 +48,9 @@
                     <table class="table admin-table table-sm">
                         <thead class="table-light">
                             <tr>
-                                <th> Photo </th>
-                                <th> Name </th>
-                                <th> Username </th>
+                                <th> Profile </th>
+                                <th> User </th>
                                 <th> Uuid Link </th>
-                                <th> Email </th>
                                 <th> Card Status </th>
                                 <th> Actions </th>
                             </tr>
@@ -60,18 +58,50 @@
                         <tbody class="table-border-bottom-0">
                             @foreach ($profiles as $profile)
                                 <tr>
-                                    <td>
-                                        <div class="img-holder">
-                                            <img
-                                                src="{{ asset($profile->photo ? Storage::url($profile->photo) : 'user.png') }}">
+                                    <td style="width: 30%;">
+                                        <div class="d-flex align-items-center">
+                                            <!-- Profile Image -->
+                                            <div
+                                                style="width: 30px; height: 30px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
+                                                <img src="{{ asset($profile->photo && file_exists(public_path('storage/' . $profile->photo)) ? Storage::url($profile->photo) : 'user.png') }}"
+                                                    alt="Viewer Photo" class="img-fluid"
+                                                    style="width: 100%; height: 100%; object-fit: cover;">
+                                            </div>
+                                            <!-- Name and Email -->
+                                            <div style="margin-left: 5%;">
+                                                <span class="font-weight-bold text-dark"
+                                                    style="font-size: 15px;">{{ $profile->username ? $profile->username : 'N/A' }}</span>
+                                                <p class="mb-0" style="font-size: 12px;">
+                                                    {{ $profile->email ? $profile->email : 'N/A' }}</p>
+                                            </div>
                                         </div>
                                     </td>
-                                    <td>
-                                        {{ $profile->name ? $profile->name : 'N/A' }}
-                                    </td>
-                                    <td>
-                                        {{ $profile->username ? $profile->username : 'N/A' }}
-                                    </td>
+                                    @if ($profile->user_id != null)
+                                        <td style="width: 30%;">
+                                            <div class="d-flex align-items-center">
+                                                <!-- Profile Image -->
+                                                <div
+                                                    style="width: 30px; height: 30px; border-radius: 50%; background-size: cover; background-position: center; overflow: hidden;">
+                                                    <img src="{{ asset($profile->user_photo && file_exists(public_path('storage/' . $profile->user_photo)) ? Storage::url($profile->user_photo) : 'user.png') }}"
+                                                        alt="Viewer Photo" class="img-fluid"
+                                                        style="width: 100%; height: 100%; object-fit: cover;">
+                                                </div>
+                                                <!-- Name and Email -->
+                                                <div style="margin-left: 5%;">
+                                                    <span class="font-weight-bold text-dark"
+                                                        style="font-size: 15px;">{{ $profile->user_name ? $profile->user_name : 'N/A' }}</span>
+                                                    <p class="mb-0" style="font-size: 12px;">
+                                                        {{ $profile->user_email ? $profile->user_email : 'N/A' }}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    @else
+                                        <td class=" text-center">
+                                            <span>
+                                                No User Attach
+                                            </span>
+                                        </td>
+                                    @endif
                                     <td>
                                         @if (!empty($profile->card_uuid))
                                             <div class="row">
@@ -80,22 +110,23 @@
                                                         value="{{ $profile->card_uuid }}">
                                                     {{-- {{ $profile->uuid }} --}}
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-2 position-relative">
                                                     <a href="javascript:void(0)"
                                                         onclick="copy('{{ $profile->card_id }}')">
                                                         <i class="bx bx-clipboard" data-bs-toggle="tooltip"
                                                             data-bs-offset="0,4" data-bs-placement="top"
                                                             title="Copy Link" aria-hidden="true"></i>
                                                     </a>
+                                                    <div id="copy-notification{{ $profile->card_id }}"
+                                                        style="display: none; position: absolute; top: 0; left: 50px; color: blue;">
+                                                        Copied!
+                                                    </div>
                                                 </div>
                                             </div>
                                         @else
                                             N/A
                                         @endif
 
-                                    </td>
-                                    <td>
-                                        {{ $profile->email ? $profile->email : 'N/A' }}
                                     </td>
                                     <td>
                                         @if (!empty($profile->card_uuid))
@@ -125,11 +156,6 @@
                                                 <i class='bx bx-qr-scan'></i>
                                             </button>
                                         @endif
-                                        {{-- <a href="{{ route('enterprise.profile.edit', [$profile->id]) }}"
-                                            class="btn btn-warning" data-bs-toggle="tooltip" data-bs-offset="0,4"
-                                            data-bs-placement="top" data-bs-html="true" title="Edit">
-                                            <i class="bx bx-edit-alt"></i>
-                                        </a> --}}
                                         <a href="{{ route('enterprise.profile.manage', [$profile->id]) }}"
                                             class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-offset="0,4"
                                             data-bs-placement="top" data-bs-html="true" title="Manage">
@@ -141,6 +167,14 @@
                                             title="delete" wire:click="confirmModal({{ $profile->id }})">
                                             <i class='bx bx-trash'></i>
                                         </button>
+                                        @if ($profile->user_id != null)
+                                            <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
+                                                data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
+                                                title="User Disconnect"
+                                                wire:click="confirmUserDactivate({{ $profile->id }},{{ $profile->user_id }})">
+                                                <i class='bx bx-user-x'></i>
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -239,7 +273,9 @@
 
         const nfcScanBtn = document.querySelector('#nfcScanBtn');
 
-        if ('NDEFReader' in window) {} else {
+        if ('NDEFReader' in window) {
+
+        } else {
             nfcScanBtn.disabled = true;
             console.log('NFC is not available on this device');
         }
@@ -318,7 +354,14 @@
             // Remove the temporary input
             document.body.removeChild(tempInput);
 
-            alert("copied");
+            // Show the notification
+            let notification = document.getElementById('copy-notification' + id);
+            notification.style.display = 'block';
+
+            // Hide the notification after 2 seconds
+            setTimeout(function() {
+                notification.style.display = 'none';
+            }, 2000); // 2000 ms = 2 seconds
         }
     </script>
 

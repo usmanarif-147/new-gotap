@@ -7,38 +7,30 @@ use App\Models\Platform;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class View extends Component
 {
     public $identifier = null;
 
     public $redicretTo = null;
-    public $profile, $platforms = [];
+    public $profile, $platforms = [], $profileCheck = false;
+
+    public $name, $email, $phone;
+
+    public $latitude;
+    public $longitude;
 
     public function mount()
     {
-        $this->identifier = request()->segment(1) == 'card_id' ? 'uuid' : request()->username;
-    }
-
-    public function getProfileData()
-    {
-
-        if ($this->identifier == 'uuid') {
-            $this->profile = Card::join('profile_cards', 'cards.id', 'profile_cards.card_id')
-                ->join('profiles', 'profiles.id', 'profile_cards.profile_id')
-                ->where('cards.uuid', request()->segment(2))
-                ->select('profiles.*', 'profile_cards.status as card_status')
-                ->first();
-
-            if (!$this->profile || !$this->profile->card_status) {
-                return abort(404);
-            }
-        } else {
+        if (request()->username) {
+            $this->identifier = request()->username;
             $this->profile = Profile::select(
                 'id',
                 'username',
+                'type',
                 'job_title',
                 'work_position',
                 'bio',
@@ -46,17 +38,39 @@ class View extends Component
                 'photo',
                 'cover_photo',
                 'user_direct',
+                'user_id',
+                'enterprise_id',
+                'is_leads_enabled',
                 'private'
             )
                 ->where('username', $this->identifier)
                 ->first();
-
-            if (!$this->profile) {
-                return abort(404);
-            }
+        } else {
+            $this->identifier = request()->uuid;
+            $this->profile = Card::join('profile_cards', 'cards.id', '=', 'profile_cards.card_id')
+                ->join('profiles', 'profiles.id', '=', 'profile_cards.profile_id')
+                ->where('cards.uuid', $this->identifier)
+                ->select('profiles.*', 'profile_cards.status as card_status')
+                ->first();
         }
+    }
 
-        User::where('id', $this->profile->user_id)->increment('tiks');
+    protected $listeners = ['setLocation'];
+
+    public function setLocation($latitude, $longitude)
+    {
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
+    }
+
+    public function getProfileData()
+    {
+        if (!$this->profile) {
+            return abort(404);
+        }
+        if ($this->profile->user_id != null) {
+            User::where('id', $this->profile->user_id)->increment('tiks');
+        }
         Profile::where('id', $this->profile->id)->increment('tiks');
 
 
@@ -97,6 +111,10 @@ class View extends Component
         if ($userPlatform) {
             $platform = Platform::where('id', $userPlatform->platform_id)->first();
             if ($platform) {
+                DB::table('profile_platforms')
+                    ->where('profile_id', $this->profile->id)
+                    ->where('platform_id', $userPlatform->platform_id)
+                    ->increment('clicks');
                 if (!str_contains($userPlatform->path, 'https') && !str_contains($userPlatform->path, 'http')) {
                     $this->redicretTo = 'https://' . $userPlatform->path;
                 } else {
@@ -113,6 +131,7 @@ class View extends Component
 
     public function increment($platformId, $url)
     {
+        // dd([$platformId, $url]);
         if (!$this->profile->private) {
             DB::table('profile_platforms')
                 ->where('profile_id', $this->profile->id)
@@ -120,12 +139,82 @@ class View extends Component
                 ->increment('clicks');
 
             // Log the URL to verify it
-            Log::info('Redirecting to: ' . $url);
-
+            // Log::info('Redirecting to: ' . $url);
             $this->dispatchBrowserEvent('redirect', [
                 'url' => $url
             ]);
         }
+    }
+
+    public function viewerDetail()
+    {
+        $ip = request()->ip();
+        $locationData = $this->getUserLocation($ip);
+        if ($locationData) {
+            $country = $locationData['geoplugin_countryName'];
+            $ip_address = $locationData['geoplugin_request'];
+            $state = $locationData['geoplugin_region'];
+            $city = $locationData['geoplugin_city'];
+            $lat = $this->latitude;
+            $long = $this->longitude;
+        } else {
+            $country = null;
+            $ip_address = null;
+            $state = null;
+            $city = null;
+            $lat = null;
+            $long = null;
+        }
+        $data = ['name' => $this->name, 'email' => $this->email, 'phone' => $this->phone];
+        DB::table('leads')->insert([
+            'enterprise_id' => $this->profile->enterprise_id,
+            'employee_id' => $this->profile->user_id,
+            'viewing_id' => $this->profile->id,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'ip_address' => $ip_address,
+            'country' => $country,
+            'state' => $state,
+            'city' => $city,
+            'latitude' => $lat,
+            'longitude' => $long,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $this->dispatchBrowserEvent('closeModal');
+
+    }
+
+    private function getUserLocation($ip = null)
+    {
+        $client = new Client();
+
+        try {
+            // Make the API call to GeoPlugin
+            $response = $client->get("http://www.geoplugin.net/json.gp?ip={$ip}");
+
+            // Decode the JSON response
+            $locationData = json_decode($response->getBody(), true);
+
+            if (isset($locationData['geoplugin_countryName'])) {
+                return $locationData; // Return the array data directly
+            } else {
+                return 0;
+            }
+
+        } catch (RequestException $e) {
+            return 0;
+        }
+    }
+
+    public function userdetail()
+    {
+        $user = auth()->user();
+        if ($user) {
+            $this->profileCheck = Profile::where('user_id', $user->id)->orwhere('enterprise_id', $user->id)->where('id', $this->profile->id)->exists();
+        }
+        return $this->profile;
     }
 
 
@@ -133,9 +222,11 @@ class View extends Component
     public function render()
     {
         $this->getProfileData();
+        $this->userdetail();
         return view('livewire.profile.view', [
             'profile' => $this->profile,
-            'platforms' => $this->platforms
+            'platforms' => $this->platforms,
+            'profilecheck' => $this->profileCheck,
         ]);
     }
 }

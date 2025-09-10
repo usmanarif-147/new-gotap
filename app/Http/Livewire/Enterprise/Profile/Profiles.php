@@ -6,6 +6,7 @@ use App\Models\Card;
 use App\Models\Group;
 use App\Models\Profile;
 use App\Models\ProfileCard;
+use App\Models\UserRequestProfile;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -18,7 +19,7 @@ class Profiles extends Component
     use WithFileUploads, WithPagination;
     protected $paginationTheme = 'bootstrap';
 
-    public $profileId;
+    public $profileId, $userId, $cardId;
 
     public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
 
@@ -104,21 +105,18 @@ class Profiles extends Component
             'profiles.username',
             'profiles.photo',
             'profiles.phone',
+            'profiles.user_id',
             'profile_cards.card_id',
             'profile_cards.status as cardStatus',
-            'cards.uuid as card_uuid'
-            // 'profiles.status',
+            'cards.uuid as card_uuid',
+            'users.name as user_name',
+            'users.username as user_username',
+            'users.email as user_email',
+            'users.photo as user_photo'
         )
             ->leftJoin('profile_cards', 'profiles.id', 'profile_cards.profile_id')
             ->leftJoin('cards', 'profile_cards.card_id', 'cards.id')
-            // ->when($this->filterByStatus, function ($query) {
-            //     if ($this->filterByStatus == 2) {
-            //         $query->where('profiles.status', 0);
-            //     }
-            //     if ($this->filterByStatus == 1) {
-            //         $query->where('profiles.status', 1);
-            //     }
-            // })
+            ->leftJoin('users', 'profiles.user_id', '=', 'users.id')
             ->when($this->sortBy, function ($query) {
                 if ($this->sortBy == 'created_asc') {
                     $query->orderBy('profiles.created_at', 'asc');
@@ -131,7 +129,9 @@ class Profiles extends Component
                 $query->where(function ($query) {
                     $query->where('profiles.name', 'like', "%$this->search%")
                         ->orWhere('profiles.username', 'like', "%$this->search%")
-                        ->orWhere('profiles.email', 'like', "%$this->search%");
+                        ->orWhere('profiles.email', 'like', "%$this->search%")
+                        ->orWhere('users.name', 'like', "%$this->search%")
+                        ->orWhere('users.email', 'like', "%$this->search%");
                 });
             })
             ->where('profiles.enterprise_id', auth()->id())
@@ -207,6 +207,8 @@ class Profiles extends Component
             // Remove from connects
             $this->removeFromConnects($profile->id);
 
+            $this->removeFromLeads($profile->id);
+
             // Delete profile cover photo
             if ($profile->cover_photo) {
                 Storage::disk('public')->delete($profile->cover_photo);
@@ -267,11 +269,85 @@ class Profiles extends Component
         DB::table('user_groups')->where('profile_id', $profileId)->delete();
     }
 
+    private function removeFromLeads($profileId)
+    {
+        DB::table('leads')->where('viewing_id', $profileId)->delete();
+    }
+
+    public function confirmUserDactivate($id, $user_id)
+    {
+        $this->profileId = $id;
+        $this->userId = $user_id;
+        $this->c_modal_heading = 'Are You Sure';
+        $this->c_modal_body = 'You want to Disconnect User from profile!';
+        $this->c_modal_btn_text = 'Disconnect';
+        $this->c_modal_btn_color = 'btn-danger';
+        $this->c_modal_method = 'dLinkUser';
+        $this->dispatchBrowserEvent('confirm-modal');
+    }
+
+    public function dLinkUser()
+    {
+        $profile = Profile::where('id', $this->profileId)
+            ->where('user_id', $this->userId)
+            ->first();
+        if ($profile) {
+            $profileCard = ProfileCard::where('profile_id', $this->profileId)
+                ->where('user_id', $this->userId)->first();
+            if ($profileCard) {
+                $platforms = DB::table('profile_platforms')->where('profile_id', $this->profileId)
+                    ->where('user_id', $this->userId)
+                    ->get();
+                foreach ($platforms as $k => $v) {
+                    DB::table('profile_platforms')->whereId($v->id)->update([
+                        'user_id' => null
+                    ]);
+                }
+                $profileCard->update([
+                    'user_id' => null
+                ]);
+                $profile->update([
+                    'user_id' => null
+                ]);
+                UserRequestProfile::where('enterprise_id', auth()->id())->where('user_id', $this->userId)->where('status', 1)->update([
+                    'status' => 2,
+                ]);
+                DB::table('leads')->where('employee_id', $this->userId)->where('enterprise_id', $profile->enterprise_id)->where('viewing_id', $this->profileId)
+                    ->update(['employee_id' => null]);
+            } else {
+                $profile->update([
+                    'user_id' => null
+                ]);
+                UserRequestProfile::where('enterprise_id', auth()->id())->where('user_id', $this->userId)->where('status', 1)->update([
+                    'status' => 2,
+                ]);
+                DB::table('leads')->where('employee_id', $this->userId)->where('enterprise_id', $profile->enterprise_id)->where('viewing_id', $this->profileId)
+                    ->update(['employee_id' => null]);
+                $this->dispatchBrowserEvent('swal:modal', [
+                    'type' => 'danger',
+                    'message' => 'Card not found!',
+                ]);
+                $this->closeModal();
+            }
+        } else {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'danger',
+                'message' => 'Profile Not Found!',
+            ]);
+            $this->closeModal();
+        }
+        $this->dispatchBrowserEvent('swal:modal', [
+            'type' => 'success',
+            'message' => 'User Dactivate Successfully from this profile!',
+        ]);
+        $this->closeModal();
+        $this->emit('profiles-refresh-enterprisers');
+    }
+
     public function render()
     {
 
         $data = $this->getData();
-        $this->heading = "Profiles";
         $profiles = $data->paginate(10);
 
         $this->total = $profiles->total();

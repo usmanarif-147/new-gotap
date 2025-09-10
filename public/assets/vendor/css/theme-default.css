@@ -915,9 +915,9 @@ html:not(.layout-menu-collapsed)
 }
 .bg-menu-theme .menu-inner > .menu-item.active > .menu-link {
     /* color: #566a7f; */
-    color: #6e39cb;
+    color: #000000;
     /* background-color: rgb(220 221 247 / 16%) !important; */
-    background-color: #deccfe !important;
+    background-color: #dcdcdc9f !important;
 }
 .bg-menu-theme .menu-inner > .menu-item.active:before {
     background: #fff;

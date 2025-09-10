@@ -2,7 +2,6 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
-                {{-- {{ $heading }} --}}
                 <span>
                     <h5 style="margin-top:10px"> Total: {{ $total }} </h4>
                 </span>

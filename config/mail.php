@@ -43,7 +43,26 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
+            'from' => [
+                'address' => env('MAIL_FROM_ADDRESS', 'primary@example.com'),
+                'name' => env('MAIL_FROM_NAME', 'Primary Mailer'),
+            ],
         ],
+
+        // 'smtp2' => [
+        //     'transport' => 'smtp',
+        //     'host' => env('MAIL_HOST_2', 'smtp.mailgun.org'),
+        //     'port' => env('MAIL_PORT_2', 587),
+        //     'encryption' => env('MAIL_ENCRYPTION_2', 'tls'),
+        //     'username' => env('MAIL_USERNAME_2'),
+        //     'password' => env('MAIL_PASSWORD_2'),
+        //     'timeout' => null,
+        //     'local_domain' => env('MAIL_EHLO_DOMAIN_2'),
+        //     'from' => [
+        //         'address' => env('MAIL_FROM_ADDRESS_2', 'primary@example.com'),
+        //         'name' => env('MAIL_FROM_NAME_2', 'Primary Mailer'),
+        //     ],
+        // ],
 
         'ses' => [
             'transport' => 'ses',

@@ -2,7 +2,6 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="card-header">
-                {{ $heading }}
                 <span>
                     <h5 style="margin-top:10px"> Total: {{ $total }} </h4>
                 </span>
@@ -43,16 +42,21 @@
                     <table class="table admin-table">
                         <thead class="table-light">
                             <tr>
+                                <th> Sr </th>
                                 <th>Uuid</th>
                                 <th>Assigned To</th>
                                 <th>Description</th>
+                                <th>Type</th>
                                 <th>Status</th>
-                                {{-- <th>Actions</th> --}}
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
-                            @foreach ($cards as $card)
+                            @foreach ($cards as $index => $card)
                                 <tr>
+                                    <td>
+                                        {{ $index + 1 + ($cards->currentPage() - 1) * $cards->perPage() }}
+                                    </td>
                                     <td>
                                         <div class="row">
                                             <div class="col-md-10">
@@ -76,28 +80,18 @@
                                         {{ $card->description ?? 'N/A' }}
                                     </td>
                                     <td>
+                                        {{ $card->type ? Str::ucfirst($card->type) : 'N/A' }}
+                                    <td>
                                         <span
                                             class="badge {{ $card->status ? 'bg-label-success' : 'bg-label-danger' }} me-1">
                                             {{ $card->status ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
-                                    {{-- <td class="action-td">
-                                        <div class="dropdown">
-                                            <button class="btn p-0" type="button" id="cardOpt3"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="bx bx-dots-vertical-rounded"></i>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt3">
-                                                <a class="btn btn-icon btn-outline-secondary" data-bs-toggle="tooltip"
-                                                    data-bs-offset="0,4" data-bs-placement="top" data-bs-html="true"
-                                                    title=""
-                                                    data-bs-original-title="<i class='bx bx-edit-alt bx-xs' ></i> <span>Edit</span>"
-                                                    href="{{ url('admin/card/' . $card->id . '/edit') }}">
-                                                    <i class="bx bx-edit-alt"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td> --}}
+                                    <td>
+                                        <button class="btn btn-danger" wire:click ="confirmModal({{ $card->id }})">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -117,13 +111,27 @@
             </div>
         </div>
     </div>
+    @include('layouts.admin.partials.confirm_modal')
 
     <script>
         window.addEventListener('swal:modal', event => {
+            $('#confirmModal').modal('hide');
             swal({
                 title: event.detail.message,
                 icon: event.detail.type,
             });
+        });
+
+        window.addEventListener('confirmModal', event => {
+            $('#confirmModal').modal('show');
+        });
+
+        window.addEventListener('close-modal', event => {
+            $('#confirmModal').modal('hide');
+        });
+
+        window.addEventListener('download-csv', event => {
+            window.location.href = event.detail.url;
         });
 
         function copy(id) {

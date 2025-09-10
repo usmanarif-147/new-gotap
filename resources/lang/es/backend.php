@@ -97,5 +97,6 @@ return [
     'platform_clicks' => 'Clics en Plataforma',
     'platforms' => 'Plataformas',
     'groups' => 'Grupos',
+    'created_at' => 'Fecha de creación',
 
 ];

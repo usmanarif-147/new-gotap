@@ -56,6 +56,13 @@ if (!function_exists('defaultDateFormat')) {
     }
 }
 
+if (!function_exists('humanDateFormat')) {
+    function humanDateFormat($date)
+    {
+        return Carbon::parse($date)->format('F j, Y');
+    }
+}
+
 if (!function_exists('default_time_format')) {
     function default_time_format($date)
     {

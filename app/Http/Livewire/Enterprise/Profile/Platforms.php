@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Enterprise\Profile;
 
 use App\Models\Category;
+use App\Models\Profile;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use App\Models\Platform;
@@ -13,7 +14,7 @@ class Platforms extends Component
 
     public $tab_change;
 
-    public $path, $label, $direct, $title;
+    public $path, $label, $direct, $title, $input;
     public $platformId;
 
     public $c_modal_heading = '', $c_modal_body = '', $c_modal_btn_text = '', $c_modal_btn_color = '', $c_modal_method = '';
@@ -50,23 +51,25 @@ class Platforms extends Component
         // $this->emit('refresh-platforms');
     }
 
-    public function addPlatform($id, $path, $label, $direct, $title)
+    public function addPlatform($id, $path, $label, $direct, $title, $input)
     {
         $this->platformId = $id;
         $this->path = $path;
         $this->label = $label;
         $this->direct = $direct;
         $this->title = $title;
+        $this->input = $input;
         $this->isEditMode = false;
     }
 
-    public function editPlatform($id, $path, $label, $direct, $title)
+    public function editPlatform($id, $path, $label, $direct, $title, $input)
     {
         $this->platformId = $id;
         $this->path = $path;
         $this->label = $label;
         $this->direct = $direct;
         $this->title = $title;
+        $this->input = $input;
         $this->isEditMode = true;
     }
 
@@ -235,12 +238,21 @@ class Platforms extends Component
 
     public function categoryWithPlatforms($searchTerm = null)
     {
-        $categories = Category::whereExists(function ($query) {
-            $query->select(DB::raw(1))
-                ->from('platforms')
-                ->whereRaw('platforms.category_id = categories.id')
-                ->where('platforms.status', '=', '1');
+        // $categories = Category::whereExists(function ($query) {
+        //     $query->select(DB::raw(1))
+        //         ->from('platforms')
+        //         ->whereRaw('platforms.category_id = categories.id')
+        //         ->where('platforms.status', '=', '1');
+        // });
+        $categories = Category::whereHas('platforms', function ($query) {
+            $query->where('status', 1);
         });
+        if ($searchTerm) {
+            $categories->whereHas('platforms', function ($query) use ($searchTerm) {
+                $query->where('title', 'like', "%{$searchTerm}%")
+                    ->where('status', 1);
+            });
+        }
         $categories = $categories->get();
 
         $userPlatforms = DB::table('profile_platforms')
@@ -340,12 +352,26 @@ class Platforms extends Component
         $data = $this->categoryWithPlatforms($this->searchTerm);
         return $data;
     }
+
+    public function profileData($id)
+    {
+        if (request()->id) {
+            $this->profile_id = request()->id;
+        } else {
+            $this->profile_id = $id;
+        }
+        $profile = Profile::where('id', $this->profile_id)->first();
+        return $profile;
+    }
     public function render()
     {
+        $id = $this->profile_id;
+        $profile = $this->profileData($id);
         $platforms = $this->search();
         return view('livewire.enterprise.profile.platforms', [
             'platforms' => $platforms['transformedResponse'],
-            'sort_platform' => $platforms['sort']
+            'sort_platform' => $platforms['sort'],
+            'profile' => $profile
         ]);
     }
 }

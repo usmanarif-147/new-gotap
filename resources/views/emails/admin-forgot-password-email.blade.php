@@ -26,7 +26,7 @@
         </tr>
         <tr>
             <td style="font-size:20px; font-weight:800; text-align: center">
-                <a href="{{ request()->getSchemeAndHttpHost() . '/reset-password/' . $url }}"
+                <a href="{{ config('app.mail_url') . '/reset-password/' . $url }}"
                     style="
                     background-color: #3f79d0; border: none;
                     color: white; padding: 15px 32px; text-align: center;

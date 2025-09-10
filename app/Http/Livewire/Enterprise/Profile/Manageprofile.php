@@ -12,7 +12,7 @@ class Manageprofile extends Component
 
     public $profile_id;
 
-    public $tab_change = 1;
+    public $tab_change = 0;
 
     protected $listeners = ['refresh-profile' => 'profileData'];
     public function profileData($id)
@@ -26,7 +26,18 @@ class Manageprofile extends Component
 
         $total_platforms = DB::table('profile_platforms')->where('profile_id', $this->profile_id)->count();
 
-        return ['profile' => $profile, 'total_platforms' => $total_platforms];
+        $cardStatus = DB::table('profile_cards')->where('profile_id', $this->profile_id)->select('status')->first();
+        if ($cardStatus) {
+            if ($cardStatus->status) {
+                $card_status = 'active';
+            } else {
+                $card_status = 'inactive';
+            }
+        } else {
+            $card_status = '--';
+        }
+
+        return ['profile' => $profile, 'total_platforms' => $total_platforms, 'card_status' => $card_status];
     }
 
     public function isDirect($value)
@@ -65,6 +76,11 @@ class Manageprofile extends Component
         ]);
     }
 
+    public function viewProfile()
+    {
+        $this->tab_change = 0;
+    }
+
     public function editProfile()
     {
         $this->tab_change = 1;
@@ -84,6 +100,20 @@ class Manageprofile extends Component
     {
         $this->tab_change = 4;
     }
+
+    public function profileAnalytics()
+    {
+        $this->tab_change = 5;
+    }
+
+    public function profileLeads()
+    {
+        $this->tab_change = 6;
+    }
+    public function profileConnects()
+    {
+        $this->tab_change = 7;
+    }
     public function render()
     {
         $id = $this->profile_id;
@@ -91,7 +121,8 @@ class Manageprofile extends Component
         $this->heading = "Manage Profile";
         return view('livewire.enterprise.profile.manageprofile', [
             'profile' => $profile['profile'],
-            'total_platforms' => $profile['total_platforms']
+            'total_platforms' => $profile['total_platforms'],
+            'card_status' => $profile['card_status'],
         ]);
     }
 }

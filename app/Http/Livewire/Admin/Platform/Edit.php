@@ -13,58 +13,58 @@ class Edit extends Component
 
     use WithFileUploads;
 
-    public $heading, $platform_id, $categories, $icon_preview = null;
+    public $platform_id, $categories, $icon_preview = null;
 
     public
-        $title,
-        $icon,
-        $pro,
-        $category_id,
-        $status,
-        $placeholder_en,
-        $placeholder_sv,
-        $description_en,
-        $description_sv,
-        $baseURL,
-        $input;
+    $title,
+    $icon,
+    $pro,
+    $category_id,
+    $status,
+    $placeholder_en,
+    $placeholder_sv,
+    $description_en,
+    $description_sv,
+    $baseURL,
+    $input;
 
     protected function rules()
     {
         return [
-            'title'             => ['required'],
-            'icon'              => ['nullable', 'mimes:jpeg,jpg,png,webp', 'max:2000'],
-            'pro'               => ['required', 'not_in:'],
-            'category_id'       => ['required', 'not_in:'],
-            'status'            => ['required', 'not_in:'],
-            'placeholder_en'    => ['sometimes'],
-            'placeholder_sv'    => ['sometimes'],
-            'description_en'    => ['sometimes'],
-            'description_sv'    => ['sometimes'],
-            'baseURL'           => ['sometimes'],
-            'input'             => ['required', 'not_in:'],
+            'title' => ['required'],
+            'icon' => ['nullable', 'mimes:jpeg,jpg,png,webp', 'max:2000'],
+            'pro' => ['required', 'not_in:'],
+            'category_id' => ['required', 'not_in:'],
+            'status' => ['required', 'not_in:'],
+            'placeholder_en' => ['sometimes'],
+            'placeholder_sv' => ['sometimes'],
+            'description_en' => ['sometimes'],
+            'description_sv' => ['sometimes'],
+            'baseURL' => ['sometimes'],
+            'input' => ['required', 'not_in:'],
         ];
     }
 
     protected function messages()
     {
         return [
-            'title.required'            => 'required',
-            'icon.nullable'             => 'nullable',
-            'icon.mimes'                => 'mimes:jpeg,jpg,png,webp',
-            'icon.max'                  => 'max:2000',
-            'pro.required'              => 'required',
-            'pro.not_in'                => 'Invalid selection for pro',
-            'category_id.required'      => 'required',
-            'category_id.not_in'        => 'Invalid selection for category_id',
-            'status.required'           => 'required',
-            'status.not_in'             => 'Invalid selection for status',
-            'placeholder_en.sometimes'  => 'sometimes',
-            'placeholder_sv.sometimes'  => 'sometimes',
-            'description_en.sometimes'  => 'sometimes',
-            'description_sv.sometimes'  => 'sometimes',
-            'baseURL.sometimes'         => 'sometimes',
-            'input.required'            => 'required',
-            'input.not_in'              => 'Invalid selection for input',
+            'title.required' => 'required',
+            'icon.nullable' => 'nullable',
+            'icon.mimes' => 'mimes:jpeg,jpg,png,webp',
+            'icon.max' => 'max:2000',
+            'pro.required' => 'required',
+            'pro.not_in' => 'Invalid selection for pro',
+            'category_id.required' => 'required',
+            'category_id.not_in' => 'Invalid selection for category_id',
+            'status.required' => 'required',
+            'status.not_in' => 'Invalid selection for status',
+            'placeholder_en.sometimes' => 'sometimes',
+            'placeholder_sv.sometimes' => 'sometimes',
+            'description_en.sometimes' => 'sometimes',
+            'description_sv.sometimes' => 'sometimes',
+            'baseURL.sometimes' => 'sometimes',
+            'input.required' => 'required',
+            'input.not_in' => 'Invalid selection for input',
         ];
     }
 
@@ -130,7 +130,6 @@ class Edit extends Component
 
     public function render()
     {
-        $this->heading = "Edit";
         return view('livewire.admin.platform.edit');
     }
 }

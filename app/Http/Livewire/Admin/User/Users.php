@@ -2,7 +2,12 @@
 
 namespace App\Http\Livewire\Admin\User;
 
+use App\Models\Card;
+use App\Models\CompaignEmail;
+use App\Models\Profile;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -14,9 +19,14 @@ class Users extends Component
     protected $paginationTheme = 'bootstrap';
 
     // filter valriables
-    public $search = '', $filterByStatus = '', $filterByRole = '',  $sortBy = '';
+    public $search = '', $filterByStatus = '', $filterByRole = '', $sortBy = '';
 
-    public $total, $heading, $statuses = [];
+    public $user_id, $methodType, $modalTitle, $modalBody, $modalActionBtnColor, $modalActionBtnText;
+
+    public $selectedUser;
+    public $showCardModal = false;
+
+    public $total, $statuses = [];
 
     public function mount()
     {
@@ -41,6 +51,12 @@ class Users extends Component
     public function updatedSortBy()
     {
         $this->resetPage();
+    }
+
+    public function showCards($userId)
+    {
+        $this->selectedUser = User::with('profiles.cards')->find($userId);
+        $this->showCardModal = true;
     }
 
     public function getFilteredData()
@@ -92,11 +108,88 @@ class Users extends Component
         return $filteredData;
     }
 
+    public function confirmModal($id)
+    {
+        $this->user_id = $id;
+        $this->methodType = 'delete';
+        $this->modalTitle = 'Are you sure';
+        $this->modalBody = 'You want to Delete this User!';
+        $this->modalActionBtnColor = 'btn-danger';
+        $this->modalActionBtnText = 'Delete';
+        $this->dispatchBrowserEvent('confirmModal');
+    }
+
+    public function closeModal()
+    {
+        $this->user_id = null;
+        $this->methodType = null;
+        $this->modalTitle = null;
+        $this->modalBody = null;
+        $this->modalActionBtnColor = null;
+        $this->modalActionBtnText = null;
+        $this->dispatchBrowserEvent('close-modal');
+    }
+
+    public function delete()
+    {
+        $user = User::findOrFail($this->user_id);
+        if (!$user) {
+            $this->dispatchBrowserEvent('swal:modal', [
+                'type' => 'error',
+                'message' => 'User not found!',
+            ]);
+            return;
+        }
+        $profileIds = Profile::where('user_id', $user->id)
+            ->orWhere('enterprise_id', $user->id)
+            ->pluck('id');
+        foreach ($profileIds as $profileId) {
+            $profile = Profile::find($profileId);
+            $profile->subteams()->detach();
+            if ($profile->photo && Storage::disk('public')->exists($profile->photo)) {
+                Storage::disk('public')->delete($profile->photo);
+            }
+
+            if ($profile->cover_photo && Storage::disk('public')->exists($profile->cover_photo)) {
+                Storage::disk('public')->delete($profile->cover_photo);
+            }
+            $cardIds = $profile->cards()->pluck('cards.id')->toArray();
+            Card::whereIn('id', $cardIds)->delete();
+            DB::table('leads')->where('viewing_id', $profileId)->delete();
+            $profile->delete();
+        }
+        if ($user->photo && Storage::disk('public')->exists($user->photo)) {
+            Storage::disk('public')->delete($user->photo);
+        }
+
+        if ($user->role === "user") {
+            DB::table('leads')->where('employee_id', $user->id)->delete();
+        } else {
+            DB::table('leads')->where('enterprise_id', $user->id)->delete();
+            CompaignEmail::where('enterprise_id', $user->id)->delete();
+        }
+
+        DB::table('subteams')
+            ->where('enterprise_id', $user->id)
+            ->delete();
+        $user->delete();
+        $this->user_id = null;
+        $this->methodType = null;
+        $this->modalTitle = null;
+        $this->modalBody = null;
+        $this->modalActionBtnColor = null;
+        $this->modalActionBtnText = null;
+
+        $this->dispatchBrowserEvent('swal:modal', [
+            'type' => 'success',
+            'message' => 'User Deleted successfully!',
+        ]);
+    }
+
     public function render()
     {
         $data = $this->getFilteredData();
 
-        $this->heading = "Users";
         $users = $data->paginate(10);
 
         $this->total = $users->total();

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CardController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\GroupController;
+use App\Http\Controllers\Api\PassController;
 use App\Http\Controllers\Api\PhoneContactController;
 use App\Http\Controllers\Api\PlatformController;
 use App\Http\Controllers\Api\ProfileController;
@@ -29,6 +30,7 @@ Route::get('/getCards', function () {
 Route::get('/getAllProfiles', function () {
     return Profile::select(
         'id',
+        'user_id',
         'username',
         'name'
     )
@@ -55,9 +57,9 @@ Route::middleware('localization')->group(function () {
     Route::post('/recoverAccount', [AuthController::class, 'recoverAccount']);
 
     Route::post('/otpVerification', [AuthController::class, 'otpVerify']);
+    Route::get('/generate-pass/{user_id}', [PassController::class, 'generatePass']);
 
     Route::middleware('auth:sanctum')->group(function () {
-
         Route::middleware('user.status')->group(function () {
 
             // User Profile
@@ -70,6 +72,7 @@ Route::middleware('localization')->group(function () {
             Route::post('/updateProfile', [ProfileController::class, 'updateProfile']);
             Route::get('/userDirect', [ProfileController::class, 'userDirect']);
             Route::get('/search', [ProfileController::class, 'search']);
+            Route::get('/profileAnalytics', [ProfileController::class, 'profileAnalytics']);
 
             // Platform
             Route::get('/categories', [CategoryController::class, 'index']);
@@ -96,6 +99,8 @@ Route::middleware('localization')->group(function () {
             Route::post('/addContactIntoGroup', [GroupController::class, 'addPhoneContactIntoGroup']);
             Route::post('/removeProfileFromGroup', [GroupController::class, 'removeProfileFromGroup']);
             Route::post('/removeContactFromGroup', [GroupController::class, 'removePhoneContactFromGroup']);
+            Route::post('/addLeadIntoGroup', [GroupController::class, 'addLeadIntoGroup']);
+            Route::post('/removeLeadFromGroup', [GroupController::class, 'removeLeadFromGroup']);
 
             // Cards
             Route::get('/cards', [CardController::class, 'index']);
@@ -105,6 +110,16 @@ Route::middleware('localization')->group(function () {
 
             // View User Profile
             Route::post('/viewUserProfile', [ViewProfileController::class, 'viewUserProfile']);  // profile
+
+            //Send Request For Enterpriser Profile
+            Route::post('/UserRequestProfile', [ViewProfileController::class, 'UserRequestProfile']);
+
+            //profile Leads
+            Route::post('/ProfileLeadsEnabled', [ViewProfileController::class, 'profileLeadsEnabled']);
+            Route::get('/ProfileLeads', [ViewProfileController::class, 'profileLeads']);
+            Route::post('/UpdateProfileLead', [ViewProfileController::class, 'updateProfileLead']);
+            Route::post('/addLead', [ViewProfileController::class, 'addLead']);
+            Route::post('/deleteLead', [ViewProfileController::class, 'deleteLead']);
 
             // Connects
             Route::post('/connect', [ConnectController::class, 'connect']);
